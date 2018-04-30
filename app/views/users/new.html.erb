@@ -1,0 +1,37 @@
+<% provide(:title, t('requestDataVault.title')) %>
+<p>&nbsp;</p>
+<div class="container">
+    <div class="row">
+    	<div class="col-md-4 col-md-offset-4">
+    		<div class="panel panel-default">
+			  	<div class="panel-heading">
+			    	<h3 class="panel-title"><%= t('requestDataVault.title') %></h3>
+			 	</div>
+			  	<div class="panel-body">
+			  		<% flash.each do |message_type, message| %>
+						<div class="alert alert-<%= message_type %>"><%= message %></div>
+					<% end %>
+			  		<%= form_with url: new_path, role: "form" do |form| %>
+	                    <fieldset>
+				    	  	<div class="form-group">
+				    	  		<%= form.text_field :name, class: "form-control", placeholder: t('requestDataVault.yourName') %>
+				    		</div>
+				    	  	<div class="form-group">
+				    	  		<%= form.email_field :email, class: "form-control", placeholder: t('requestDataVault.yourEmail') %>
+				    		</div>
+				    	  	<div class="form-group">
+				    	  		<%= form.text_field :access_code, class: "form-control", placeholder: t('requestDataVault.accessCode') %>
+				    		</div>
+							<%= form.button t('dialog.submitBtn'), 
+								class: "btn btn-success btn-lg btn-block",
+								data: { disable_with: "<i class='fa fa-spinner fa-spin'></i> " + t('dialog.submitBtn') } %>
+				    	</fieldset>
+			      	<% end %>
+			    </div>
+			</div>
+	      	<p style="line-height: 1.3em;"><small><strong><%= t('requestDataVault.accessCode') %>:</strong> 
+	      		<%= t('requestDataVault.accessCodeText') %><br>
+	      		<a href="https://beta.ownyourdata.eu/<%= params[:locale] %>/request"><%= t('requestDataVault.accessCodeLink') %></a></p></small>
+		</div>
+	</div>
+</div>

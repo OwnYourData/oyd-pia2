@@ -1,0 +1,146 @@
+<% provide(:title, t('menu.permission')) %>
+<%= link_to user_path, style: "text-decoration: none; color: black;" do %><h1 style="text-align: left;"><i class="fa fa-arrow-left"></i> <%= t('menu.permission') %></h1><% end %>
+
+<div class="row">
+  <div class="col-md-4 col-md-offset-4">
+    <% flash.each do |message_type, message| %>
+        <div class="alert alert-<%= message_type %>"><%= message %></div>
+    <% end %>
+  </div>
+</div>
+
+<a href="#" data-toggle="modal" data-target="#customManifest" class="btn btn-primary"><i class="fa fa-plus"></i> <%= t('data.addPlugin') %></a>
+
+<table id="data-table" class="table table-striped">
+	<thead> 
+		<tr>
+			<th><span class="font-size-large"><%= t('data.plugin_title') %></span></th>
+			<th class="center"><span class="font-size-large"><%= t('data.action_title') %></span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<%= render partial: "plugin_list", collection: @plugins.sort_by { |item| item[:name] } %>
+	</tbody>
+</table>
+
+<!-- Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="detailsHeader">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="detailsHeader"></h4>
+			</div>
+			<%= form_with url: plugin_update_path do |form| %>
+				<div class="modal-body">
+					<ul class="nav nav-tabs" data-tabs="tabs" id="detail_tabs" style="margin-top: 0;">
+						<li class="active"><a data-toggle="tab" href="#general"><%= t('apps.generalTab') %></a></li>
+						<li><a data-toggle="tab" href="#permissions"><%= t('apps.permissionsTab') %></a></li>
+					</ul>
+
+					<div class="tab-content">
+						<div class="tab-pane active" id="general">
+							<%= form.hidden_field :details_plugin_id, id: "details_plugin_id" %>
+							<div class="form-group">
+								<label class="control-label" for="details_view_name"><%= t('apps.name') %></label>
+								<%= form.text_field :details_plugin_name, id: "details_plugin_name", class: "form-control" %>
+							</div>
+							<div class="form-group">
+								<label class="control-label" for="details_app_key"><%= t('apps.app_key') %></label>
+								<input class="form-control" id="details_app_key" readonly>
+							</div>
+							<div class="form-group">
+								<label class="control-label" for="details_app_secret"><%= t('apps.app_secret') %></label>
+								<input class="form-control" id="details_app_secret" readonly>
+<!--								<div class="input-group">
+									<input type="password" class="form-control" style="font: small-caption; font-size: 16px; line-height: 1.3em;" id="details_app_secret" readonly>
+									<span class="input-group-btn"> 
+										<%= link_to(show_app_details_password_path(app_id: params[:app_id]), class: "btn btn-default fakebutton", remote: true) do  %>
+										<span class="glyphicon glyphicon-eye-open"></span>
+										<% end %>
+									</span>
+								</div>-->
+							</div>
+<!--							<div class="form-group">
+								<label class="control-label" for="details_view_url"><%= t('apps.app_url') %></label>
+								<%= form.text_field :details_view_url, id: "details_view_url", class: "form-control" %>
+							</div>-->
+						</div>
+						<div class="tab-pane" id="permissions">
+							<table class="table table-hover" id="permTable" style="overflow-y: scroll;height: 320px;display: block;">
+								<thead>
+									<tr>
+										<th style="width: 100%;"><%= t('apps.repo') %></th> 
+										<th class="text-center"><%= t('apps.readPerm') %></th> 
+										<th class="text-center"><%= t('apps.writePerm') %></th> 
+										<th class="text-center"><%= t('apps.updatePerm') %></th> 
+										<th class="text-center"><%= t('apps.deletePerm') %></th> 
+									</tr> 
+								</thead>
+								<tbody id="listPermissions">
+								</tbody> 
+							</table>
+							<button type="button" class="btn btn-info btn-sm" id="addPerm"><%= t('apps.addPermBtn') %></button>
+							<script type="text/javascript">
+								$('#addPerm').click(function() {
+									var cnt = parseInt($('#permTable tr:last input:first').attr('id').split('_')[2])+1;
+									var newTr = "<tr>";
+									newTr = newTr.concat('<td><input type="text" id="perm_IDENTIFIER_', cnt, '" name="perm_IDENTIFIER_', cnt, '" style="margin-bottom: 0; width: 90%;">');
+									newTr = newTr.concat('<span class="deletePerm" onclick="$(this).closest(\'tr\').hide();$(\'#perm_IDENTIFIER_', cnt, '_delete\').val(\'true\');"><i class="fa fa-trash" aria-hidden="true"></i></span>')
+									newTr = newTr.concat('<input type="hidden" id="perm_IDENTIFIER_', cnt, '_delete" name="perm_IDENTIFIER_', cnt, '_delete" value="false">');
+									newTr = newTr.concat('</td>');
+									newTr = newTr.concat('<td class="text-center permission" id="perm_READ_', cnt, '">');
+									newTr = newTr.concat('<input type="hidden" id="perm_READ_', cnt, '_value" name="perm_READ_', cnt, '_value" value="false">');
+									newTr = newTr.concat('<i class="fa fa-square-o" aria-hidden="true"></i></td>');
+									newTr = newTr.concat('<td class="text-center permission" id="perm_WRITE_', cnt, '">');
+									newTr = newTr.concat('<input type="hidden" id="perm_WRITE_', cnt, '_value" name="perm_WRITE_', cnt, '_value" value="false">');
+									newTr = newTr.concat('<i class="fa fa-square-o" aria-hidden="true"></i></td>');
+									newTr = newTr.concat('<td class="text-center permission" id="perm_UPDATE_', cnt, '">');
+									newTr = newTr.concat('<input type="hidden" id="perm_UPDATE_', cnt, '_value" name="perm_UPDATE_', cnt, '_value" value="false">');
+									newTr = newTr.concat('<i class="fa fa-square-o" aria-hidden="true"></i></td>');
+									newTr = newTr.concat('<td class="text-center permission" id="perm_DELETE_', cnt, '">');
+									newTr = newTr.concat('<input type="hidden" id="perm_DELETE_', cnt, '_value" name="perm_DELETE_', cnt, '_value" value="false">');
+									newTr = newTr.concat('<i class="fa fa-square-o" aria-hidden="true"></i></td>');
+									newTr = newTr.concat('</tr>');
+									$('#permTable tr:last').after(newTr);
+								})
+							</script>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal"><%= t('dialog.closeBtn') %></button>
+					<%= form.button t('apps.saveBtn'), 
+							class: "btn btn-primary", style: "width: 200px;",
+							data: { disable_with: "<i class='fa fa-spinner fa-spin'></i> " + t('apps.saveBtn') } %>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to manually add Manifest -->
+<div class="modal fade" id="customManifest" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><%= t('data.addPlugin') %></h4>
+      </div>
+      <%= form_with url: add_manifest_path do |form| %>
+	      <div class="modal-body">
+	        <div class="form-group">
+			  <label for="manifest">Manifest:</label>
+			  <%= form.text_area :manifest, rows: 5 %>
+			</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal"><%= t('dialog.closeBtn') %></button>
+			<%= form.button t('dialog.submitBtn'), 
+					class: "btn btn-primary", style: "width: 200px;",
+					data: { disable_with: "<i class='fa fa-spinner fa-spin'></i> " + t('dialog.submitBtn') } %>
+	      </div>
+	  <% end %>
+    </div>
+  </div>
+</div>

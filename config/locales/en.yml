@@ -1,0 +1,166 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# The following keys must be escaped otherwise they will not be retrieved by
+# the default I18n backend:
+#
+# true, false, on, off, yes, no
+#
+# Instead, surround them with single quotes.
+#
+# en:
+#   'true': 'foo'
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+en:
+  general:
+    title: "Data Vault"
+    account: "Account"
+    password: "Password"
+    passwordConfirmation: "Password Confirmation"
+    passwordRecovery: "Recovery Passwort"
+    passwordRecoveryConfirmation: "Recovery Password Confirmation"
+  menu:
+    myApps: "My Apps"
+    myData: "My Data"
+    account: "Account"
+    logoff: "Sign out"
+    application: "Applications"
+    permission: "Permissions"
+    source: "Data Sources"
+    question: "Questions"
+    data: "Data Records"
+    task: "periodic Tasks"
+    setting: "Settings"
+  footer:
+    about: "About OwnYourData.eu"
+    mobile: "Mobile Data Vault"
+    feedback: "Send Feedback"
+    info: "Developer Infos"
+    security: "Data security"
+    impressum: "Imprint"
+    language: "Language"
+  start:
+    header: "Your data is precious."
+    text: "Learn from your data and get to know more about you and insights abut your life."
+    email: "Email"
+    password: "Password"
+    remember: "Remember password"
+    forgot: "Forgot password?"
+  dialog:
+    closeBtn: "Close"
+    saveBtn: "Save"
+    submitBtn: "Submit"
+    login: "Log in"
+    newUser: "new here?"
+    signUp: "Create your own data vault"
+    profile: "Profile"
+    settings: "Settings"
+    logOut: "Log out"   
+    attention: "Watch out"
+    recoveryTxt: "Your data is encrypted with the above password. If you forget this password you can reset it with the recovery password."
+  process:
+    confirmationMailSent: "Mail sent"
+    confirmationMailSentBody: "A mail to activate your account was sent."
+    accountConfirmed: "Your account was successfully activated."
+  requestDataVault:
+    title: "Request Data Vault"
+    confirmTitle: "Finish Sign up"
+    full_name: "Full Name"
+    yourName: "Your Name"
+    yourEmail: "Your Email"
+    accessCode: "Access code"
+    accessCodeText: "The data vault is currently in a closed beta test phase and you need an access code for sign-up."
+    accessCodeLink: "Request an access code here."
+    invalidAccessCode: "invalid access code"
+  apps:
+    open: "Open"
+    details: "Details"
+    install: "Install"
+    delete: "Delete"
+    name: "Name"
+    app_key: "Identifier"
+    app_secret: "Secret"
+    app_url: "Address"
+    mobile_url: "Mobile Address"
+    saveBtn: "Save changes"
+    generalTab: "General"
+    permissionsTab: "Permissions"
+    repo: "List"
+    readPerm: "Read"
+    writePerm: "Write"
+    updatePerm: "Update"
+    deletePerm: "Delete"
+    addPermBtn: "Add Permission"
+  data:
+    overview_text: "Currently, there are %{record_count} records in your data vault."
+    app_title: "App"
+    repo_title: "Repo"
+    record_title: "Records"
+    id_title: "ID"
+    value_title: "Value"
+    action_title: "Actions"
+    details_label: "Details"
+    edit_label: "Edit"
+    config_label: "Configure"
+    delete_label: "Delete"
+    delete_question: "Do you really want to delete the record?"
+    success_message: "The record was deleted successfully."
+    error_message: "Error"
+    record_hdr: "Record"
+    field_hdr: "Field"
+    content_hdr: "Content"
+    show_more: "show more"
+    show_less: "show less"
+    decrypt_data: "decrypt data"
+    decrypt_data_title: "Decrypt Data"
+    decryptBtn: "Decrypt"
+    invalidPwd: "Error: invalid password"
+    passwordDecryptLbl: "Password to decrypt data"
+    enterPwdPlaceholder: "Please enter password to show the decrypted content!"
+    hash_title: "Hash Value"
+    hash_description: 'The displayed hash value is a "finger print" of the current record with a fixed length. It uses the SHA-256 function and can be verified for example on the following website: <a href="http://www.xorbin.com/tools/sha256-hash-calculator" target="_blank">http://www.xorbin.com/tools/sha256-hash-calculator</a><br><br>A green checkmark indicates conformance of the hash value with the record.'
+    notAvailableYet: "not available yet"
+    mrh_title: "Merkle Root Hash"
+    mrh_description: 'A Merkle Root Hash is a distinct character string that condenses a group of hash values in a tree structure. Using the link "show audit proof" the other necessary hash values are displayed.<br><br>A green checkmark indicates that the hash value above together with the other hash values result in the shown Merkle Root Hash.'
+    showAuditProof: "show audit proof"
+    transaction_title: "Transaction"
+    transaction_description: 'The character string is the unique transaction addresse in the Ethereum blockchain that stores the Merkle Root Hash from above. Use for example e den Merkle Root Hash in der Zeile darüber enthält. Verwende zB die Webseite <a href="https://etherscan.io" target="_blank">https://etherscan.io</a> to show the transaction.<br><br>A green checkmark indicates the validity of the address and that it stores the Merkle Root Hash from above.'
+    showTransaction: "show on Etherscan.io"
+    timestamp_title: "Blockchain Timestamp"
+    timestamp_description: 'The timestamp shown here is taken from the transaction in the Ethereum blockchain and can be verified by clicking "show on Etherscan.io" above. Since it is from the decentralized blockchain it guarantees the timeliness of the record.<br><br>A green checkmark indicates conformance of the timestamp with the transaction information.'
+    hash_validation: "correct hash for value"
+    repo_title: "Repo"
+    created_at: "created at"
+    updated_at: "last update"
+    plugin_title: "Plugin"
+    addPlugin: "Add Plugin"
+  account:
+    edit_header: "Your account information"
+    update_button: "Update"
+    credential_header: "Credentials for OwnYourData on your mobile"
+    credential_text: "Download the app and scan the qr code, to access your data vault."
+    qr_text: "The qr code for log-in is compiled with the following data:"
+    address: "Address:"
+    user: "User:"
+    password: "Password:"
+    password_info: "(enter your password here to include it in the qr code)"
+    get_app: "Get your OwnYourData app!"
+

@@ -1,0 +1,11 @@
+<p>Hello <%= @salutation %>!</p>
+
+<p>Click on the following link to open your data vault:<br>
+&nbsp;&nbsp;&nbsp;<%= link_to 'go to data vault', @resource.frontend_url.to_s + '/' + @resource.language.to_s + '/confirm?token=' + @token.to_s %></p>
+
+<p style="color:#aaa">You can also copy and paste the following link into the address bar of your browser:<br>
+	<%= @resource.frontend_url.to_s + '/' + @resource.language.to_s + '/confirm?token=' + @token.to_s %></p>
+<p>&nbsp;</p>
+<hr>
+<p style="color:#aaa"><small>You have received this email because your email adress was used to request an OwnYourData data vault. If this was not you, just ignore this email - we delete the request including your email adress after 2 hours if we don't hear back.</small></p>
+<p style="color:#aaa"><small>© <a href="https://www.ownyourdata.eu/en">OwnYourData.eu</a> <a href="https://www.ownyourdata.eu/en/imprint">Imprint</a></small></p>

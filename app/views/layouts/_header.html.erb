@@ -1,0 +1,45 @@
+<header class="navbar navbar-fixed-top">
+  <div class="container">
+    <nav>
+    	<%= link_to root_path, class: "navbar-brand" do %>
+    		<div class="pia-logo"></div>
+    		<div class="logo-txt">
+    			<span class="font-size-large"><%= t('general.title') %></span>
+    		</div>
+    	<% end %>
+    </nav>
+    <nav>
+      <ul style="float:right;">
+        <% if logged_in? %>
+        <!--
+          <li><%= link_to t('menu.myApps'), user_path, 
+            class: 'menulink' + (' active_menu' if current_page?(user_path)).to_s %></li>
+          <li><%= link_to t('menu.myData'), data_path, 
+            class: 'menulink' + (' active_menu' if current_page?(data_path)).to_s %></li>
+          <li><%= link_to account_path, 
+            class: 'menulink' + (' active_menu' if current_page?(account_path)).to_s do %>
+            <span class="glyphicon glyphicon-user"></span>
+            <%= t('menu.account') %>
+          <% end %></li> -->
+          <div class="btn-group dropdown" style="margin-top: 35px; margin-bottom: -7px;">
+            <a href="#" class="dropdown-toggle fakelink" style="font-size:15px;" data-toggle="dropdown">
+              <span class="glyphicon glyphicon-user"></span>
+              <span class = 'hidden-xs'><%= current_user["full_name"] %></span> <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-right">
+              <li><%= link_to t('menu.question'), '#' %></li>
+              <li><%= link_to t('menu.application'), '#' %></li>
+              <li><%= link_to t('menu.source'), '#' %></li>
+              <li><%= link_to t('menu.data'),       data_path %></li>
+              <li><%= link_to t('menu.permission'), permissions_path %></li>
+              <li><%= link_to t('menu.task'), '#' %></li>
+              <li class="divider"></li>
+              <li><%= link_to t('menu.setting'), account_path %></li>
+              <li><%= link_to t('menu.logoff'), logout_path, method: :delete %></li>
+            </ul>
+          </div>
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+</header>

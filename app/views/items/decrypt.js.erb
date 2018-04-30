@@ -1,0 +1,7 @@
+<% if @invalidPwd %>
+	$('#invalidPwdMsg').show();
+	$('#invalidPwdMsg').text("<%= t('data.invalidPwd') %>");
+<% else %>
+	$('#invalidPwdMsg').hide();
+	$('#decrypted_value').text('<%= j @decrypted_value.html_safe %>');
+<% end %>

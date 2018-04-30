@@ -1,0 +1,16 @@
+<% provide(:title, t('menu.data')) %>
+<%= link_to user_path, style: "text-decoration: none; color: black;" do %><h1 style="text-align: left;"><i class="fa fa-arrow-left"></i> <%= t('menu.data') %></h1><% end %>
+<p style="margin: 10px 0 20px;"><%= t('data.overview_text', record_count: @record_count, app_count: @apps_count) %>
+
+<table id="data-table" class="table table-striped">
+	<thead> 
+		<tr>
+			<th><span class="font-size-large"><%= t('data.repo_title') %></span></th>
+			<th class="statCount"><span class="font-size-large"><%= t('data.record_title') %></span></th>
+			<th class="center"><span class="font-size-large"><%= t('data.action_title') %></span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<%= render partial: "repo_list", collection: @repos.sort_by { |item| item["name"].downcase } %>
+	</tbody>
+</table>

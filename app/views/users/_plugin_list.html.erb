@@ -1,0 +1,26 @@
+<tr>
+	<td class="col-lg-9 col-md-9 col-xs-11 font-size-large">
+		<%= plugin_list["name"].to_s %>
+	</td>
+
+	<td class="text-right col-lg-3 col-md-3 col-xs-1">
+		<div class="btn-group flex-btn-group-container">
+			<%= link_to(show_plugin_details_path(plugin_id: plugin_list["id"]), 
+					class: "btn btn-primary btn-sm", remote: true) do  %>
+				<span class="glyphicon glyphicon-pencil"></span>
+				<span class="hidden-xs hidden-sm"><%= t('data.edit_label') %></span>
+			<% end %>
+			<%= link_to(configure_plugin_path(id: plugin_list["id"]), 
+					class: "btn btn-success btn-sm") do  %>
+				<span class="glyphicon glyphicon-wrench"></span>
+				<span class="hidden-xs hidden-sm"><%= t('data.config_label') %></span>
+			<% end %>
+			<%= link_to(plugin_remove_path(plugin_id: plugin_list["id"]), 
+					class: "btn btn-danger btn-sm", method: :delete,
+					data: { confirm: t('data.delete_question') }) do %>
+				<span class="glyphicon glyphicon-remove-circle"></span>
+				<span class="hidden-xs hidden-sm"><%= t('data.delete_label') %></span>
+			<% end %>
+		</div>
+	</td>
+</tr>

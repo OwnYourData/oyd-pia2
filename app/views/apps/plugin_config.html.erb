@@ -1,0 +1,19 @@
+<% provide(:title, "Konfiguration") %>
+<h1>Konfiguriere <%= @plugin_title %></h1>
+
+<div class="row">
+  <div class="col-md-4 col-md-offset-4">
+    <% flash.each do |message_type, message| %>
+        <div class="alert alert-<%= message_type %>"><%= message %></div>
+    <% end %>
+    <%= form_with url: plugin_configure_path do |form| %>
+      <%= form.hidden_field :plugin_id, value: @plugin_id %>
+
+      <%= @configHtml.html_safe %>
+
+      <%= form.button "Speichern", class: "btn btn-primary btn-lg btn-block",
+				data: { disable_with: "<i class='fa fa-spinner fa-spin'></i> " + "Speichern" } %>
+    <% end %>
+
+  </div>
+</div>

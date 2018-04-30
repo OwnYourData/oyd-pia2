@@ -1,0 +1,23 @@
+<% if !@installed_apps_identifier.include? app_store["identifier"] %>
+	<div class="col-lg-5ths col-md-3 col-sm-4 col-xs-6 col-wrapper"> 
+		<div class="app-wrapper store-wrapper"> 
+			<div class="plugin-picture-wrapper">
+				<img src="<%= app_store["picture"] %>">
+			</div> 
+			<div class="app-item font-size-medium">
+				<strong><%= app_store["name"] %></strong>
+			</div> 
+			<div class="app-item appInfo"> 
+				<span>
+					<%= app_store["description"].gsub("&uuml;","ü").gsub("&auml;","ä").gsub("&ouml;","ö") %>
+				</span>
+				<a href="<%= app_store["infourl"] %>" class="fakelink" style="padding: 0; margin: 0;">
+					<%= t('apps.details') %>
+				</a>
+			</div>
+			<div class="app-item">
+				<%= link_to t('apps.install'), app_new_path(plugin_id: app_store["id"]), class: "custom-btn", method: :post %>
+			</div>
+		</div>
+	</div>
+<% end %>

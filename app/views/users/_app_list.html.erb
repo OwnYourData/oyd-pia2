@@ -1,0 +1,15 @@
+<tr>
+	<td class="col-md-5 font-size-large"><%= app_list["name"] %></td>
+	<td class="col-md-5 font-size-large">
+		<ul class="repo_list">
+			<%= render partial: "repo_list", 
+				collection: @repos[app_list["id"].to_s] %>
+		</ul>
+	</td>
+	<td class="col-md-5 font-size-large statCount">
+		<ul class="repo_list">
+			<%= render partial: "count_list", 
+				collection: @repos[app_list["id"].to_s] %>
+		</ul>
+	</td>
+</tr>

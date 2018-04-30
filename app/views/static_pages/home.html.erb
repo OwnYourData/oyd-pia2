@@ -1,0 +1,42 @@
+<div class="row">
+	<div class="col-md-4 col-md-offset-1 col-md-push-7">
+		<div class="panel panel-default" style="margin-top: 40px;">
+		  	<div class="panel-heading">
+		    	<h3 class="panel-title"><%= t('dialog.login') %></h3>
+		 	</div>
+		  	<div class="panel-body">
+		  		<% flash.each do |message_type, message| %>
+					<div class="alert alert-<%= message_type %>"><%= message %></div>
+				<% end %>
+		  		<%= form_with url: login_path do |form| %>
+                    <fieldset>
+			    	  	<div class="form-group">
+			    	  		<%= form.email_field :email, class: "form-control", placeholder: t('start.email') %>
+			    		</div>
+			    	  	<div class="form-group">
+			    	  		<%= form.password_field :password, class: "form-control", placeholder: t('start.password') %>
+			    		</div>
+						<%= form.button t('dialog.submitBtn'), 
+							class: "btn btn-success btn-lg btn-block",
+							data: { disable_with: "<i class='fa fa-spinner fa-spin'></i> " + t('dialog.submitBtn') } %>
+						<div class="form-group" style="margin-left: 20px;">
+							<div class="checkbox pull-left" style="margin-bottom: 0;">
+								<%= form.check_box :remember, style: "width: inherit;" %>
+								<%= t('start.remember') %>
+							</div>
+						</div>
+		                <a href="#" class="pull-right need-help" style="margin-top: -5px;"><%= t('start.forgot') %></a><span class="clearfix"></span>
+			    	</fieldset>
+		      	<% end %>
+		    </div>
+		</div>
+		<div style="margin: -10px auto 60px; display: table;">
+			<%= link_to t('dialog.signUp'), new_path %>
+		</div>
+	</div>
+	<div class="col-md-7 col-md-pull-5">
+		<h3 style="font-weight: 700; color: #666666;"><%= t('start.header') %></h3>
+		<h3 style="line-height: 1.7em; color: #666666;"><%= t('start.text') %></h3>
+		<%=image_tag("oyd-picture_" + I18n.locale.to_s + ".png",  class: "img-responsive", alt: "OwnYourData", style: "padding:4%;") %>
+	</div>
+</div>

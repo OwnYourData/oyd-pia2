@@ -1,0 +1,15 @@
+web:
+  image: oydeu/oyd-pia2
+  env_file: .env
+  environment:
+    RAILS_ENV: production
+  links:
+    - db
+  ports:
+    - "3000:3000"
+    - "587:587"
+
+db:
+  image: postgres:9.4.5
+  volumes:
+    - docker-postgres:/var/lib/postgresql/data

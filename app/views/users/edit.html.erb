@@ -1,0 +1,104 @@
+<% provide(:title, t('menu.account')) %>
+
+<div class="row">
+	<div class="col-md-5"> 
+		<h2 class="text-left"><%= t('account.edit_header') %></h2>
+		<% flash.each do |message_type, message| %>
+            <div class="alert alert-<%= message_type %>"><%= message %></div>
+        <% end %>
+        <%= form_with url: users_update_account_url do |form| %>
+
+            <%= form.label :full_name, t('requestDataVault.full_name') %>
+            <%= form.text_field :full_name, value: @user_name, style: "padding: 2px 5px 2px;" %>
+
+            <%= form.label :password, t('general.password') %>
+            <%= form.password_field :password, style: "padding: 2px 5px 2px;" %>
+
+            <%= form.label :password_confirmation, t('general.passwordConfirmation') %>
+            <%= form.password_field :password_confirmation, style: "padding: 2px 5px 2px;" %>
+            
+			<%= form.button t('account.update_button'), 
+				class: "btn btn-success btn-lg btn-block",
+				data: { disable_with: "<i class='fa fa-spinner fa-spin'></i> " + t('dialog.submitBtn') } %>
+        <% end %>
+	</div> 
+	<div class="col-md-6 col-md-offset-1"> 
+		<div class="accessdata-container"> 
+			<strong><div class="font-size-medium"><%= t('account.credential_header') %></div></strong>
+			<div class="font-size-medium"><%= t('account.credential_text') %></div>
+			<div id="qr_container" width="400" height="400" style="padding: 20px;"></div>
+			<div class="font-size-medium"><%= t('account.qr_text') %></div>
+			<div class="accessdata-default">
+				<div class="accessdata-defaultdata">
+					<table>
+						<tr>
+							<td><label for="address"><%= t('account.address') %></label></td>
+							<td><input name="address" id="address" value="<%= ENV['VAULT_URL'] %>" /></td>
+						</tr>
+						<tr>
+							<td><label for="user"><%= t('account.user') %></label></td>
+							<td><input name="user" id="user" value="<%= @user_email %>" /></td>
+						</tr>
+						<tr>
+							<td><label for="password"><%= t('account.password') %></label></td>
+							<td><input name="password" id="password" /></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td><%= t('account.password_info') %></td>
+						</tr>
+					</table>
+				</div>
+			</div> 
+			<div class="mobile-datavault"> 
+				<div class="font-size-medium"><%= t('account.get_app') %></div>
+				<div class="mobile-datavault-stores">
+					<a href="https://www.ownyourdata.eu/mobile-apps/iOS">
+						<div class="mobile-datavault-ios"></div>
+					</a> 
+					<a href="https://www.ownyourdata.eu/mobile-apps/Android">
+						<div class="mobile-datavault-android"></div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	function draw_qr() {
+		var qr_content = '{"PIA_URL":"' + $('#address').val() + '","email":"' + $('#user').val() + '","password":"' + $('#password').val() + '"}';
+		$('#qr_container').empty().qrcode({
+			render: 'div',
+			ecLevel: 'H',
+			size: 200,
+			fill: '#000',
+			background: '#fff',
+			quiet: 1,
+			text: qr_content
+		})
+	}
+	function update_qr() {
+		var pia = document.getElementById('address');
+		pia.oninput = function() {
+			draw_qr();
+		};
+		pia.onpropertychange = pia.oninput;
+		var usr = document.getElementById('user');
+		usr.oninput = function() {
+			draw_qr();
+		};
+		usr.onpropertychange = usr.oninput;
+		var pwd = document.getElementById('password');
+		pwd.oninput = function() {
+			draw_qr();
+		};
+		pwd.onpropertychange = pwd.oninput;
+	};
+	window.onload = function() {
+		update_qr();
+	};
+	$(document).on('turbolinks:load', function() {
+		update_qr();
+	});
+	draw_qr();
+</script>

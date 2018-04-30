@@ -1,0 +1,39 @@
+<tr>
+	<td class="col-md-1 col-sm-1 col-xs-1">
+		<%= JSON.parse(item_list)['id'].to_s rescue "" %>
+	</td>
+	<td class="col-md-8 col-sm-8 col-xs-7 truncate" style="word-wrap: break-word; max-width: 200px">
+		<%= JSON.parse(item_list)['value'].to_s rescue "" %>
+	</td>
+	<td class="text-right col-md-3 col-sm-3 col-xs-4">
+		<% 	begin
+				id = JSON.parse(item_list)['id']
+		   	rescue Exception => e
+				id = nil
+		   	end
+			if !id.nil? %>
+				<div class="btn-group flex-btn-group-container">
+					<%= link_to data_item_path(repo_id: repo_id, 
+											   item_id: JSON.parse(item_list)['id']),
+								class: "btn btn-info btn-sm" do %>
+						<span class="glyphicon glyphicon-eye-open"></span>
+						<span class="hidden-xs hidden-sm"><%= t('data.details_label') %></span>
+					<% end %>
+<!--					< % = link_to data_item_edit_path(repo_id: repo_id, 
+											        item_id: JSON.parse(item_list['value'])['id']), 
+								class: "btn btn-primary btn-sm" do %>
+						<span class="glyphicon glyphicon-pencil"></span>
+						<span class="hidden-xs hidden-sm"><%= t('data.edit_label') %></span>
+					< %  end % >-->
+					<%= link_to data_item_delete_path(repo_id: repo_id, 
+											          item_id: JSON.parse(item_list)['id']), 
+								method: :delete,
+								class: "btn btn-danger btn-sm",
+								data: { confirm: t('data.delete_question') } do %>
+						<span class="glyphicon glyphicon-remove-circle"></span>
+						<span class="hidden-xs hidden-sm"><%= t('data.delete_label') %></span>
+					<% end %>
+				</div>
+		<%	end %>
+	</td>
+</tr>

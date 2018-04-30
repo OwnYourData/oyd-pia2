@@ -1,0 +1,176 @@
+<% provide(:title, t('data.record_hdr') ) %>
+<%= link_to show_data_path(id: @item["repo_id"].to_s), style: "text-decoration: none; color: black;" do %><h1 style="text-align: left;"><i class="fa fa-arrow-left"></i> <%= t('data.record_hdr') %> <%= @item["id"] %></h1><% end %>
+
+<div class="table-responsive">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th style="width: 20%;""><%= t('data.field_hdr') %></th>
+				<th><%= t('data.content_hdr') %></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><%= t('data.value_title') %></td>
+				<td style="word-break:break-all;">
+					<div class="truncate">
+						<%= @item["value"].to_s %>
+						<a class="more_link" href="#" data-turbolinks="false"><%= t('data.show_more') %></a>
+						<a class="less_link" href="#" data-turbolinks="false"><%= t('data.show_less') %></a>
+					</div>
+					<% if @encrypted %>
+						<%= link_to "#", data: { toggle: "modal", target: "#decryptModal"}  do %>
+							<%= image_tag 'decrypt.png', style: "height: 18px; margin-top: -5px;" %> 
+							<%= t('data.decrypt_data') %>
+						<% end %>
+						<div class="modal fade" id="decryptModal" tabindex="-1" role="dialog" aria-labelledby="detailsHeader">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title" id="detailsHeader"><%= t('data.decrypt_data_title') %></h4>
+									</div>
+									<div class="modal-body">
+										<div class="alert alert-warning" id="invalidPwdMsg" style="display:hidden;"></div>
+										<%= form_with url: decrypt_path, remote: true do |form| %>
+											<%= form.hidden_field :value, value: @item['value'] %>
+											<label for="password"><%= t('data.passwordDecryptLbl') %>:</label><br>
+											<%= form.password_field :password, class: "form-control", style: "display: inline; width: 50%;" %>
+											<%= form.button t('data.decryptBtn'), class: "btn btn-success" %><br>
+											<div>
+												<label><%= t('data.value_title') %>:</label><br>
+												<span id="decrypted_value"><em><%= t('data.enterPwdPlaceholder') %></em></span>
+											</div>
+										<% end %>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal"><%= t('dialog.closeBtn') %></button>
+									</div>
+								</div>
+							</div>
+						</div>
+					<% end %>
+				</td>
+			</tr>
+			<script type="text/javascript">
+				$(function () {
+					$('.more_link').on('click', function () {
+				  	$('.truncate').addClass('truncated');
+					});
+				  $('.less_link').on('click', function () {
+				  	$('.truncated').removeClass('truncated');
+					});
+				  
+				});
+			</script>
+			<tr>
+				<td><%= t('data.hash_title') %></td>
+				<td>
+					<div id="popup_hash" class="overlay">
+						<div class="popup">
+							<h2><%= t('data.hash_title') %></h2>
+							<a class="close" href="#">&times;</a>
+							<div class="content"><%= t('data.hash_description').html_safe %></div>
+						</div>
+					</div>
+					<% if @item["oyd_hash"].nil? %>
+						<a href="#popup_hash" data-turbolinks="false"><%= image_tag 'wrong.png', style: "height: 18px;" %></a>
+						<%= t('data.notAvailableYet') %>
+					<% else %>
+						<% if @valid_hash %>
+							<a href="#popup_hash" data-turbolinks="false"><%= image_tag 'correct.png', style: "height: 18px;" %></a>
+						<% else %>
+							<a href="#popup_hash" data-turbolinks="false"><%= image_tag 'wrong.png', style: "height: 18px;" %></a>
+						<% end %>
+						<%= @item["oyd_hash"].to_s %>
+					<% end %>
+				</td>
+			</tr>
+			<tr>
+				<td>Merkle Root Hash</td>
+				<td>
+					<div id="popup_mrh" class="overlay">
+						<div class="popup">
+							<h2><%= t('data.mrh_title') %></h2>
+							<a class="close" href="#">&times;</a>
+							<div class="content"><%= t('data.mrh_description').html_safe %></div>
+						</div>
+					</div>
+					<% if @item["merkle_hash"].nil? %>
+						<a href="#popup_mrh" data-turbolinks="false"><%= image_tag 'wrong.png', style: "height: 18px;" %></a>
+						<%= t('data.notAvailableYet') %>
+					<% else %>
+						<% if @valid_hash %>
+							<a href="#popup_mrh" data-turbolinks="false"><%= image_tag 'correct.png', style: "height: 18px;" %></a>
+						<% else %>
+							<a href="#popup_mrh" data-turbolinks="false"><%= image_tag 'wrong.png', style: "height: 18px;" %></a>
+						<% end %>
+						<%= @item["merkle_hash"].to_s %> 
+							(<a href="#audit_proof" data-toggle="collapse"><%= t('data.showAuditProof') %></a>)
+						<div id="audit_proof" class="audit-proof collapse">
+							<%= @audit_proof %>
+						</div>
+					<% end %>
+				</td>
+			</tr>
+			<tr>
+				<td><%= t('data.transaction_title') %></td>
+				<td>
+					<div id="popup_transaction" class="overlay">
+						<div class="popup">
+							<h2><%= t('data.transaction_title') %></h2>
+							<a class="close" href="#">&times;</a>
+							<div class="content"><%= t('data.transaction_description').html_safe %></div>
+						</div>
+					</div>
+					<% if @item["oyd_transaction"].nil? %>
+						<a href="#popup_transaction" data-turbolinks="false"><%= image_tag 'wrong.png', style: "height: 18px;" %></a>
+						<%= t('data.notAvailableYet') %>
+					<% else %>
+						<% if @valid_transaction %>
+							<a href="#popup_transaction" data-turbolinks="false"><%= image_tag 'correct.png', style: "height: 18px;" %></a>
+						<% else %>
+							<a href="#popup_transaction" data-turbolinks="false"><%= image_tag 'wrong.png', style: "height: 18px;" %></a>
+						<% end %>
+						<%= @transaction_address.to_s %> 
+						(<a href="https://etherscan.io/tx/0x<%= @transaction_address %>" target="_blank"><%= t('data.showTransaction') %> 
+							<span class="glyphicon glyphicon-new-window"></span>
+						</a>)
+					<% end %>
+				</td>
+
+			</tr>
+			<tr>
+				<td><%= t('data.timestamp_title') %></td>
+				<td>
+					<div id="popup_timestamp" class="overlay">
+						<div class="popup">
+							<h2><%= t('data.timestamp_title') %></h2>
+							<a class="close" href="#">&times;</a>
+							<div class="content"><%= t('data.timestamp_description').html_safe %></div>
+						</div>
+					</div>
+					<% if @bcts.nil? %>
+						<a href="#popup_timestamp" data-turbolinks="false"><%= image_tag 'wrong.png', style: "height: 18px;" %></a>
+						<%= t('data.notAvailableYet') %>
+					<% else %>
+						<a href="#popup_timestamp" data-turbolinks="false"><%= image_tag 'correct.png', style: "height: 18px;" %></a>
+						<%= @bcts.to_s %>
+					<% end %>
+				</td>
+			</tr>
+			<tr>
+				<td><%= t('data.repo_title') %></td>
+				<td><%= @item["repo_name"].to_s %> (id: <%= @item["repo_id"].to_s %>)</td>
+			</tr>
+			<tr>
+				<td><%= t('data.created_at') %></td>
+				<td><%= @item["created_at"].to_s %></td>
+			</tr>
+			<tr>
+				<td><%= t('data.updated_at') %></td>
+				<td><%= @item["updated_at"].to_s %></td>
+			</tr>
+		</tbody> 
+	</table>
+</div>

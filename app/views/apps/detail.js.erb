@@ -1,0 +1,19 @@
+$('#detailsModal').modal('show');
+//$('#details_app_secret').attr('type', 'password'); 
+$('#detailsHeader').html('<%= t('apps.details') %>: <%= @app_info["name"] %>');
+$('#details_view_id').val('<%= @app_info["id"] %>');
+$('#details_view_name').val('<%= @app_info["name"] %>');
+$('#details_app_key').val('<%= @app_info["uid"] %>');
+$('#details_app_secret').val('<%= @app_info["secret"] %>');
+$('#details_view_url').val('<%= @app_info["url"] %>');
+$('#listPermissions').html('<%= @perm_html.to_s.html_safe %>');
+$('#permTable').off();
+$('#permTable').on('click', 'td', function() {
+	if($(this).children('i').attr('class') == 'fa fa-square-o'){
+    	$(this).children('i').attr('class', 'fa fa-check-square-o');
+    	$('#' + $(this).attr('id') + '_value').val('true')
+	} else {
+		$(this).children('i').attr('class', 'fa fa-square-o');
+    	$('#' + $(this).attr('id') + '_value').val('false')
+	}
+  });

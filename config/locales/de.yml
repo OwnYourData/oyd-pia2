@@ -1,0 +1,166 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# The following keys must be escaped otherwise they will not be retrieved by
+# the default I18n backend:
+#
+# true, false, on, off, yes, no
+#
+# Instead, surround them with single quotes.
+#
+# en:
+#   'true': 'foo'
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+de:
+  general:
+    title: "Datentresor"
+    account: "Konto"
+    password: "Passwort"
+    passwordConfirmation: "Passwortbestätigung"
+    passwordRecovery: "Passwort zur Wiederherstellung"
+    passwordRecoveryConfirmation: "Bestätigung für Passwort zur Wiederherstellung"
+  menu:
+    myApps: "Meine Apps"
+    myData: "Meine Daten"
+    account: "Mein Account"
+    logoff: "Abmelden"
+    application: "Anwendungen"
+    permission: "Berechtigungen"
+    source: "Datenquellen"
+    question: "Fragen"
+    data: "Datensätze"
+    task: "periodische Aufgaben"
+    setting: "Einstellungen"
+  footer:
+    about: "Über OwnYourData.eu"
+    mobile: "Mobiler Datentresor"
+    feedback: "Feedback senden"
+    info: "Infos für App-Entwickler"
+    security: "Datensicherheit"
+    impressum: "Impressum"
+    language: "Sprache"
+  start:
+    header: "Deine Daten sind wertvoll."
+    text: "Lerne aus deinen Daten und erfahre mehr über dich selbst und die Zusammenhänge in deinem Leben."
+    email: "Email"
+    password: "Passwort"
+    remember: "Passwort merken"
+    forgot: "Passwort vergessen?"
+  dialog:
+    closeBtn: "Schließen"
+    saveBtn: "Speichern"
+    submitBtn: "Abschicken"
+    login: "Anmelden"
+    newUser: "neu hier?"
+    signUp: "Neuen Datentresor anlegen"
+    profile: "Profil"
+    settings: "Einstellungen"
+    logOut: "Ausloggen"
+    attention: "Achtung"
+    recoveryTxt: "Deine Daten werden mit dem oben eingegebenem Passwort verschlüsselt. Falls du dieses Passwort verlierst, kannst du es mit dem Wiederherstellungspasswort zurücksetzen."
+  process:
+    confirmationMailSent: "Email verschickt"
+    confirmationMailSentBody: "Ein Email zur Aktivierung des Kontos wurde verschickt."
+    accountConfirmed: "Dein Account wurde erfolgreich eingerichtet."
+  requestDataVault:
+    title: "Datentresor anfordern"
+    confirmTitle: "Kontoerstellung abschließen"
+    full_name: "vollständiger Name"
+    yourName: "Dein Name"
+    yourEmail: "Deine Emailadresse"
+    accessCode: "Zugangscode"
+    accessCodeText: "Der Datentresor befindet sich derzeit in einer geschlossenen Beta-Testphase und du benötigst einen Zugangscode, um ein Konto anzulegen."
+    accessCodeLink: "Hier kannst du einen Zugangscode anfordern."
+    invalidAccessCode: "ungültiger Zugangscode"
+  apps:
+    open: "Öffnen"
+    details: "Details"
+    install: "Installieren"
+    delete: "Löschen"
+    name: "Name"
+    app_key: "Kennung"
+    app_secret: "Passwort"
+    app_url: "Adresse"
+    mobile_url: "Mobile Adresse"
+    saveBtn: "Änderungen speichern"
+    generalTab: "Allgemein"
+    permissionsTab: "Berechtigungen"
+    repo: "Liste"
+    readPerm: "Lesen"
+    writePerm: "Schreiben"
+    updatePerm: "Ändern"
+    deletePerm: "Löschen"
+    addPermBtn: "Berechtigung hinzufügen"
+  data:
+    overview_text: "Aktuell befinden sich %{record_count} Datensätze in Deinem Datentresor."
+    app_title: "App"
+    repo_title: "Liste"
+    record_title: "Datensätze"
+    id_title: "Nr"
+    value_title: "Wert"
+    action_title: "Aktionen"
+    details_label: "Details"
+    edit_label: "Bearbeiten"
+    config_label: "Konfigurieren"
+    delete_label: "Löschen"
+    delete_question: "Möchtest du diesen Datensatz wirklich löschen?"
+    success_message: "Der Datensatz wurde erfolgreich gelöscht."
+    error_message: "Fehler"
+    record_hdr: "Datensatz"
+    field_hdr: "Feld"
+    content_hdr: "Inhalt"
+    show_more: "mehr anzeigen"
+    show_less: "weniger anzeigen"
+    decrypt_data: "Daten entschlüsseln"
+    decrypt_data_title: "Daten entschlüsseln"
+    decryptBtn: "Entschlüsseln"
+    invalidPwd: "Fehler: Ungültiges Passwort"
+    passwordDecryptLbl: "Passwort zum Entschlüsseln der Daten"
+    enterPwdPlaceholder: "Gib das Passwort zur Anzeige der entschlüsselten Daten ein!"
+    hash_title: "Hashwert"
+    hash_description: 'Der angezeigte Hashwert stellt einen "Fingerabdruck" des aktuellen Datensatzes dar und ist eine Zeichenfolge mit fixer Länger. Als Funktion wird dabei SHA-256 verwendet und die Zeichenfolge kann zB auf dieser Webseite überprüft werden: <a href="http://www.xorbin.com/tools/sha256-hash-calculator" target="_blank">http://www.xorbin.com/tools/sha256-hash-calculator</a><br><br>Ein grüner Hacken bedeutet, dass der Hashwert mit dem Datensatz übereinstimmt.'
+    notAvailableYet: "noch nicht verfügbar"
+    mrh_title: "Merkle Root Hash"
+    mrh_description: 'Ein Merkle Root Hash ist eine eindeutige Zeichenfolge, die eine Gruppe von Hashwerten in Form einer Baumstruktur zusammenfasst. Durch den Link "Audit-Proof anzeigen" werden die notwendigen weiteren Hashwerte zur Berechnung des "Root Hash" angezeigt.<br><br>Ein grüner Hacken bedeutet, dass der Hashwert aus der Zeile darüber gemeinsam mit den weiteren Hashwerten den angezeigten Merkle Root Hash ergibt.'
+    showAuditProof: "Audit-Proof anzeigen"
+    transaction_title: "Transaktion"
+    transaction_description: 'Die angezeigte Zeichenkette ist die eindeutige Transaktionsadresse in der Ethereum Blockchain, welche den Merkle Root Hash in der Zeile darüber enthält. Verwende zB die Webseite <a href="https://etherscan.io" target="_blank">https://etherscan.io</a>, um die Transaktion anzuzeigen.<br><br>Ein grüner Hacken bedeutet, dass die angegebene Transaktion den Merkle Root Hash enthält.'
+    showTransaction: "auf Etherscan.io anzeigen"
+    timestamp_title: "Blockchain Zeitstempel"
+    timestamp_description: 'Der angezeigte Zeitstempel stammt aus der Transaktion in der Ethereum Blockchaine und kann mit dem Link auf Etherscan.io in der Zeile darüber validiert werden. Durch die Speicherung in der dezentralen Blockchain kann die Zeitlichkeit des Datensatzes garantiert werden.<br><br>Ein grüner Hacken bedeutet, dass der Zeitstempel mit der Transaktion übereinstimmt.'
+    hash_validation: "korrekter Hash für Wert"
+    repo_title: "Liste"
+    created_at: "erstellt am"
+    updated_at: "zuletzt geändert"
+    plugin_title: "Plugin"
+    addPlugin: "Plugin hinzufügen"
+  account:
+    edit_header: "Deine Kontodaten"
+    update_button: "Aktualisieren"
+    credential_header: "Zugangsdaten für OwnYourData auf deinem Smartphone"
+    credential_text: "Lade dir die App herunter und scanne den QR-Code, um dich mit deinem Datentresor zu verbinden."
+    qr_text: "Der QR-Code zum Login wurde mit folgenden Daten erstellt:"
+    address: "Adresse:"
+    user: "Benutzer:"
+    password: "Passwort:"
+    password_info: "(gib hier dein Passwort ein, um es ebenfalls in den QR-Code aufzunehmen)"
+    get_app: "Hol dir die OwnYourData-App!"
+

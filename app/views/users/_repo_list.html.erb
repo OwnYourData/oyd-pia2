@@ -1,0 +1,24 @@
+<tr>
+	<td class="col-lg-8 col-md-7 col-xs-10 font-size-large">
+		<%= repo_list["name"].to_s %>
+	</td>
+	<td class="col-lg-2 col-md-2 col-xs-1 font-size-large statCount">
+		<%= repo_list["count"].to_s %>
+	</td>
+	<td class="text-right col-lg-2 col-md-3 col-xs-1">
+		<div class="btn-group flex-btn-group-container">
+			<%= link_to show_data_path(id: repo_list["id"]), 
+						class: "btn btn-info btn-sm" do %>
+				<span class="glyphicon glyphicon-eye-open"></span>
+				<span class="hidden-xs hidden-sm"><%= t('data.details_label') %></span>
+			<% end %>
+			<%= link_to repo_delete_path(id: repo_list["id"]), 
+						method: :delete,
+						class: "btn btn-danger btn-sm",
+						data: { confirm: t('data.delete_question') } do %>
+				<span class="glyphicon glyphicon-remove-circle"></span>
+				<span class="hidden-xs hidden-sm"><%= t('data.delete_label') %></span>
+			<% end %>
+		</div>
+	</td>
+</tr>

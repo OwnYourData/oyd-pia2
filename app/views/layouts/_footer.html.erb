@@ -1,0 +1,28 @@
+<footer class="footer">
+	<div class="container">
+	  <nav>
+	    <ul style="padding-right: 120px;">
+	      <li><%= link_to "OwnYourData.eu", 'https://www.ownyourdata.eu' %> © 2018</li>
+	      <li><%= link_to t('footer.security'), 'https://www.ownyourdata.eu/mobile-apps/' %></li>
+	      <li><%= link_to t('footer.impressum'), 'https://www.ownyourdata.eu/feedback/' %></li>
+	    </ul>
+	  </nav>
+	  <nav>
+	    <ul style="float:right;">
+
+        <div class="btn-group dropup">
+          <button type="button" class="fakelink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="glyphicon glyphicon-flag"></span>
+            <span class="font-size-large" style="font-size:14px;"><%= t('footer.language') %></span> 
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li><%= link_to "Deutsch", { locale: 'de', token: params[:token] } %></li>
+            <li><%= link_to "English", { locale: 'en', token: params[:token] } %></li>
+          </ul>
+        </div>
+	    </ul>
+	  </nav>
+
+	</div>
+</footer>

@@ -1,0 +1,21 @@
+<% provide(:title, @repo["name"] ) %>
+<%= link_to data_path, style: "text-decoration: none; color: black;" do %><h1 style="text-align: left;"><i class="fa fa-arrow-left"></i> <%= @repo['name'] %></h1><% end %>
+
+<% flash.each do |message_type, message| %>
+	<div class="alert alert-<%= message_type %>"><%= message %></div>
+<% end %>
+
+<table id="items-table" class="table table-striped">
+	<thead> 
+		<tr>
+			<th><span class="font-size-large"><%= t('data.id_title') %></span></th>
+			<th><span class="font-size-large"><%= t('data.value_title') %></span></th>
+			<th style="text-align: center"><span class="font-size-large"><%= t('data.action_title') %></span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<%= render partial: "item_list", 
+				   collection: @items.sort_by { |item| JSON.parse(item)["id"] }, 
+				   locals: { repo_id: @repo["id"] } %>
+	</tbody>
+</table>
