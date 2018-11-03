@@ -342,7 +342,8 @@ Myapps
     margin: 0 auto;
 }
 .col-wrapper{
-    padding-right: 0px;
+    padding-left: 0;
+    padding-right: 15px;
 }
 .col-lg-5ths {
     position: relative;
@@ -394,6 +395,7 @@ td:hover .permName {
 }
 
 .accessdata-container {
+    margin-top: 47px;
     padding: 30px;
     background-color: #E9E9E9;
 }
@@ -553,3 +555,75 @@ truncate long text
   top:0;
   position: absolute;
 }
+
+/* ==========================================================================
+on/off switch: https://proto.io/freebies/onoff/
+========================================================================== */
+    .onoffswitch {
+        position: relative; width: 70px;
+        -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+    }
+    .onoffswitch-checkbox {
+        display: none;
+    }
+    .onoffswitch-label {
+        display: block; overflow: hidden; cursor: pointer;
+        border: 2px solid #999999; border-radius: 20px;
+    }
+    .onoffswitch-inner-de {
+        display: block; width: 200%; margin-left: -100%;
+        transition: margin 0.3s ease-in 0s;
+    }
+    .onoffswitch-inner-de:before, .onoffswitch-inner-de:after {
+        display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;
+        font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+        box-sizing: border-box;
+    }
+    .onoffswitch-inner-de:before {
+        content: "Ein";
+        padding-left: 10px;
+        background-color: #34A7C1; color: #FFFFFF;
+    }
+    .onoffswitch-inner-de:after {
+        content: "Aus";
+        padding-right: 10px;
+        background-color: #EEEEEE; color: #999999;
+        text-align: right;
+    }
+    .onoffswitch-inner-en {
+        display: block; width: 200%; margin-left: -100%;
+        transition: margin 0.3s ease-in 0s;
+    }
+    .onoffswitch-inner-en:before, .onoffswitch-inner-en:after {
+        display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;
+        font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+        box-sizing: border-box;
+    }
+    .onoffswitch-inner-en:before {
+        content: "On";
+        padding-left: 10px;
+        background-color: #34A7C1; color: #FFFFFF;
+    }
+    .onoffswitch-inner-en:after {
+        content: "Off";
+        padding-right: 10px;
+        background-color: #EEEEEE; color: #999999;
+        text-align: right;
+    }
+    .onoffswitch-switch {
+        display: block; width: 20px; margin: 0px;
+        background: #FFFFFF;
+        position: absolute; top: 0; bottom: 0;
+        right: 46px;
+        border: 2px solid #999999; border-radius: 20px;
+        transition: all 0.3s ease-in 0s; 
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-de {
+        margin-left: 0;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-en {
+        margin-left: 0;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+        right: 0px; 
+    }

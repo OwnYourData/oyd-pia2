@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180425131801) do
+ActiveRecord::Schema.define(version: 20181101234540) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20180425131801) do
     t.string "oyd_hash"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "oyd_source_pile_id"
   end
 
   create_table "logs", force: :cascade do |t|
@@ -90,10 +91,28 @@ ActiveRecord::Schema.define(version: 20180425131801) do
     t.datetime "updated_at", null: false
     t.integer "owner_id"
     t.string "owner_type"
-    t.text "config"
-    t.text "tasks"
+    t.text "perms"
+    t.string "oyd_version"
+    t.string "description"
+    t.string "language"
+    t.boolean "assist_update"
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "oyd_answers", force: :cascade do |t|
+    t.integer "plugin_id"
+    t.string "name"
+    t.string "identifier"
+    t.string "category"
+    t.string "info_url"
+    t.text "repos"
+    t.integer "answer_order"
+    t.text "answer_view"
+    t.text "answer_logic"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "short"
   end
 
   create_table "oyd_report_templates", force: :cascade do |t|
@@ -116,8 +135,43 @@ ActiveRecord::Schema.define(version: 20180425131801) do
     t.string "name"
     t.string "info_url"
     t.text "data_snippet"
-    t.text "answer_view"
-    t.text "answer_logic"
+    t.integer "report_order"
+    t.text "repos"
+  end
+
+  create_table "oyd_source_piles", force: :cascade do |t|
+    t.integer "oyd_source_id"
+    t.text "content"
+    t.string "email"
+    t.text "signature"
+    t.text "verification"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "oyd_source_repos", force: :cascade do |t|
+    t.integer "oyd_source_id"
+    t.integer "repo_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "stats"
+  end
+
+  create_table "oyd_sources", force: :cascade do |t|
+    t.integer "plugin_id"
+    t.string "name"
+    t.string "description"
+    t.string "source_type"
+    t.text "config"
+    t.text "config_values"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "configured"
+    t.boolean "assist_check"
+    t.string "identifier"
+    t.integer "inactive_duration"
+    t.string "inactive_text"
+    t.boolean "inactive_check"
   end
 
   create_table "oyd_task_templates", force: :cascade do |t|
@@ -155,6 +209,14 @@ ActiveRecord::Schema.define(version: 20180425131801) do
     t.string "repo_identifier"
     t.integer "perm_type"
     t.boolean "perm_allow"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "plugin_assists", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "identifier"
+    t.boolean "assist"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -200,6 +262,14 @@ ActiveRecord::Schema.define(version: 20180425131801) do
     t.string "recovery_password_digest"
     t.string "password_key"
     t.string "recovery_password_key"
+    t.boolean "email_notif"
+    t.boolean "assist_relax"
+    t.integer "last_item_count"
+    t.string "remember_digest"
+    t.string "reset_digest"
+    t.datetime "reset_sent_at"
+    t.string "app_nonce"
+    t.string "app_cipher"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

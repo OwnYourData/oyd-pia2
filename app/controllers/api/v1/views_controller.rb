@@ -49,7 +49,14 @@ module Api
 					.joins('INNER JOIN plugin_details ON plugin_details.id = oyd_views.plugin_detail_id')
 					.joins('INNER JOIN oauth_applications ON oauth_applications.id = oyd_views.plugin_id')
 					.where('oauth_applications.owner_id=' + current_resource_owner.id.to_s)
-					.select(:id, :name, :description, :url, :uid, :secret, :picture), 
+					.select('oyd_views.id, 
+						     oyd_views.plugin_id,
+							 oyd_views.name, 
+							 plugin_details.description, 
+							 oyd_views.url, 
+							 oauth_applications.uid, 
+							 oauth_applications.secret, 
+							 plugin_details.picture'), 
 					status: 200
 			end
 		end

@@ -1,0 +1,30 @@
+<tr>
+	<td class="col-lg-6 col-md-6 col-xs-8 font-size-large">
+		<%= source_list["name"].to_s %><br>
+		<span style="color: gray; font-size: small;"><%= source_list["description"].to_s %></span>
+	</td>
+
+	<td class="col-lg-2 col-md-2 col-xs-2 font-size-large">
+		<%= source_list["last_record"].to_s %>
+	</td>
+
+	<td class="col-lg-1 col-md-1 col-xs-1 font-size-large" align="right">
+		<%= source_list["record_count"].to_s %>
+	</td>
+
+	<td class="text-right col-lg-3 col-md-3 col-xs-1">
+		<div class="btn-group flex-btn-group-container">
+			<%= link_to(configure_source_path(id: source_list["id"]), 
+					class: "btn btn-primary btn-sm") do  %>
+				<span class="glyphicon glyphicon-wrench"></span>
+				<span class="hidden-xs hidden-sm"><%= t('data.config_label') %></span>
+			<% end %>
+			<%= link_to(sources_remove_path(source_id: source_list["id"]), 
+					class: "btn btn-danger btn-sm", method: :delete,
+					data: { confirm: t('data.delete_question') }) do %>
+				<span class="glyphicon glyphicon-remove-circle"></span>
+				<span class="hidden-xs hidden-sm"><%= t('data.delete_label') %></span>
+			<% end %>
+		</div>
+	</td>
+</tr>

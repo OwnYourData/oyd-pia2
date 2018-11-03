@@ -2,7 +2,7 @@
 #
 # Table name: oyd_reports
 #
-#  id           :integer          not null, primary key
+#  id           :bigint(8)        not null, primary key
 #  plugin_id    :integer
 #  identifier   :string
 #  data_prep    :text
@@ -13,8 +13,8 @@
 #  name         :string
 #  info_url     :string
 #  data_snippet :text
-#  answer_view  :text
-#  answer_logic :text
+#  report_order :integer
+#  repos        :text
 #
 
 class OydReport < ApplicationRecord

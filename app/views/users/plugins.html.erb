@@ -1,5 +1,14 @@
 <% provide(:title, t('menu.permission')) %>
-<%= link_to user_path, style: "text-decoration: none; color: black;" do %><h1 style="text-align: left;"><i class="fa fa-arrow-left"></i> <%= t('menu.permission') %></h1><% end %>
+<div class="row">
+	<div class="col-xs-1">
+		<%= link_to user_path, style: "text-decoration: none; color: black;" do %>
+			<h1 style="text-align: left;"><i class="fa fa-arrow-left"></i></h1>
+		<% end %>
+	</div>
+	<div class="col-xs-10">
+		<h1><%= t('menu.permission') %></h1>
+	</div>
+</div>
 
 <div class="row">
   <div class="col-md-4 col-md-offset-4">
@@ -44,6 +53,10 @@
 							<div class="form-group">
 								<label class="control-label" for="details_view_name"><%= t('apps.name') %></label>
 								<%= form.text_field :details_plugin_name, id: "details_plugin_name", class: "form-control" %>
+							</div>
+							<div class="form-group">
+								<label class="control-label" for="details_plugin_version"><%= t('apps.plugin_version') %></label>
+								<input class="form-control" id="details_plugin_version" readonly>
 							</div>
 							<div class="form-group">
 								<label class="control-label" for="details_app_key"><%= t('apps.app_key') %></label>
@@ -129,8 +142,17 @@
       </div>
       <%= form_with url: add_manifest_path do |form| %>
 	      <div class="modal-body">
-	        <div class="form-group">
-			  <label for="manifest">Manifest:</label>
+	      	<div class="form-group">
+	      		<p><strong><%= t('menu.permission') %>:</strong></p>
+				<%= form.collection_radio_buttons( :sam,
+						@avail, :first, :last, checked: nil ) do |b| %>
+							<%= b.label(style: "width: 100%;") { %>
+								<%= b.radio_button style: "width: 35px;" %>
+								<%= b.text %>
+							<% } %>
+				<% end %>
+	      	</div>
+	        <div class="form-group" style="margin: -15px 0 0 35px;">
 			  <%= form.text_area :manifest, rows: 5 %>
 			</div>
 	      </div>

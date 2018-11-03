@@ -1,28 +1,238 @@
-<% provide(:title, t('menu.account')) %>
+<% provide(:title, t('menu.setting')) %>
+<div class="row">
+	<div class="col-xs-1">
+		<%= link_to user_path, style: "text-decoration: none; color: black;" do %>
+			<h1 style="text-align: left;"><i class="fa fa-arrow-left"></i></h1>
+		<% end %>
+	</div>
+	<div class="col-xs-10">
+		<h1><%= t('menu.setting') %></h1>
+	</div>
+</div>
+
+<% flash.each do |message_type, message| %>
+    <div class="alert alert-<%= message_type %>">
+    	<button type="button" class="close" data-dismiss="alert">&times;</button>
+    	<%= message %>
+    </div>
+<% end %>
 
 <div class="row">
 	<div class="col-md-5"> 
-		<h2 class="text-left"><%= t('account.edit_header') %></h2>
-		<% flash.each do |message_type, message| %>
-            <div class="alert alert-<%= message_type %>"><%= message %></div>
-        <% end %>
-        <%= form_with url: users_update_account_url do |form| %>
+		<h2 class="text-left" style="margin-bottom:10px;"><%= t('account.account_group') %></h2>
+        <ul class="list-group">
+        	<li class="list-group-item">
+        		<strong><%= t('account.account_userdata') %></strong><br>
+        		<%= t('account.account_userdata_text') %>
+		        <%= form_with url: users_update_account_url do |form| %>
+	    			<table style="width: 100%">
+						<tr>
+							<td>
+								<%= form.label :full_name, "Name" %>:
+							</td>
+							<td>
+								<%= form.text_field :full_name, value: @user_name, style: "padding: 2px 5px 2px; margin-top:10px;" %>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<%= form.label :notif, t('account.account_notifications'), style: "margin-bottom: 15px;" %>
+							</td>
+							<td>
+							    <div class="onoffswitch" style="margin-top: -10px;">
+							    	<%= form.check_box :notif, {class: "onoffswitch-checkbox", id: "notif", checked: @user_notif}, true, false %>
+							        <label class="onoffswitch-label" for="notif">
+							            <span class="onoffswitch-inner-<%= I18n.locale %>"></span>
+							            <span class="onoffswitch-switch"></span>
+							        </label>
+							    </div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<%= form.label :language, t('footer.language'), style: "margin-bottom: 15px;" %>:
+							</td>
+							<td>
+								<%= form.select :language, options_for_select({"Deutsch": "de", "English": "en"}, @user_lang), style: "padding: 2px 5px 2px; margin-top:10px;" %>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>
+								<%= form.button t('account.update_button'), 
+									class: "btn btn-info", style: "float: right;",
+									data: { disable_with: "<i class='fa fa-spinner fa-spin'></i> " + t('dialog.submitBtn') } %>
+							</td>
+						</tr>
+					</table>				
+		        <% end %>
+        	</li>
+        	<li class="list-group-item">
+        		<div style="width: 70%">
+	        		<strong><%= t('general.password') %></strong><br>
+	        		<%= t('account.account_password_text') %>
+	        	</div>
+	        	<div style="float: right; margin-top: -35px;">
+        			<button class="btn btn-info" data-toggle="modal" data-target="#updatePwd"><%= t('general.change') %></button>
+        			<div class="modal fade" id="updatePwd" tabindex="-1" role="dialog" aria-labelledby="updatePwdLabel" aria-hidden="true">
+					  <div class="modal-dialog" role="document">
+					    <div class="modal-content">
+					    	<%= form_with url: users_update_password_url do |form| %>
+						      <div class="modal-header">
+		      					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+								<h4 class="modal-title" id="updatePwdLabel"><%= t('general.password') %></h4>
+						      </div>
+						      <div class="modal-body">
 
-            <%= form.label :full_name, t('requestDataVault.full_name') %>
-            <%= form.text_field :full_name, value: @user_name, style: "padding: 2px 5px 2px;" %>
+                                <div class="form-group">
+                                	<%= form.hidden_field :email, value: @user_email %>
+                                	<%= form.label :inputPasswordOld, t('account.current_password') %>
+                                	<%= form.password_field :inputPasswordOld, class: "form-control" %>
+                                </div>
+                                <div class="form-group">
+                                	<%= form.label :inputPasswordNew, t('account.new_password') %>
+                                	<%= form.password_field :inputPasswordNew, class: "form-control" %>
+                                    <span class="form-text small text-muted">
+                                    	<%= t('account.dialog_password_info') %>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                	<%= form.label :inputPasswordNewVerify, t('account.verify_password') %>
+                                	<%= form.password_field :inputPasswordNewVerify, class: "form-control" %>
+                                    <span class="form-text small text-muted">
+                                        <%= t('account.verify_info') %>
+                                    </span>
+                                </div>
+					      	  </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-default" data-dismiss="modal"><%= t('dialog.closeBtn') %></button>
+						        <%= form.button t('general.change'), class: "btn btn-primary" %>
+						      </div>
+                            <% end %>
+					    </div>
+					  </div>
+					</div>
+        		</div>
+        	</li>
+        	<li class="list-group-item">
+        		<div style="width: 70%">
+	        		<strong><%= t('account.account_recovery_password') %></strong><br>
+	        		<%= t('account.account_recovery_password_text') %>
+	        	</div>
+	        	<div style="float: right; margin-top: -35px;">
+        			<button class="btn btn-info" data-toggle="modal" data-target="#updateRecoverPwd"><%= t('general.change') %></button>
+	       			<div class="modal fade" id="updateRecoverPwd" tabindex="-1" role="dialog" aria-labelledby="updateRecoverPwdLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						    	<%= form_with url: users_update_recovery_password_url do |form| %>
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title" id="updateRecoverPwdLabel"><%= t('general.passwordRecovery') %></h4>
+									</div>
+									<div class="modal-body">
+		                                <div class="form-group">
+		                                	<%= form.hidden_field :email, value: @user_email %>
+		                                	<%= form.label :inputPassword, t('account.current_password') %>
+		                                	<%= form.password_field :inputPassword, class: "form-control" %>
+		                                </div>
+		                                <div class="form-group">
+		                                	<%= form.label :inputRecoverPasswordNew, t('account.account_recovery_password') %>
+		                                	<%= form.password_field :inputRecoverPasswordNew, class: "form-control" %>
+		                                    <span class="form-text small text-muted">
+		                                    	<%= t('account.dialog_password_info') %>
+		                                    </span>
+		                                </div>
+		                                <div class="form-group">
+		                                	<%= form.label :inputRecoverPasswordNewVerify, t('account.verify_password') %>
+		                                	<%= form.password_field :inputRecoverPasswordNewVerify, class: "form-control" %>
+		                                    <span class="form-text small text-muted">
+		                                        <%= t('account.verify_recover_info') %>
+		                                    </span>
+		                                </div>
+						      	    </div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default" data-dismiss="modal"><%= t('dialog.closeBtn') %></button>
+										<%= form.button t('general.change'), class: "btn btn-primary" %>
+									</div>
+	                            <% end %>
+						    </div>
+						</div>
+					</div>
+	        	</div>
+        	</li>
+		</ul>
 
-            <%= form.label :password, t('general.password') %>
-            <%= form.password_field :password, style: "padding: 2px 5px 2px;" %>
-
-            <%= form.label :password_confirmation, t('general.passwordConfirmation') %>
-            <%= form.password_field :password_confirmation, style: "padding: 2px 5px 2px;" %>
-            
-			<%= form.button t('account.update_button'), 
-				class: "btn btn-success btn-lg btn-block",
-				data: { disable_with: "<i class='fa fa-spinner fa-spin'></i> " + t('dialog.submitBtn') } %>
-        <% end %>
+		<h2 class="text-left" style="margin-bottom:10px;"><%= t('account.data_group') %></h2>
+        <ul class="list-group">
+        	<li class="list-group-item">
+        		<div style="width: 60%">
+	        		<strong><%= t('account.data_archive') %></strong><br>
+	        		<%= t('account.data_archive_text') %>
+	        	</div>
+	        	<div style="float: right; margin-top: -35px;">
+	        		<button class="btn btn-info" data-toggle="modal" data-target="#archiveDialog"><%= t('account.data_download') %></button>
+	       			<div class="modal fade" id="archiveDialog" tabindex="-1" role="dialog" aria-labelledby="archiveDialogLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+						    <div class="modal-content">
+								<%= form_with url: archive_decrypt_path, remote: true, data: { turbolinks: false } do |form| %>
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title" id="archiveDialogLabel"><%= t('account.data_archive') %></h4>
+									</div>
+									<div class="modal-body">
+										<div class="alert alert-warning" id="invalidPwdMsg" style="display:none;"></div>
+										<label for="password"><%= t('data.passwordDecryptLbl') %>:</label><br>
+										<%= form.password_field :password, class: "form-control", style: "display: inline; width: 50%;" %>
+										<div>
+											<label><%= t('account.archive_note') %>:</label><br>
+											<span><em><%= t('account.archive_text').html_safe %></em></span>
+										</div>
+						      	    </div>
+									<div class="modal-footer">
+										<%= form.button t('account.data_download'), class: "btn btn-primary" %>
+										<button type="button" class="btn btn-default" data-dismiss="modal"><%= t('dialog.closeBtn') %></button>
+									</div>
+								<% end %>
+						    </div>
+						</div>
+					</div> 
+        		</div>
+        	</li>
+        	<li class="list-group-item">
+        		<div style="width: 70%">
+	        		<strong><%= t('account.data_delete_pia') %></strong><br>
+	        		<%= t('account.data_delete_pia_text') %>
+	        	</div>
+	        	<div style="float: right; margin-top: -35px;">
+        			<button class="btn btn-danger" data-toggle="modal" data-target="#deletePiaDialog"><%= t('account.data_delete') %></button>
+	       			<div class="modal fade" id="deletePiaDialog" tabindex="-1" role="dialog" aria-labelledby="deletePiaDialogLabel" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+						    <div class="modal-content">
+								<%= form_with url: pia_delete_path, remote: true, data: { turbolinks: false } do |form| %>
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title" id="deletePiaDialogLabel"><%= t('account.data_delete_pia') %></h4>
+									</div>
+									<div class="modal-body">
+										<div class="alert alert-warning" id="invalidPwdPiaDeleteMsg" style="display:none;"></div>
+										<div class="alert alert-warning alert-stay"><%= t('account.pia_delete_warning').html_safe %></div>
+										<p><%= t('account.pia_delete_info') %></p>
+										<label for="password"><%= t('account.pia_delete_confirmation') %>:</label><br>
+										<%= form.password_field :password, class: "form-control", style: "display: inline; width: 50%;" %>
+						      	    </div>
+									<div class="modal-footer">
+										<%= form.button t('account.data_delete'), class: "btn btn-danger" %>
+										<button type="button" class="btn btn-default" data-dismiss="modal"><%= t('dialog.closeBtn') %></button>
+									</div>
+								<% end %>
+						    </div>
+						</div>
+					</div> 
+        		</div>
+        	</li>
+		</ul>
 	</div> 
-	<div class="col-md-6 col-md-offset-1"> 
+	<div class="col-md-6 col-md-offset-1">
 		<div class="accessdata-container"> 
 			<strong><div class="font-size-medium"><%= t('account.credential_header') %></div></strong>
 			<div class="font-size-medium"><%= t('account.credential_text') %></div>
@@ -53,10 +263,14 @@
 			<div class="mobile-datavault"> 
 				<div class="font-size-medium"><%= t('account.get_app') %></div>
 				<div class="mobile-datavault-stores">
-					<a href="https://www.ownyourdata.eu/mobile-apps/iOS">
+					<% if I18n.locale.to_s == "de" %>
+						<a href="https://itunes.apple.com/at/app/ownyourdata/id1176891221?mt=8" target="_blank">
+					<% else %>
+						<a href="https://itunes.apple.com/us/app/ownyourdata/id1176891221?mt=8" target="_blank">
+					<% end %>
 						<div class="mobile-datavault-ios"></div>
 					</a> 
-					<a href="https://www.ownyourdata.eu/mobile-apps/Android">
+					<a href="https://play.google.com/store/apps/details?id=com.ownyourdata" target="_blank">
 						<div class="mobile-datavault-android"></div>
 					</a>
 				</div>

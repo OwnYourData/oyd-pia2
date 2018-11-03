@@ -3,6 +3,7 @@ $('#detailsModal').modal('show');
 $('#detailsHeader').html('<%= t('apps.details') %>: <%= @plugin_info["name"] %>');
 $('#details_plugin_id').val('<%= @plugin_info["id"] %>');
 $('#details_plugin_name').val('<%= @plugin_info["name"] %>');
+$('#details_plugin_version').val('<%= @plugin_info["oyd_version"] %>');
 $('#details_app_key').val('<%= @plugin_info["uid"] %>');
 $('#details_app_secret').val('<%= @plugin_info["secret"] %>');
 $('#listPermissions').html('<%= @perm_html.to_s.html_safe %>');

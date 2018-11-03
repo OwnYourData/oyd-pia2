@@ -1,10 +1,10 @@
 <p>Hallo <%= @salutation %>!</p>
 
 <p>Klicke auf den folgenden Link, um deinen Datentresor zu öffnen:<br>
-&nbsp;&nbsp;&nbsp;<%= link_to 'zum Datentresor', @resource.frontend_url.to_s + '/' + @resource.language.to_s + '/confirm?token=' + @token.to_s %></p>
+&nbsp;&nbsp;&nbsp;<%= link_to 'zum Datentresor', ENV['VAULT_URL'].to_s + '/' + @resource.language.to_s + '/confirm?token=' + @token.to_s %></p>
 
 <p style="color:#aaa">Alternativ kannst du folgenden Link in die Adresszeile deines Browsers kopieren:<br>
-	<%= @resource.frontend_url.to_s + '/' + @resource.language.to_s + '/confirm?token=' + @token.to_s %></p>
+	<%= ENV['VAULT_URL'].to_s + '/' + @resource.language.to_s + '/confirm?token=' + @token.to_s %></p>
 <p>&nbsp;</p>
 <hr>
 <p style="color:#aaa"><small>Du erhältst dieses Email, weil mit deiner Emailadresse ein OwnYourData Datentresor angefordert wurde. Wenn diese Anfrage nicht von dir stammt, ignoriere dieses Nachricht - wir löschen die Anfrage samt deiner Emailadresse, wenn nach 2 Stunden der Link oben nicht aufgerufen wird.</small></p>

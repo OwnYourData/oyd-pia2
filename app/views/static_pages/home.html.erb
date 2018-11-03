@@ -8,15 +8,17 @@
 		  		<% flash.each do |message_type, message| %>
 					<div class="alert alert-<%= message_type %>"><%= message %></div>
 				<% end %>
-		  		<%= form_with url: login_path do |form| %>
+		  		<%= form_with url: login_path, id: "login_form" do |form| %>
+		  			<%= form.hidden_field :cipher, id: "cipher" %>
+		  			<%= form.hidden_field :nonce, id: "nonce" %>
                     <fieldset>
 			    	  	<div class="form-group">
 			    	  		<%= form.email_field :email, class: "form-control", placeholder: t('start.email') %>
 			    		</div>
 			    	  	<div class="form-group">
-			    	  		<%= form.password_field :password, class: "form-control", placeholder: t('start.password') %>
+			    	  		<%= form.password_field :password, id: "login_password", class: "form-control", placeholder: t('start.password') %>
 			    		</div>
-						<%= form.button t('dialog.submitBtn'), 
+						<%= form.button t('dialog.submitBtn'), id: "submit_form_button",
 							class: "btn btn-success btn-lg btn-block",
 							data: { disable_with: "<i class='fa fa-spinner fa-spin'></i> " + t('dialog.submitBtn') } %>
 						<div class="form-group" style="margin-left: 20px;">
@@ -25,7 +27,7 @@
 								<%= t('start.remember') %>
 							</div>
 						</div>
-		                <a href="#" class="pull-right need-help" style="margin-top: -5px;"><%= t('start.forgot') %></a><span class="clearfix"></span>
+						<%= link_to t('start.forgot'), password_reset_path, class: "pull-right need-help", style: "margin-top: -5px;" %><span class="clearfix"></span>
 			    	</fieldset>
 		      	<% end %>
 		    </div>
@@ -37,6 +39,23 @@
 	<div class="col-md-7 col-md-pull-5">
 		<h3 style="font-weight: 700; color: #666666;"><%= t('start.header') %></h3>
 		<h3 style="line-height: 1.7em; color: #666666;"><%= t('start.text') %></h3>
-		<%=image_tag("oyd-picture_" + I18n.locale.to_s + ".png",  class: "img-responsive", alt: "OwnYourData", style: "padding:4%;") %>
+		<%= image_tag("oyd-picture_" + I18n.locale.to_s + ".png",  class: "img-responsive", alt: "OwnYourData", style: "padding:4%;") %>
 	</div>
 </div>
+<script>
+    window.sodium = { onload: function (sodium) { } };
+	$('#submit_form_button').click(function(e){
+		e.preventDefault();
+		myKey = sodium.crypto_box_keypair();
+		nonce = sodium.randombytes_buf(24);
+		authentication_key = sodium.crypto_hash_sha256(sodium.from_string("auth"));
+		message_raw = sodium.from_string($('#login_password').val());
+		cipher = sodium.crypto_box_easy(message_raw, nonce, myKey.publicKey, authentication_key);
+		$('#cipher').val(sodium.to_hex(cipher));
+		$('#nonce').val(sodium.to_hex(nonce));
+		sessionStorage['app_support'] = sodium.to_hex(myKey.privateKey);
+		$('#login_form').submit();
+	})
+
+</script>
+<script src="/sodium.js" async></script>

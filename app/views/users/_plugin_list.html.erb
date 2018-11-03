@@ -1,19 +1,22 @@
 <tr>
-	<td class="col-lg-9 col-md-9 col-xs-11 font-size-large">
-		<%= plugin_list["name"].to_s %>
+	<td class="col-lg-8 col-md-8 col-xs-10 font-size-large">
+		<%= plugin_list["name"].to_s %><br>
+		<span style="color: gray; font-size: small;"><%= plugin_list["description"].to_s %></span>
 	</td>
 
-	<td class="text-right col-lg-3 col-md-3 col-xs-1">
+	<td class="text-right col-lg-4 col-md-4 col-xs-2">
 		<div class="btn-group flex-btn-group-container">
 			<%= link_to(show_plugin_details_path(plugin_id: plugin_list["id"]), 
 					class: "btn btn-primary btn-sm", remote: true) do  %>
 				<span class="glyphicon glyphicon-pencil"></span>
 				<span class="hidden-xs hidden-sm"><%= t('data.edit_label') %></span>
 			<% end %>
-			<%= link_to(configure_plugin_path(id: plugin_list["id"]), 
-					class: "btn btn-success btn-sm") do  %>
-				<span class="glyphicon glyphicon-wrench"></span>
-				<span class="hidden-xs hidden-sm"><%= t('data.config_label') %></span>
+			<% if plugin_list["update"].to_s.downcase == "true" %>
+				<%= link_to(update_plugin_path(id: plugin_list["id"]), 
+						class: "btn btn-success btn-sm") do  %>
+					<span class="glyphicon glyphicon-exclamation-sign"></span>
+					<span class="hidden-xs hidden-sm"><%= t('data.update_label') %></span>
+				<% end %>
 			<% end %>
 			<%= link_to(plugin_remove_path(plugin_id: plugin_list["id"]), 
 					class: "btn btn-danger btn-sm", method: :delete,

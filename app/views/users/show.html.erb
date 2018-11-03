@@ -1,13 +1,36 @@
-<div class="row">
-  <div class="col-md-4 col-md-offset-4">
-    <% flash.each do |message_type, message| %>
-        <div class="alert alert-<%= message_type %>"><%= message %></div>
-    <% end %>
-  </div>
-</div>
+<% if @show_assistant %>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="alert alert-info alert-stay" style="margin-right: 15px;">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				  <span aria-hidden="true">&times;</span>
+				</button>
+				<%= @assist_text.html_safe %>
+				<%= form_with url: hide_assist_path, html: { style: "margin-top: 15px;" }, remote: true do |form| %>
+					<%= form.hidden_field :assist_type, value: @assist_type %>
+					<%= form.hidden_field :assist_id, value: @assist_id %>
+					<%= form.label :hide_assist do %>
+						<%= form.check_box :hide_assist, id: "hide_assist" %>
+					<% end %> &nbsp; <%= t('general.not_anymore') %>
+					<script type="text/javascript">
+						$("#hide_assist").attr('checked', false)
+						$("#hide_assist").change(function(){
+						    $("form").submit();
+						});						
+					</script>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<% end %>
 
 <ol style="padding-left: 0px;">
 	<%= render partial: "app_installed", collection: @installed_apps %>
 </ol>
 
 <div style="clear:both;"></div>
+<script type="text/javascript">
+	$('.app_link').each(function(i, obj){
+		$(this).attr("href", $(this).attr("href") + "&MASTER_KEY=" + sessionStorage["app_support"]);
+	})
+</script>

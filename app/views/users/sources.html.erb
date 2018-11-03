@@ -1,0 +1,33 @@
+<% provide(:title, t('menu.source')) %>
+<div class="row">
+	<div class="col-xs-1">
+		<%= link_to user_path, style: "text-decoration: none; color: black;" do %>
+			<h1 style="text-align: left;"><i class="fa fa-arrow-left"></i></h1>
+		<% end %>
+	</div>
+	<div class="col-xs-10">
+		<h1><%= t('menu.source') %></h1>
+	</div>
+</div>
+
+<div class="row">
+  <div class="col-md-4 col-md-offset-4">
+    <% flash.each do |message_type, message| %>
+        <div class="alert alert-<%= message_type %>"><%= message %></div>
+    <% end %>
+  </div>
+</div>
+
+<table id="data-table" class="table table-striped">
+	<thead> 
+		<tr>
+			<th><span class="font-size-large"><%= t('apps.name') %></span></th>
+			<th><span class="font-size-large"><%= t('sources.last_record') %></span></th>
+			<th><span class="font-size-large"><%= t('sources.record_count') %></span></th>
+			<th class="center"><span class="font-size-large"><%= t('data.action_title') %></span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<%= render partial: "source_list", collection: @sources.sort_by { |item| item[:name] } %>
+	</tbody>
+</table>

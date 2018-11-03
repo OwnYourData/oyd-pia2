@@ -2,7 +2,7 @@
 #
 # Table name: merkles
 #
-#  id              :integer          not null, primary key
+#  id              :bigint(8)        not null, primary key
 #  payload         :text
 #  root_hash       :string
 #  oyd_transaction :string

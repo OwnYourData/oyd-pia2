@@ -1,0 +1,4 @@
+<% if @invalidPwd %>
+	$('#invalidPwdPiaDeleteMsg').show();
+	$('#invalidPwdPiaDeleteMsg').text("<%= t('data.invalidPwd') %>");
+<% end %>

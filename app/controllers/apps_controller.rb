@@ -11,10 +11,13 @@ class AppsController < ApplicationController
 		@plugin_id = params[:id]
 		@plugin = Doorkeeper::Application.find(@plugin_id)
 		plugin_config = JSON.parse(@plugin.config)
-		if plugin_config['form'].nil?
-			@configHtml = ""
-		else
+		@configHtml = ""
+		if !plugin_config['form'].nil?
 			@configHtml = Base64.decode64(plugin_config['form'].to_s)
+		end
+		@repoInfo = ""
+		if !plugin_config['repos'].nil?
+			@repoInfo = Base64.encode64(plugin_config['repos'].to_s).delete("\n")
 		end
 		@plugin_title = @plugin.name
 	end
@@ -25,35 +28,65 @@ class AppsController < ApplicationController
 		response = HTTParty.post(plugin_configure_url,
 			headers: { 'Content-Type' => 'application/json',
 					   'Authorization' => 'Bearer ' + token },
-			body: { config: params.to_json }.to_json )
-		redirect_to permissions_path
+			body: { config: params.to_json, repos: params[:repos].to_s }.to_json )
+		redirect_to plugins_path
 	end
 
 	def manifest
 		require "base64"
 		require "uri"
-		create_app_url = getServerUrl() + "/api/apps/create"
+		create_app_url = getServerUrl() + "/api/plugins/create"
 		token = session[:token]
 
-		manifest = params[:manifest].to_s
-		if manifest =~ URI::regexp && manifest.length < 200
+		if params[:sam].to_s != "" && params[:sam].to_s != "0"
+			manifest = "https://sam.oydapp.eu/api/plugins/" + params[:sam]
 			response = HTTParty.post(create_app_url,
 	            headers: { 'Content-Type' => 'application/json',
 	                	   'Authorization' => 'Bearer ' + token },
 	            body: { source_url: manifest,
 	            	    config: {} }.to_json )
 		else
-			if !base64?(manifest)
-				manifest = Base64.encode64(manifest)
-			end
-	        response = HTTParty.post(create_app_url,
-	            headers: { 'Content-Type' => 'application/json',
-	                	   'Authorization' => 'Bearer ' + token },
-	            body: { manifest: manifest,
-	            	    config: {} }.to_json )
-	    end
+			manifest = params[:manifest].to_s
+			uri = URI.parse(manifest.strip.gsub(/\s+/, " ")) rescue ""
+			if uri.kind_of?(URI::HTTP) or uri.kind_of?(URI::HTTPS)
+				response = HTTParty.post(create_app_url,
+		            headers: { 'Content-Type' => 'application/json',
+		                	   'Authorization' => 'Bearer ' + token },
+		            body: { source_url: manifest.strip.gsub(/\s+/, " "),
+		            	    config: {} }.to_json )
+			else
+				if !base64?(manifest)
+					manifest = Base64.encode64(manifest)
+				end
+		        response = HTTParty.post(create_app_url,
+		            headers: { 'Content-Type' => 'application/json',
+		                	   'Authorization' => 'Bearer ' + token },
+		            body: { manifest: manifest,
+		            	    config: {} }.to_json )
+		    end
+		end
+		if response.code.to_s == "200"
+			flash[:success] = "Plugin installed"
+		else
+			flash[:warning] = "Error"
+		end
+		redirect_to plugins_path
+	end
 
-		redirect_to permissions_path
+	def manifest_update
+		token = session[:token]
+		manifest_update_url = getServerUrl() + "/api/plugins/" + params[:id] + "/manifest"
+		response = HTTParty.put(manifest_update_url,
+            headers: { 'Content-Type' => 'application/json',
+                	   'Authorization' => 'Bearer ' + token } )
+		code = response.code rescue nil
+		paresp = response.parsed_response rescue nil
+		if code.to_s == "200"
+			flash[:success] = t('plugins.plugin_update_success')
+		else
+			flash[:warning] = oyd_backend_translate(paresp['error'].to_s, params[:locale])
+		end
+		redirect_to plugins_path	
 	end
 
 	def update
@@ -292,7 +325,7 @@ class AppsController < ApplicationController
 			end
 		end
 
-		redirect_to permissions_path
+		redirect_to plugins_path
 	end
 
 	def destroy
@@ -318,7 +351,7 @@ class AppsController < ApplicationController
 	    	flash[:warning] = t('data.error_message') + ": " + 
 	        oyd_backend_translate(retVal.parsed_response['error'].to_s, params[:locale])
 	    end
-		redirect_to permissions_path
+		redirect_to plugins_path
 	end
 
 	def detail

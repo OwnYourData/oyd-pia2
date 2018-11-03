@@ -1,19 +1,19 @@
 <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 col-wrapper">
 	<div class="app-wrapper">
 		<div class="app-image">
-			<a href="<%= app_installed["url"] %>?PIA_URL=<%= ENV['VAULT_URL'] %>&APP_KEY=<%= app_installed["uid"] %>&APP_SECRET=<%= app_installed["secret"] %>&desktop=1">
+			<a class="app_link" href="<%= app_installed["url"] %>?PIA_URL=<%= ENV['VAULT_URL'] %>&APP_KEY=<%= app_installed["uid"] %>&APP_SECRET=<%= app_installed["secret"] %>&desktop=1">
 				<div class="plugin-picture-wrapper">
 					<img src="<%= app_installed["picture"] %>">
 				</div>
 			</a>
 		</div>
 		<div class="app-text">
-			<a class="app-title" style="text-decoration: none" href="<%= app_installed["url"] %>?PIA_URL=<%= ENV['VAULT_URL'] %>&APP_KEY=<%= app_installed["uid"] %>&APP_SECRET=<%= app_installed["secret"] %>&desktop=1">
+			<a class="app-title app_link" style="text-decoration: none" href="<%= app_installed["url"] %>?PIA_URL=<%= ENV['VAULT_URL'] %>&APP_KEY=<%= app_installed["uid"] %>&APP_SECRET=<%= app_installed["secret"] %>&desktop=1">
 				<div class="app-item font-size-medium">
 					<strong><%= app_installed["name"] %></strong>
 				</div>
 			</a>
-			<a class="app-description" style="text-decoration: none" href="<%= app_installed["url"] %>?PIA_URL=<%= ENV['VAULT_URL'] %>&APP_KEY=<%= app_installed["uid"] %>&APP_SECRET=<%= app_installed["secret"] %>&desktop=1">
+			<a class="app-description app_link" style="text-decoration: none" href="<%= app_installed["url"] %>?PIA_URL=<%= ENV['VAULT_URL'] %>&APP_KEY=<%= app_installed["uid"] %>&APP_SECRET=<%= app_installed["secret"] %>&desktop=1">
 				<div class="app-item font-size-medium">
 					<%= app_installed["description"] %>
 				</div>

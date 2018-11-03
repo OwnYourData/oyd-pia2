@@ -8,6 +8,7 @@
     <% end %>
     <%= form_with url: plugin_configure_path do |form| %>
       <%= form.hidden_field :plugin_id, value: @plugin_id %>
+      <%= form.hidden_field :repos, value: @repoInfo %>
 
       <%= @configHtml.html_safe %>
 

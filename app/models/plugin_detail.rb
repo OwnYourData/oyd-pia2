@@ -2,7 +2,7 @@
 #
 # Table name: plugin_details
 #
-#  id          :integer          not null, primary key
+#  id          :bigint(8)        not null, primary key
 #  description :string
 #  info_url    :string
 #  picture     :text

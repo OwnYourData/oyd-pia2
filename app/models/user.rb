@@ -2,7 +2,7 @@
 #
 # Table name: users
 #
-#  id                       :integer          not null, primary key
+#  id                       :bigint(8)        not null, primary key
 #  email                    :string           default(""), not null
 #  encrypted_password       :string           default(""), not null
 #  reset_password_token     :string
@@ -25,6 +25,14 @@
 #  recovery_password_digest :string
 #  password_key             :string
 #  recovery_password_key    :string
+#  email_notif              :boolean
+#  assist_relax             :boolean
+#  last_item_count          :integer
+#  remember_digest          :string
+#  reset_digest             :string
+#  reset_sent_at            :datetime
+#  app_nonce                :string
+#  app_cipher               :string
 #
 # Indexes
 #
@@ -37,13 +45,20 @@ class User < ApplicationRecord
 	has_many :repos, dependent: :destroy
 	has_many :backups, dependent: :destroy
 	has_many :logs, dependent: :destroy
+	has_many :plugin_assists, dependent: :destroy
 
 	# Include default devise modules. Others available are:
 	# :confirmable, :lockable, :timeoutable and :omniauthable
 	devise :database_authenticatable, :registerable,
 			:recoverable, :rememberable, :trackable, :validatable, :confirmable
 
-	attr_accessor :recovery_password, :recovery_password_confirmation 
+	attr_accessor :recovery_password, :recovery_password_confirmation, :remember_token
+
+	before_save { self.email = email.downcase }
+	VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+	validates :email, presence: true, length: { maximum: 255 },
+                    format: { with: VALID_EMAIL_REGEX },
+                    uniqueness:  { case_sensitive: false }
 
 	def password_required?
 		super if confirmed?
@@ -60,4 +75,20 @@ class User < ApplicationRecord
 		password == password_confirmation && !password.blank? && recovery_password == recovery_password_confirmation && !recovery_password.blank? && password != recovery_password
 	end
 
+	def password_only_match?
+		self.errors[:password] << "can't be blank" if password.blank?
+		self.errors[:password_confirmation] << "can't be blank" if password_confirmation.blank?
+		self.errors[:password_confirmation] << "does not match password" if password != password_confirmation
+		password == password_confirmation && !password.blank?
+	end
+
+	def User.digest(string)
+		cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+													  BCrypt::Engine.cost
+		BCrypt::Password.create(string, cost: cost)
+	end
+
+	def authenticated?(remember_token)
+		BCrypt::Password.new(remember_digest).is_password?(remember_token)
+	end
 end

@@ -2,7 +2,7 @@
 #
 # Table name: repos
 #
-#  id         :integer          not null, primary key
+#  id         :bigint(8)        not null, primary key
 #  user_id    :integer
 #  name       :string
 #  identifier :string
@@ -15,4 +15,5 @@ class Repo < ApplicationRecord
 	belongs_to :user
 	validates :user_id, presence: true
 	has_many :items, dependent: :destroy
+	has_many :oyd_source_repos, dependent: :destroy
 end

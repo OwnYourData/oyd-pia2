@@ -3,14 +3,15 @@
 	  <nav>
 	    <ul style="padding-right: 120px;">
 	      <li><%= link_to "OwnYourData.eu", 'https://www.ownyourdata.eu' %> © 2018</li>
-	      <li><%= link_to t('footer.security'), 'https://www.ownyourdata.eu/mobile-apps/' %></li>
-	      <li><%= link_to t('footer.impressum'), 'https://www.ownyourdata.eu/feedback/' %></li>
+	      <li><%= link_to t('footer.security'), 'https://www.ownyourdata.eu/' + I18n.locale.to_s + '/#data_security' %></li>
+	      <li><%= link_to t('footer.impressum'), 
+	      			I18n.locale.to_s == "de" ? 'https://www.ownyourdata.eu/de/impressum/' : 'https://www.ownyourdata.eu/en/imprint/' %></li>
 	    </ul>
 	  </nav>
 	  <nav>
 	    <ul style="float:right;">
 
-        <div class="btn-group dropup">
+        <div class="btn-group dropup" style="margin-right: 15px;">
           <button type="button" class="fakelink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="glyphicon glyphicon-flag"></span>
             <span class="font-size-large" style="font-size:14px;"><%= t('footer.language') %></span> 

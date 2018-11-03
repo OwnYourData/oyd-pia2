@@ -21,18 +21,20 @@
             <span class="glyphicon glyphicon-user"></span>
             <%= t('menu.account') %>
           <% end %></li> -->
-          <div class="btn-group dropdown" style="margin-top: 35px; margin-bottom: -7px;">
+          <div class="btn-group dropdown" style="margin: 35px 15px -7px;">
             <a href="#" class="dropdown-toggle fakelink" style="font-size:15px;" data-toggle="dropdown">
-              <span class="glyphicon glyphicon-user"></span>
+              <span class="glyphicon glyphicon-user"></span></a>
+            <a href="#" class="dropdown-toggle fakelink" style="font-size:15px; margin-left: -10px;" data-toggle="dropdown">
               <span class = 'hidden-xs'><%= current_user["full_name"] %></span> <b class="caret"></b>
             </a>
             <ul class="dropdown-menu dropdown-menu-right">
-              <li><%= link_to t('menu.question'), '#' %></li>
+              <li><%= link_to t('menu.source'), sources_path %></li>
+              <li><%= link_to t('menu.data'), data_path %></li>
+              <li><%= link_to t('menu.permission'), plugins_path %></li>
+<!--              <li><%= link_to t('menu.question'), '#' %></li>
               <li><%= link_to t('menu.application'), '#' %></li>
               <li><%= link_to t('menu.source'), '#' %></li>
-              <li><%= link_to t('menu.data'),       data_path %></li>
-              <li><%= link_to t('menu.permission'), permissions_path %></li>
-              <li><%= link_to t('menu.task'), '#' %></li>
+              <li><%= link_to t('menu.task'), '#' %></li> -->
               <li class="divider"></li>
               <li><%= link_to t('menu.setting'), account_path %></li>
               <li><%= link_to t('menu.logoff'), logout_path, method: :delete %></li>

@@ -1,7 +1,7 @@
 module Api
 	module V1
 		class AppsController < ApiController
-			include AppsHelper
+			include PluginsHelper
 
 			# respond only to JSON requests
 			respond_to :json
@@ -20,7 +20,7 @@ module Api
 						.joins('INNER JOIN oauth_applications ON oauth_applications.id = oyd_views.plugin_id')
 						.where.not("oyd_views.view_type like ?", "%mobile%")
 						.where('oauth_applications.owner_id=' + user_id.to_s)
-						.select(:id, :plugin_id, :name, :uid, :secret, :identifier, :url, :view_type, :picture, :description), 
+						.select(:id, :plugin_id, :name, :uid, :secret, :identifier, :url, :view_type, :picture, "plugin_details.description as description"), 
 					status: 200
 			end
 
@@ -36,13 +36,6 @@ module Api
 						.select(:id, :name, :identifier, :uid, :secret),
 						status: 200
 				end
-			end
-
-			def create
-				plugin_id = create_apps(params, doorkeeper_token.resource_owner_id)
-
-				# return plugin.id & Status 200
-				render json: { plugin_id: plugin_id }, status: 200
 			end
 
 			def update

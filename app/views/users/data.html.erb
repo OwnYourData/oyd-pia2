@@ -1,5 +1,14 @@
 <% provide(:title, t('menu.data')) %>
-<%= link_to user_path, style: "text-decoration: none; color: black;" do %><h1 style="text-align: left;"><i class="fa fa-arrow-left"></i> <%= t('menu.data') %></h1><% end %>
+<div class="row">
+	<div class="col-xs-1">
+		<%= link_to user_path, style: "text-decoration: none; color: black;" do %>
+			<h1 style="text-align: left;"><i class="fa fa-arrow-left"></i></h1>
+		<% end %>
+	</div>
+	<div class="col-xs-10">
+		<h1><%= t('menu.data') %></h1>
+	</div>
+</div>
 <p style="margin: 10px 0 20px;"><%= t('data.overview_text', record_count: @record_count, app_count: @apps_count) %>
 
 <table id="data-table" class="table table-striped">

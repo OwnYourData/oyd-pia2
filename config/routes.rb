@@ -11,24 +11,52 @@ Rails.application.routes.draw do
 				post 'users/create',            to: 'users#create'
 				post 'users/confirm',           to: 'users#confirm'
 				get  'users/show',              to: 'users#show'
+				post 'users/do_remember',       to: 'users#do_remember'
+				post 'users/remember',          to: 'users#remember'
+				post 'users/forget',            to: 'users#forget'
+				post 'users/update', 			to: 'users#update'
+				post 'users/update_pwd',        to: 'users#update_pwd'
+				post 'users/update_recv_pwd',   to: 'users#update_recv_pwd'
 				get  'users/name_by_token/:id', to: 'users#name_by_token'
 				get  'users/record_count',      to: 'users#record_count'
-				match 'users/current',          to: 'users#current',      via: 'get'
+				match 'users/current',          to: 'users#current',          via: 'get'
+				match 'users/archive',          to: 'users#archive',          via: 'get'
+				match 'users/delete',           to: 'users#delete',           via: 'get'
+				match 'users/app_support',      to: 'users#app_support',      via: 'post'
+				match 'users/statistics',       to: 'users#statistics',       via: 'get'
+				match 'users/hints',            to: 'users#hints',            via: 'get'
+				match 'users/inactive_sources', to: 'users#inactive_sources', via: 'get'
+				match 'users/reset_password',   to: 'users#reset_password',   via: 'post'
+				match 'users/perform_password_reset', to: 'users#perform_password_reset', via: 'post'
 
 				# App/Plugin handling
-				get   'apps/index',   to: 'apps#index'
-				post  'apps/create',  to: 'apps#create'
-				post  'apps/destroy', to: 'apps#destroy'
-				match 'apps/:id',     to: 'apps#update', via: 'put'
-				match 'apps/:id',     to: 'apps#show',   via: 'get'
+				get   'apps/index',             to: 'apps#index'
+				post  'apps/destroy',           to: 'apps#destroy'
+				match 'apps/:id',               to: 'apps#update', via: 'put'
+				match 'apps/:id',               to: 'apps#show',   via: 'get'
 
 				# true plugins (Doorkeeper::Application)
-				match 'plugins/index',   to: 'plugins#index',   via: 'get'
-				match 'plugins/current', to: 'plugins#current', via: 'get'
-				match 'plugins/:id',     to: 'plugins#show',    via: 'get'
-				match 'plugins/:id',     to: 'plugins#update',  via: 'put'
-				match 'plugins/:id',     to: 'plugins#delete',  via: 'delete'
-				match 'plugins/:id/configure', to: 'plugins#configure', via: 'post'
+				match 'plugins/index',           to: 'plugins#index',     via: 'get'
+				match 'plugins/create',          to: 'plugins#create',    via: 'post'
+				match 'plugins/current',         to: 'plugins#current',   via: 'get'
+				match 'plugins/:id',             to: 'plugins#show',      via: 'get'
+				match 'plugins/:id',             to: 'plugins#update',    via: 'put'
+				match 'plugins/:id',             to: 'plugins#delete',    via: 'delete'
+				# match 'plugins/:id/configure',   to: 'plugins#configure', via: 'post'
+				match 'plugins/:id/manifest',    to: 'plugins#manifest_update', via: 'put'
+				match  '/plugin/:id/assist',     to: 'plugins#assist',          via: 'get', constraints: {id: /[^\/]+/}
+				match  '/plugin/:id/assist',     to: 'plugins#assist_update',   via: 'put', constraints: {id: /[^\/]+/}
+
+				# Source handling
+				match 'sources/index',           to: 'sources#index',     via: 'get'
+				match 'sources/inactive',        to: 'sources#inactive',  via: 'get'
+				match 'sources/:id',             to: 'sources#show',      via: 'get'
+				match 'sources/:id',			 to: 'sources#update',    via: 'put'
+				match 'sources/:id',             to: 'sources#delete',    via: 'delete'
+				match 'sources/:id/configure',   to: 'sources#configure', via: 'post'
+				match 'sources/:id/pile',        to: 'sources#new_pile',  via: 'post'
+				match 'sources/:id/last_pile',   to: 'sources#last_pile', via: 'get'
+				match 'piles/:id',               to: 'sources#show_pile', via: 'get'
 
 				# View handling
 				match 'views/:id',    to: 'views#update', via: 'put'
@@ -46,6 +74,7 @@ Rails.application.routes.draw do
 				# Repo handling
 				match 'repos/index',           to: 'repos#index',   via: 'get'
 				match 'repos/:id',             to: 'repos#show',    via: 'get'
+				match 'repos(/:identifier)/identifier', to: 'repos#show_identifier', via: 'get', constraints: {identifier: /[^\/]+/}
 				match 'repos/:id',             to: 'repos#delete',  via: 'delete'
 				match 'repos/:id/items',       to: 'repos#items',   via: 'get'
 				match 'repos/:id/pub_key',     to: 'repos#pub_key', via: 'get', constraints: {id: /[^\/]+/}
@@ -69,7 +98,13 @@ Rails.application.routes.draw do
 				match 'tasks/:id',    to: 'tasks#update', via: 'put',   constraints: {id: /[^\/]+/}
 				match 'tasks/:id',    to: 'tasks#delete', via: 'delete'
 
-				match 'reports/index', to: 'reports#index', via:  'get'
+				# Answers
+				match 'answers/index', to: 'answers#index', via: 'get'
+				match 'answers/:id',   to: 'answers#show',  via: 'get'
+
+				# Reports
+				match 'reports/index', to: 'reports#index',  via: 'get'
+				match 'reports/:id',   to: 'reports#show',   via: 'get'
 				match 'reports/:id',   to: 'reports#update', via: 'put'
 
 				# Logs
@@ -95,25 +130,37 @@ Rails.application.routes.draw do
 		get '/test', to: "static_pages#test"
 
 		# Session handling
-		get    '/login',  to: 'sessions#new'
+		get    '/login',  to: 'static_pages#home'
 		post   '/login',  to: 'sessions#create'
 		delete '/logout', to: 'sessions#destroy'
+		get    '/logout',  to: 'sessions#destroy'
 
 		# User handling
-		get  '/user',        to: 'users#show'
-		get  '/new',         to: 'users#new'
-		get  '/new_account', to: 'users#new_account', constraints: { format: 'json' }
-		post '/new',         to: 'users#create'
-		get  '/confirm',     to: 'users#confirm'
-		post '/confirm',     to: 'users#confirm_email', as: 'users_confirm_email'
-		post 'update',       to: 'users#update',        as: 'users_update_account'
+		get  '/user',              to: 'users#show'
+		get  '/new',               to: 'users#new'
+		get  '/new_account',       to: 'users#new_account', constraints: { format: 'json' }
+		post '/new',               to: 'users#create'
+		get  '/confirm',           to: 'users#confirm'
+		post '/confirm',           to: 'users#confirm_email', as: 'users_confirm_email'
+		post 'update',             to: 'users#update',        as: 'users_update_account'
+		post 'updatePwd',          to: 'users#updatePwd',     as: 'users_update_password'
+		post 'updateRecvPwd',      to: 'users#updateRecvPwd', as: 'users_update_recovery_password'
+		match '/password_reset',   to: 'users#password_reset',   via: 'get'
+		match '/reset_password',   to: 'users#reset_password',   via: 'post'
+		match '/confirm_reset',    to: 'users#confirm_reset',    via: 'get'
+		match '/perform_password_reset', to: 'users#perform_password_reset', via: 'post'
+		match '/archive_decrypt',  to: 'users#archive_decrypt',  via: 'post'
+		match '/user_archive',     to: 'users#user_archive',     via: 'get', defaults: { format: 'json' }
+		match '/pia_delete',       to: 'users#pia_delete',       via: 'post'
 
 		# Plugin handling
-		post   '/plugin/configure', to: 'apps#configure'
-		delete '/plugin/remove', to: 'apps#plugin_destroy'
-		get    '/plugin/detail', to: 'apps#plugin_detail', as: 'show_plugin_details'
-		post   '/plugin/update', to: 'apps#plugin_update'
-		get    '/plugin/:id/config', to: 'apps#plugin_config', as: 'configure_plugin'
+		match  '/plugins',           to: 'users#plugins',        via: 'get'
+		post   '/plugin/configure',  to: 'apps#configure'
+		delete '/plugin/remove',     to: 'apps#plugin_destroy'
+		get    '/plugin/detail',     to: 'apps#plugin_detail',   as: 'show_plugin_details'
+		post   '/plugin/update',     to: 'apps#plugin_update'
+		get    '/plugin/:id/config', to: 'apps#plugin_config',   as: 'configure_plugin'
+		get    '/plugin/:id/update', to: 'apps#manifest_update', as: 'update_plugin'
 
 		# App handling
 		post   '/app/new',       to: 'apps#plugin_config'
@@ -124,17 +171,23 @@ Rails.application.routes.draw do
 		get    '/app/detail_password', to: 'apps#detail_password', as: 'show_app_details_password'
 
 		# Navigation - records
-		match '/data',     to: 'users#data',  via: 'get'
-		match '/data/:id', to: 'items#index', via: 'get', as: 'show_data'
+		match '/data',     to: 'users#data',       via: 'get'
+		match '/data/:id', to: 'items#index',      via: 'get', as: 'show_data'
 		match '/data/:id',                         to: 'items#repo_delete', via: 'delete', as: 'repo_delete'
 		match '/data/:repo_id/item/:item_id',      to: 'items#show',        via: 'get',    as: 'data_item'
 		match '/data/:repo_id/item/:item_id/edit', to: 'items#edit',        via: 'get',    as: 'data_item_edit'
 		match '/data/:repo_id/item/:item_id',      to: 'items#delete',      via: 'delete', as: 'data_item_delete'
-		match '/account',  to: 'users#edit',    via: 'get'
-		match '/decrypt',  to: 'items#decrypt', via: 'post'
+		match '/account',  to: 'users#edit',       via: 'get'
+		match '/decrypt',  to: 'items#decrypt',    via: 'post'
 
-		# Navigation - permission
-		match '/permissions',     to: 'users#permissions',  via: 'get'
+		# Source handling
+		match '/sources',          to: 'users#sources',   via: 'get'
+		match '/sources/remove',   to: 'sources#destroy', via: 'delete'
+		match '/sources/:id/edit', to: 'sources#edit',    via: 'get',   as: 'configure_source'
+		match '/sources/update',   to: 'sources#update',  via: 'post'
+
+		# OYD Assistant
+		match '/hide_assist', to: 'users#hide_assist', via: 'post', as: 'hide_assist'
 
 	end
 	match ':not_found' => 'application#missing', :constraints => { :not_found => /.*/ }, via: [:get, :post]

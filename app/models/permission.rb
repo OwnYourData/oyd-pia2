@@ -2,7 +2,7 @@
 #
 # Table name: permissions
 #
-#  id              :integer          not null, primary key
+#  id              :bigint(8)        not null, primary key
 #  plugin_id       :integer
 #  repo_identifier :string
 #  perm_type       :integer

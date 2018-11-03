@@ -1,9 +1,20 @@
 <% provide(:title, @repo["name"] ) %>
-<%= link_to data_path, style: "text-decoration: none; color: black;" do %><h1 style="text-align: left;"><i class="fa fa-arrow-left"></i> <%= @repo['name'] %></h1><% end %>
+<div class="row">
+	<div class="col-xs-1">
+		<%= link_to data_path, style: "text-decoration: none; color: black;" do %>
+			<h1 style="text-align: left;"><i class="fa fa-arrow-left"></i></h1>
+		<% end %>
+	</div>
+	<div class="col-xs-10">
+		<h1><%= @repo['name'] rescue "" %></h1>
+	</div>
+</div>
 
 <% flash.each do |message_type, message| %>
 	<div class="alert alert-<%= message_type %>"><%= message %></div>
 <% end %>
+
+<%= will_paginate @items, previous_label: t('general.paging_previous'), next_label: t('general.paging_next') %>
 
 <table id="items-table" class="table table-striped">
 	<thead> 
@@ -15,7 +26,9 @@
 	</thead>
 	<tbody>
 		<%= render partial: "item_list", 
-				   collection: @items.sort_by { |item| JSON.parse(item)["id"] }, 
+				   collection: @items, 
 				   locals: { repo_id: @repo["id"] } %>
 	</tbody>
 </table>
+
+<%= will_paginate @items, previous_label: t('general.paging_previous'), next_label: t('general.paging_next') %>

@@ -14,9 +14,15 @@ module Api
 					render json: {}, 
 						   status: 200
 				else
-					render json: @reports.select(:id, :name, :identifier, :plugin_id, :data_prep, :data_snippet, :current, :report_view, :answer_view, :answer_logic),
+					render json: @reports.select(:id, :name, :identifier, :plugin_id, :data_prep, :data_snippet, :current, :report_view, :report_order, :repos, :info_url),
 						   status: 200
 				end
+			end
+
+			def show
+				@oyd_report = OydReport.find(params[:id])
+				render json: @oyd_report.attributes, 
+					   status: 200
 			end
 
 			def update

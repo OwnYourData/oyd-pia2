@@ -1,5 +1,14 @@
 <% provide(:title, t('data.record_hdr') ) %>
-<%= link_to show_data_path(id: @item["repo_id"].to_s), style: "text-decoration: none; color: black;" do %><h1 style="text-align: left;"><i class="fa fa-arrow-left"></i> <%= t('data.record_hdr') %> <%= @item["id"] %></h1><% end %>
+<div class="row">
+	<div class="col-xs-1">
+		<%= link_to show_data_path(id: @item["repo_id"].to_s), style: "text-decoration: none; color: black;" do %>
+			<h1 style="text-align: left;"><i class="fa fa-arrow-left"></i></h1>
+		<% end %>
+	</div>
+	<div class="col-xs-10">
+		<h1><%= t('data.record_hdr') %> <%= @item["id"] %></h1>
+	</div>
+</div>
 
 <div class="table-responsive">
 	<table class="table table-striped">
@@ -31,7 +40,7 @@
 										<h4 class="modal-title" id="detailsHeader"><%= t('data.decrypt_data_title') %></h4>
 									</div>
 									<div class="modal-body">
-										<div class="alert alert-warning" id="invalidPwdMsg" style="display:hidden;"></div>
+										<div class="alert alert-warning" id="invalidPwdMsg" style="display:none;"></div>
 										<%= form_with url: decrypt_path, remote: true do |form| %>
 											<%= form.hidden_field :value, value: @item['value'] %>
 											<label for="password"><%= t('data.passwordDecryptLbl') %>:</label><br>
@@ -159,6 +168,26 @@
 					<% end %>
 				</td>
 			</tr>
+			<% if !@item["oyd_source_pile_id"].nil? %>
+				<tr>
+					<td><%= t('data.verified_source') %></td>
+					<td>
+						<a id="source_verification_popover" tabindex="0" data-toggle="popover" 
+							data-placement="top" data-html="true"
+							title='<%= t('data.verified_source') %> <span class="close">&times;</span>' 
+                            data-content="<p><%= t('data.verified_source_description') %></p>"><%= image_tag 'correct.png', style: "height: 18px;" %></a>
+						<%= @item["oyd_source_pile_email"].to_s %> (<a href="#" onclick="$('#oyd_source_pile_record').show(); return false;"><%= t('data.show_verified_source') %></a>)<br>
+						<div id="oyd_source_pile_record" style="display:none; word-break: break-all;">
+							<h4>Content</h4>
+							<p><small><%= @item_source_pile_content %></small></p>
+							<h4>Signature</h4>
+							<p><small><%= @item_source_pile_signature %></small></p>
+							<h4>Verification</h4>
+							<p><small><%= @item_source_pile_verification %></small></p>
+						</div>
+					</td>
+				</tr>
+			<% end %>
 			<tr>
 				<td><%= t('data.repo_title') %></td>
 				<td><%= @item["repo_name"].to_s %> (id: <%= @item["repo_id"].to_s %>)</td>
@@ -174,3 +203,9 @@
 		</tbody> 
 	</table>
 </div>
+<script type="text/javascript">
+$(function () {
+  $('[data-toggle="popover"]').popover({ container: 'body' }).on("show.bs.popover", function(){ $(this).data("bs.popover").tip().css("max-width", "680px"); }).on('shown.bs.popover', function (eventShown) { var $popup = $('#' + $(eventShown.target).attr('aria-describedby')); $popup.find('.close').click(function (e) { $popup.popover('hide'); }); });
+});
+$('body').on('hidden.bs.popover', function (e) { $(e.target).data("bs.popover").inState.click = false; });
+</script>

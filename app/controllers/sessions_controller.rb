@@ -1,8 +1,6 @@
 class SessionsController < ApplicationController
 	include ApplicationHelper
-
-	def new
-	end
+    include SessionsHelper
 
 	def create
         login_user_url = getServerUrl() + "/oauth/token"
@@ -18,7 +16,15 @@ class SessionsController < ApplicationController
         if !response.nil? && response.code == 200
             token = response.parsed_response["access_token"].to_s
             log_in token
-            redirect_to user_path
+            params[:remember] == '1' ? remember(current_user) : forget(current_user)
+
+            app_support_url = getServerUrl() + "/api/users/app_support"
+            response = HTTParty.post(app_support_url,
+                headers: { 'Content-Type' => 'application/json',
+                           'Authorization' => 'Bearer ' + token },
+                body: { nonce: params[:nonce],
+                        cipher: params[:cipher] }.to_json )
+            redirect_back_or user_path
         else
             if response.nil?
                 msg = "Can't access backend"
@@ -36,7 +42,8 @@ class SessionsController < ApplicationController
 	end
 
 	def destroy
-		log_out if logged_in?
-		redirect_to root_url
+        log_out if logged_in?
+        log_out if logged_in?
+		redirect_to login_url
 	end
 end

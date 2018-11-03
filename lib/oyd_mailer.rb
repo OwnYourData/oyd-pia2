@@ -20,4 +20,25 @@ class OydMailer < Devise::Mailer
 			super
 		end
 	end 
+
+	def password_reset(opts={})
+		@user = params[:user]
+		@token = params[:token]
+		if @user.language == 'de'
+			I18n.with_locale('de') do
+				mail(to: @user.email, 
+					 from: 'Christoph von OwnYourData <oyd.email@gmail.com>',
+					 reply_to: 'Christoph von OwnYourData <christoph@ownyourdata.eu>',
+					 subject: "[OwnYourData] Passwort zurücksetzen")
+			end
+		else
+			I18n.with_locale('en') do
+				mail(to: @user.email, 
+					 from: 'Christoph from OwnYourData <oyd.email@gmail.com>',
+					 reply_to: 'Christoph from OwnYourData <christoph@ownyourdata.eu>',
+					 subject: "[OwnYourData] Reset Password")
+			end
+		end
+	end
+
 end

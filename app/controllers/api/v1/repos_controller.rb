@@ -7,7 +7,13 @@ module Api
 			respond_to :xml, only: []
 
 			def index
-				@user = User.find(current_resource_owner.id)
+				if doorkeeper_token.application_id.nil?
+					user_id = current_resource_owner.id
+				else
+					@app = Doorkeeper::Application.find(doorkeeper_token.application_id)
+					user_id = @app.owner_id
+				end
+				@user = User.find(user_id)
 				@repos = @user.repos
 				retVal = []
 				@repos.each do |repo|
@@ -25,14 +31,39 @@ module Api
 			end
 
 			def show
+				if doorkeeper_token.application_id.nil?
+					user_id = current_resource_owner.id
+				else
+					@app = Doorkeeper::Application.find(doorkeeper_token.application_id)
+					user_id = @app.owner_id
+				end
 				@repo = Repo.where(
 					id: params[:id], 
-					user_id: current_resource_owner.id)
+					user_id: user_id)
 				if @repo.nil?
 					render json: { "error": "repo not found" }, 
 						   status: 404
 				else
 					render json: @repo.first,
+						   status: 200
+				end
+			end
+
+			def show_identifier
+				if doorkeeper_token.application_id.nil?
+					user_id = current_resource_owner.id
+				else
+					@app = Doorkeeper::Application.find(doorkeeper_token.application_id)
+					user_id = @app.owner_id
+				end
+				@repo = Repo.where(
+					identifier: params[:identifier], 
+					user_id: user_id)
+				if @repo.nil?
+					render json: { "error": "repo not found" }, 
+						   status: 404
+				else
+					render json: @repo.first.attributes.merge("items": @repo.first.items.count),
 						   status: 200
 				end
 			end

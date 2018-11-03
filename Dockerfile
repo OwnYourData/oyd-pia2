@@ -1,4 +1,4 @@
-FROM ruby:2.4.2
+FROM ruby:2.4.4
 MAINTAINER "Christoph Fabianek" christoph@ownyourdata.eu
 
 RUN mkdir -p /usr/src/app
@@ -22,7 +22,7 @@ RUN gem install bundler
 
 COPY . .
 
-RUN bundle update
+RUN  bundle update
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
 
