@@ -7,6 +7,9 @@ Rails.application.routes.draw do
 		scope module: :v1,
 			constraints: ApiConstraints.new(version: 1, default: true) do
 
+				# App support
+				match 'support/:nonce',         to: 'users#support',          via: 'get'
+
 				# User handling
 				post 'users/create',            to: 'users#create'
 				post 'users/confirm',           to: 'users#confirm'
@@ -36,12 +39,13 @@ Rails.application.routes.draw do
 				match 'apps/:id',               to: 'apps#show',   via: 'get'
 
 				# true plugins (Doorkeeper::Application)
-				match 'plugins/index',           to: 'plugins#index',     via: 'get'
-				match 'plugins/create',          to: 'plugins#create',    via: 'post'
-				match 'plugins/current',         to: 'plugins#current',   via: 'get'
-				match 'plugins/:id',             to: 'plugins#show',      via: 'get'
-				match 'plugins/:id',             to: 'plugins#update',    via: 'put'
-				match 'plugins/:id',             to: 'plugins#delete',    via: 'delete'
+				match 'plugins/index',           to: 'plugins#index',           via: 'get'
+				match 'plugins/create',          to: 'plugins#create',          via: 'post'
+				match 'plugins/current',         to: 'plugins#current',         via: 'get'
+				match 'plugins/:id',             to: 'plugins#show',            via: 'get'
+				match 'plugins/:id',             to: 'plugins#update',          via: 'put'
+				match 'plugins/:id',             to: 'plugins#delete',          via: 'delete'
+				match 'plugins/identifier/:id',  to: 'plugins#show_identifier', via: 'get', constraints: {id: /[^\/]+/}
 				# match 'plugins/:id/configure',   to: 'plugins#configure', via: 'post'
 				match 'plugins/:id/manifest',    to: 'plugins#manifest_update', via: 'put'
 				match  '/plugin/:id/assist',     to: 'plugins#assist',          via: 'get', constraints: {id: /[^\/]+/}

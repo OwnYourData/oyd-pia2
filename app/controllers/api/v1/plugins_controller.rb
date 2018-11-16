@@ -162,6 +162,18 @@ module Api
                 end
             end
 
+            def show_identifier
+                if current_resource_owner.nil?
+                    render json: { "error": "Permission denied" }, 
+                           status: 403
+                else
+                    render json: Doorkeeper::Application
+                        .where(owner_id: current_resource_owner.id, identifier: params[:id])
+                        .select(:id, :name, :identifier, :uid, :secret, :oyd_version),
+                        status: 200
+                end
+            end
+
             def update
                 if current_resource_owner.nil?
                     if doorkeeper_token.application_id.to_i != params[:id].to_i

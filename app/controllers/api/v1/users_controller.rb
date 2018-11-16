@@ -722,6 +722,18 @@ module Api
                            status: 422
                 end    
             end
+
+            def support
+                @user = User.find_by_app_nonce(params[:nonce])
+                if @user.nil?
+                    render json: { "error": "unknown nonce" },
+                           status: 404
+                else
+                    render json: { "email": @user.email,
+                                   "cipher": @user.app_cipher },
+                           status: 200
+                end
+            end
         end
     end
 end

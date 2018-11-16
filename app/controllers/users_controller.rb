@@ -16,6 +16,20 @@ class UsersController < ApplicationController
                        'Authorization' => 'Bearer ' + token }).parsed_response
         @installed_apps_identifier = @installed_apps.map {|x| x["identifier"]}
 
+        current_user_url = getServerUrl() + "/api/users/current"
+        @user = HTTParty.get(current_user_url,
+             headers: { 'Accept' => '*/*',
+                       'Content-Type' => 'application/json',
+                       'Authorization' => 'Bearer ' + token }).parsed_response
+        @nonce = ""
+        begin
+            if @user["app_nonce"].to_s != ""
+                @nonce = "&NONCE=" + @user["app_nonce"].to_s
+            end
+        rescue
+            @nonce = ""
+        end
+
         # OYD Assistant
         @show_assistant, @assist_text, @assist_type, @assist_id = oyd_assistant(token)
     end
@@ -361,7 +375,7 @@ class UsersController < ApplicationController
     def hide_assist
         token = session[:token]
         case params[:assist_type]
-        when "new_plugin"
+        when "new_plugin", "install_app"
             plugin_assist_url = getServerUrl() + "/api/plugin/" + params[:assist_id].to_s + "/assist"
             response = HTTParty.put(plugin_assist_url,
                 headers: { 'Content-Type' => 'application/json',

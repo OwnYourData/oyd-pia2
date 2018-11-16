@@ -5,6 +5,48 @@ module UsersHelper
         assist_type = ""
         assist_id = ""
 
+        # check if OYD app is installed (= location records exist)
+        if !found
+            oyd_app = false
+            items_url = getServerUrl() + '/api/repos/oyd.location/identifier'
+            response = HTTParty.get(items_url, 
+                    headers: { 'Accept' => '*/*', 
+                               'Content-Type' => 'application/json', 
+                               'Authorization' => 'Bearer ' + token.to_s }).parsed_response
+            if response == 200
+                begin
+                    if response["items"].to_i > 0
+                        oyd_app = true
+                    end
+                rescue
+                    oyd_app = false
+                end
+            end
+
+            if !oyd_app
+                tmp = HTTParty.get(getServerUrl() + "/api/plugin/oyd.location/assist", 
+                        headers: { 'Accept' => '*/*', 
+                                   'Content-Type' => 'application/json', 
+                                   'Authorization' => 'Bearer ' + token.to_s }).parsed_response
+                if tmp["assist"]
+                    found = true
+                    if I18n.locale.to_s == "de"
+                        assist_text = "<p>Hast du schon die OwnYourData App auf deinem Handy installiert? Damit kannst du auf deinen Datentresor vom Handy aus zugreifen und gleichzeitig deine GPS Daten aufzeichnen! Führe die folgenden Schritte durch, um die App zu installieren:</p>"
+                        assist_text += "<ol><li>wähle im Benutzermenü <span class='glyphicon glyphicon-user'></span> rechts oben den Eintrag 'Einstellungen'</li>"
+                        assist_text += "<li>verwende die Links zum Apple AppStore oder dem Google PlayStore im grauen Feld</li>"
+                        assist_text += "<li>folge den Anweisungen zur Installation und Einrichtung der App</li></ol>"
+                    else
+                        assist_text = "<p>Have you already installed the OwnYourData app on your mobile? It lets you access your data vault from your phone and allows you to recordyour GPS data! Follow these steps to install the app:</p>"
+                        assist_text += "<ol><li>open the user menu <span class='glyphicon glyphicon-user'></span> in the upper right corner and select 'Settings'</li>"
+                        assist_text += "<li>use the links to the Apple AppStore or Google PlayStore in the gray box</li>"
+                        assist_text += "<li>follow the instructions to install and set up the app</li></ol>"
+                    end
+                    assist_type = "install_app"
+                    assist_id = "oyd.location"
+                end
+            end
+        end
+
         # check to update plugins
         if !found
             @installed_plugins = HTTParty.get(

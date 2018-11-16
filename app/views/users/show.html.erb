@@ -30,7 +30,9 @@
 
 <div style="clear:both;"></div>
 <script type="text/javascript">
-	$('.app_link').each(function(i, obj){
-		$(this).attr("href", $(this).attr("href") + "&MASTER_KEY=" + sessionStorage["app_support"]);
-	})
+	if (typeof sessionStorage["app_support"] != 'undefined'){
+		$('.app_link').each(function(i, obj){
+			$(this).attr("href", $(this).attr("href") + "&MASTER_KEY=" + sessionStorage["app_support"]);
+		})
+	}
 </script>
