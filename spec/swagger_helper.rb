@@ -18,7 +18,7 @@ RSpec.configure do |config|
       info: {
         title: 'OwnYourData Data Vault API',
         version: 'v1',
-        "description": "The data vault is the central element for securley storing personal data with OwnYourData.n \n Further information:\n - learn more about the Data Vault at https://data-vault.eu\n - view other [OwnYourData Service API's](https://api-docs.ownyourdata.eu)",
+        "description": "The data vault is the central element for securley storing personal data with OwnYourData.\n \n Further information:\n - learn more about the Data Vault at https://data-vault.eu\n - view other [OwnYourData Service API's](https://api-docs.ownyourdata.eu)",
         "contact": {
           "email": "office@ownyourdata.eu"
         },
