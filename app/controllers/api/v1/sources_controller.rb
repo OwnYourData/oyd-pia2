@@ -168,7 +168,7 @@ module Api
                                             {"SOURCE_ID": @oyd_source.id}.stringify_keys,
                                              mergeParams(
                                                 toParams(itemConfig['repos'], "REPO"),
-                                                paramsConfig).to_s.gsub("=>", ":")))
+                                                paramsConfig.to_json).to_json))
 
                             # create entries in answers
                             itemConfig['answers'].each do |answer|

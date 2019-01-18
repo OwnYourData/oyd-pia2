@@ -12,7 +12,7 @@ RUN echo "deb http://deb.debian.org/debian stretch-backports main" >> /etc/apt/s
 		libpq-dev \
 		nodejs \
 		postgresql-client && \
-	rm -rf /var/lib/apt/lists/*
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ENV RAILS_ROOT $WORKDIR
 RUN mkdir -p $RAILS_ROOT/tmp/pids

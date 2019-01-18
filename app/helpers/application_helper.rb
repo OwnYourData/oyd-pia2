@@ -209,4 +209,48 @@ module ApplicationHelper
         end
     end
 
+    def check_permission(repo_identifier, app, perm_type)
+        if app.is_a?(ActiveRecord::Base)
+            if Permission.where(
+                    plugin_id: app.id, 
+                    perm_type: perm_type,
+                    perm_allow: true).count > 0
+                if repo_identifier.match?(/#{Permission.where(
+                            plugin_id: app.id, 
+                            perm_type: perm_type,
+                            perm_allow: true
+                        ).pluck(:repo_identifier).join('|')}/)
+                    true
+                else
+                    false
+                end
+            else
+                false
+            end
+        else
+            if app.count == 0
+                return false
+            end
+            if Permission.where(
+                    plugin_id: app.pluck(:id), 
+                    perm_type: perm_type,
+                    perm_allow: true).count > 0
+                if !repo_identifier.nil?
+                    if repo_identifier.match?(/#{Permission.where(
+                                plugin_id: app.pluck(:id), 
+                                perm_type: perm_type,
+                                perm_allow: true
+                            ).pluck(:repo_identifier).join('|')}/)
+                        true
+                    else
+                        false
+                    end
+                else
+                    false
+                end
+            else
+                false
+            end
+        end
+    end
 end

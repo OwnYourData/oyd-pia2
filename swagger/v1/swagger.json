@@ -1,0 +1,50 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OwnYourData Data Vault API",
+    "version": "v1",
+    "description": "The data vault is the central element for securley storing personal data with OwnYourData.n \n Further information:\n - learn more about the Data Vault at https://data-vault.eu\n - view other [OwnYourData Service API's](https://api-docs.ownyourdata.eu)",
+    "contact": {
+      "email": "office@ownyourdata.eu"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "paths": {
+    "/oauth/token": {
+      "post": {
+        "summary": "request token",
+        "tags": [
+          "Authorization"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "401": {
+            "description": "invalid"
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "Bearer": {
+      "description": "Authorization token",
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}

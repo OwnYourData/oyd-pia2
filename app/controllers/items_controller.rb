@@ -16,14 +16,25 @@ class ItemsController < ApplicationController
                 text: t('general.inexistentOrDenied'))
             return
         else
-          items_url = getServerUrl() + '/api/repos/id/' + params[:id].to_s + '/items'
+          my_page = params[:page].to_s
           app = { "pia_url" => getServerUrl(),
                   "app_key" => nil,
                   "app_secret" => nil,
                   "token" => token }
-          @items = readRawItems(app, items_url)
-          @items = @items.sort_by{ |item| JSON.parse(item)["id"] rescue 0 }
-          @items = @items.paginate(page: params[:page], :per_page => 200)
+          headers = defaultHeaders(app["token"])
+          url_data = getServerUrl() + '/api/repos/id/' + params[:id].to_s + '/items?size=200'
+          if my_page != ""
+            url_data += '&page=' + my_page
+          end
+          response = HTTParty.get(url_data, headers: headers)
+          if response.code == 200
+              recs = response.headers["total-count"].to_i
+              @my_items = response.parsed_response
+              @items = Array(1..recs).paginate(page: params[:page], :per_page => 200)
+          else
+            redirect_to info_path(title: t('general.invalidAddress'), 
+                text: t('general.inexistentOrDenied'))
+          end
         end
     end
 

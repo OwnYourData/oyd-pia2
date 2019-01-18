@@ -1,6 +1,7 @@
 module Api
     module V1
         class ItemsController < ApiController
+            include ApplicationHelper
             require 'will_paginate/array'
             after_action only: [:index, :index_id] { set_pagination_headers(:items) rescue [] }
 
@@ -8,51 +9,6 @@ module Api
             respond_to :json
             respond_to :html, only: []
             respond_to :xml, only: []
-
-            def check_permission(repo_identifier, app, perm_type)
-                if app.is_a?(ActiveRecord::Base)
-                    if Permission.where(
-                            plugin_id: app.id, 
-                            perm_type: perm_type,
-                            perm_allow: true).count > 0
-                        if repo_identifier.match?(/#{Permission.where(
-                                    plugin_id: app.id, 
-                                    perm_type: perm_type,
-                                    perm_allow: true
-                                ).pluck(:repo_identifier).join('|')}/)
-                            true
-                        else
-                            false
-                        end
-                    else
-                        false
-                    end
-                else
-                    if app.count == 0
-                        return false
-                    end
-                    if Permission.where(
-                            plugin_id: app.pluck(:id), 
-                            perm_type: perm_type,
-                            perm_allow: true).count > 0
-                        if !repo_identifier.nil?
-                            if repo_identifier.match?(/#{Permission.where(
-                                        plugin_id: app.pluck(:id), 
-                                        perm_type: perm_type,
-                                        perm_allow: true
-                                    ).pluck(:repo_identifier).join('|')}/)
-                                true
-                            else
-                                false
-                            end
-                        else
-                            false
-                        end
-                    else
-                        false
-                    end
-                end
-            end
 
             def index
                 @items = []
@@ -70,9 +26,26 @@ module Api
                     render json: {}, status: 200
                 else
                     if check_permission(@repo.identifier, @app, PermType::READ)
-                        @items = @repo.items
-                            .pluck(:value)
-                            .paginate(page: params[:page], per_page: 2000)
+                        per_page_size = 2000
+                        if !params[:size].nil?
+                            begin
+                                per_page_size = params[:size].to_i
+                            rescue
+                                per_page_size = 2000
+                            end
+                        end
+                        if params[:last].nil? || !float?(params[:last].to_s)
+                            @items = @repo.items
+                                .order(:id)
+                                .pluck(:value)
+                                .paginate(page: params[:page], per_page: per_page_size)
+                        else
+                            @items = @repo.items
+                                .order(:id)
+                                .pluck(:value)
+                                .last(params[:last].to_i)
+                                .paginate(page: params[:page], per_page: per_page_size)
+                        end
                         render json: @items, 
                                status: 200
                     else
@@ -98,9 +71,18 @@ module Api
                     render json: {}, status: 200
                 else
                     if check_permission(@repo.identifier, @app, PermType::READ)
+                        per_page_size = 2000
+                        if !params[:size].nil?
+                            begin
+                                per_page_size = params[:size].to_i
+                            rescue
+                                per_page_size = 2000
+                            end
+                        end
                         @items = @repo.items
+                            .order(:id)
                             .pluck(:value)
-                            .paginate(page: params[:page], per_page: 2000)
+                            .paginate(page: params[:page], per_page: per_page_size)
                         render json: @items, 
                                status: 200
                     else

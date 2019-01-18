@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
 	use_doorkeeper
 	devise_for :users
 
@@ -86,12 +88,12 @@ Rails.application.routes.draw do
 				match 'apps/:plugin_id/repos', to: 'repos#apps',    via: 'get'
 
 				# Item handling
+				match 'repos/id/:id/items',                   to: 'items#index_id',  via: 'get'
+				match 'repos/id/:repo_id/items/:id',          to: 'items#delete_id', via: 'delete'
 				match 'repos(/:repo_identifier)/items',       to: 'items#create',    via: 'post',   constraints: {repo_identifier: /[^\/]+/}
 				match 'repos(/:repo_identifier)/items',       to: 'items#index',     via: 'get',    constraints: {repo_identifier: /[^\/]+/}
-				match 'repos/id/:id/items',                   to: 'items#index_id',  via: 'get'
 				match 'repos(/:repo_identifier)/items/:id',   to: 'items#update',    via: 'put',    constraints: {repo_identifier: /[^\/]+/}
 				match 'repos(/:repo_identifier)/items/:id',   to: 'items#delete',    via: 'delete', constraints: {repo_identifier: /[^\/]+/}
-				match 'repos/id/:repo_id/items/:id',          to: 'items#delete_id', via: 'delete'
 				match 'items/:id/details',                    to: 'items#details',   via: 'get'
 				match 'items/count', 						  to: 'items#count',     via: 'get'
 
@@ -192,6 +194,9 @@ Rails.application.routes.draw do
 
 		# OYD Assistant
 		match '/hide_assist', to: 'users#hide_assist', via: 'post', as: 'hide_assist'
+
+		# access from external applications
+		match '/external/gmaps_analysis/register', to: 'static_pages#gmaps', via: 'get'
 
 	end
 	match ':not_found' => 'application#missing', :constraints => { :not_found => /.*/ }, via: [:get, :post]

@@ -9,6 +9,9 @@ class StaticPagesController < ApplicationController
 	def info
 	end
 
+	def gmaps
+	end
+
 	def favicon
 		send_file 'public/favicon.ico', type: 'image/x-icon', disposition: 'inline'
 	end

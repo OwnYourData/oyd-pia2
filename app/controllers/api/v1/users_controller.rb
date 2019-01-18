@@ -594,9 +594,9 @@ module Api
                         if plugin["oyd_version"].to_s == ""
                             if plugin["assist_update"].nil? or plugin["assist_update"]
                                 if params[:lang].to_s == "de"
-                                    retVal << "für die Erweiterung '" + plugin["name"].to_s + "' gibt es eine neue Version - <a href='" + params[:pia_url].to_s + "/de/plugins'>hier aktualisieren</a>"
+                                    retVal << "für die Erweiterung '" + plugin["name"].to_s + "' gibt es eine neue Version - <a href='" + ENV['VAULT_URL'].to_s + "/de/plugins'>hier aktualisieren</a>"
                                 else
-                                    retVal << "for the plugin '" + plugin["name"].to_s + "' is a new version available - <a href='" + params[:pia_url].to_s + "/en/plugins'>update here</a>"
+                                    retVal << "for the plugin '" + plugin["name"].to_s + "' is a new version available - <a href='" + ENV['VAULT_URL'].to_s + "/en/plugins'>update here</a>"
                                 end
                             end
                         else
@@ -605,9 +605,9 @@ module Api
                                     if (plugin["oyd_version"].to_s != item["version"].to_s)
                                         if plugin["assist_update"].nil? or plugin["assist_update"]
                                             if params[:lang].to_s == "de"
-                                                retVal << "für die Erweiterung '" + plugin["name"].to_s + "' gibt es eine neue Version - <a href='" + params[:pia_url].to_s + "/de/plugins'>hier aktualisieren</a>"
+                                                retVal << "für die Erweiterung '" + plugin["name"].to_s + "' gibt es eine neue Version - <a href='" + ENV['VAULT_URL'].to_s + "/de/plugins'>hier aktualisieren</a>"
                                             else
-                                                retVal << "for the plugin '" + plugin["name"].to_s + "' is a new version available - <a href='" + params[:pia_url].to_s + "/en/plugins'>update here</a>"
+                                                retVal << "for the plugin '" + plugin["name"].to_s + "' is a new version available - <a href='" + ENV['VAULT_URL'].to_s + "/en/plugins'>update here</a>"
                                             end
                                         end
                                     end
@@ -622,9 +622,9 @@ module Api
                         if !source["configured"]
                             if source["assist_check"].nil? or source["assist_check"]
                                 if params[:lang].to_s == "de"
-                                    retVal << "die Datenquelle '" + source["name"].to_s + "' ist noch nicht konfiguriert - <a href='" + params[:pia_url].to_s + "/de/sources'>hier einrichten</a>"
+                                    retVal << "die Datenquelle '" + source["name"].to_s + "' ist noch nicht konfiguriert - <a href='" + ENV['VAULT_URL'].to_s + "/de/sources'>hier einrichten</a>"
                                 else
-                                    retVal << "the data source '" + source["name"].to_s + "' is not yet configured - <a href='" + params[:pia_url].to_s + "/en/sources'>set it up here</a>"
+                                    retVal << "the data source '" + source["name"].to_s + "' is not yet configured - <a href='" + ENV['VAULT_URL'].to_s + "/en/sources'>set it up here</a>"
                                 end
                             end
                         end
@@ -647,9 +647,9 @@ module Api
                                 end
                                 if exec
                                     if params[:lang].to_s == "de"
-                                        retVal << "die neue Erweiterung '" + item["name"].to_s + "' ist verfügbar - <a href='" + params[:pia_url].to_s + "/de/plugins'>hier installieren</a>"
+                                        retVal << "die neue Erweiterung '" + item["name"].to_s + "' ist verfügbar - <a href='" + ENV['VAULT_URL'].to_s + "/de/plugins'>hier installieren</a>"
                                     else
-                                        retVal << "the new plugin '" + item["name"].to_s + "' is available - <a href='" + params[:pia_url].to_s + "/en/plugins'>install here</a>"
+                                        retVal << "the new plugin '" + item["name"].to_s + "' is available - <a href='" + ENV['VAULT_URL'].to_s + "/en/plugins'>install here</a>"
                                     end
                                 end
                             end

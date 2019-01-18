@@ -6,6 +6,8 @@ module Api
 			respond_to :html, only: []
 			respond_to :xml, only: []
 
+			include ApplicationHelper
+
 			def index
 				if doorkeeper_token.application_id.nil?
 					user_id = current_resource_owner.id
@@ -40,7 +42,7 @@ module Api
 				@repo = Repo.where(
 					id: params[:id], 
 					user_id: user_id)
-				if @repo.nil?
+				if (@repo.nil? or @repo.count == 0)
 					render json: { "error": "repo not found" }, 
 						   status: 404
 				else
@@ -59,11 +61,11 @@ module Api
 				@repo = Repo.where(
 					identifier: params[:identifier], 
 					user_id: user_id)
-				if @repo.nil?
+				if (@repo.nil? or @repo.count == 0)
 					render json: { "error": "repo not found" }, 
 						   status: 404
 				else
-					render json: @repo.first.attributes.merge("items": @repo.first.items.count),
+					render json: @repo.first.attributes.merge("items": @repo.first.items.count).stringify_keys,
 						   status: 200
 				end
 			end
@@ -72,7 +74,7 @@ module Api
 				@repo = Repo.where(
 					id: params[:id], 
 					user_id: current_resource_owner.id)
-				if @repo.nil?
+				if (@repo.nil? or @repo.count == 0)
 					render json: { "error": "repo not found" }, 
 						   status: 404
 				else
@@ -83,16 +85,45 @@ module Api
 			end
 
 			def items
-				@repo = Repo.where(
-					id: params[:id], 
-					user_id: current_resource_owner.id)
-				if @repo.nil?
-					render json: { "error": "repo not found" }, 
-						   status: 404
-				else
-					@items = Item.where(repo_id: @repo.first.id)
-					render json: @items,
-						   status: 200
+                @items = []
+                repo_id = params[:id]
+                if !doorkeeper_token.application_id.nil?
+                    @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
+                    @repo = Repo.where(id: repo_id, 
+                                       user_id: @app.owner_id).first
+                else
+                    @app = Doorkeeper::Application.where(owner_id: doorkeeper_token.resource_owner_id)
+                    @repo = Repo.where(id: repo_id, 
+                                       user_id: @app.first.owner_id).first
+                end
+                if @repo.nil?
+                    render json: {}, status: 200
+                else
+                    if check_permission(@repo.identifier, @app, PermType::READ)
+                        per_page_size = 2000
+                        if !params[:size].nil?
+                            begin
+                                per_page_size = params[:size].to_i
+                            rescue
+                                per_page_size = 2000
+                            end
+                        end
+                        if params[:last].nil? || !float?(params[:last].to_s)
+	                        @items = @repo.items
+	                            .order(:id)
+	                            .paginate(page: params[:page], per_page: per_page_size)
+	                    else
+	                        @items = @repo.items
+	                            .order(:id)
+	                            .last(params[:last].to_i)
+	                            .paginate(page: params[:page], per_page: per_page_size)
+	                    end
+                        render json: @items, 
+                               status: 200
+                    else
+                        render json: { "error": "Permission denied" }, 
+                               status: 403
+                    end
 				end
 			end
 

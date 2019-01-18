@@ -18,6 +18,7 @@
 #  description   :string
 #  language      :string
 #  assist_update :boolean
+#  confidential  :boolean          default(TRUE), not null
 #
 # Indexes
 #
@@ -34,6 +35,6 @@ module Doorkeeper
 		has_many :oyd_answers, foreign_key: 'plugin_id', dependent: :destroy
 		has_many :oyd_reports, foreign_key: 'plugin_id', dependent: :destroy
 		has_many :logs,        foreign_key: 'plugin_id', dependent: :destroy
-		belongs_to :user, foreign_key: 'owner_id', optional: true
+		belongs_to :user,      foreign_key: 'owner_id',  optional: true
 	end
 end

@@ -223,9 +223,9 @@ class AppsController < ApplicationController
             body: { name: params[:details_plugin_name] }.to_json )
 
 		# iterate over all permission params
-		params.each do |param|
+		params.keys.each do |param|
 			if param.starts_with?("perm_")
-				case param.slice(0,10)
+				case param.to_s.slice(0,10)
 				when "perm_READ_"
 					if params[param.to_s] == 'true'
 						if params["perm_IDENTIFIER_" + param.split("_")[2].to_s + "_delete"] == 'false'

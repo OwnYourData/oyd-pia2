@@ -12,10 +12,10 @@ module UsersHelper
             response = HTTParty.get(items_url, 
                     headers: { 'Accept' => '*/*', 
                                'Content-Type' => 'application/json', 
-                               'Authorization' => 'Bearer ' + token.to_s }).parsed_response
-            if response == 200
+                               'Authorization' => 'Bearer ' + token.to_s })
+            if response.code == 200
                 begin
-                    if response["items"].to_i > 0
+                    if response.parsed_response["items"].to_i > 0
                         oyd_app = true
                     end
                 rescue

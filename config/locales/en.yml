@@ -225,6 +225,8 @@ en:
     pia_delete_confirmation: "Please enter your password for confirmation"
     pia_delete_successful: "Account deleted"
     pia_delete_error: "An error occurred while deleting the account."
+    or_text: "or"
+    download_apk_text: "download the APK"
   plugins:
     plugin_update_success: "The plugin was updated successfully."
   sources:
