@@ -302,7 +302,7 @@ module Api
                     else
                         @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
                     end
-                    if !@app.nil?
+                    if !@app.nil? and !@pile.oyd_source.nil?
                         if @pile.oyd_source.oauth_application.owner_id == @app.owner_id
                             render json: @pile.to_json,
                                    status: 200

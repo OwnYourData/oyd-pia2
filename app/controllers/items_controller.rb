@@ -111,9 +111,9 @@ class ItemsController < ApplicationController
               @item_source_pile_signature = ""
               @item_source_pile_verification = ""
             else
-              @item_source_pile_content = JSON.parse(retVal["content"]).to_json
-              @item_source_pile_signature = retVal["signature"]
-              @item_source_pile_verification = retVal["verification"]
+              @item_source_pile_content = JSON.parse(retVal["content"]).to_json rescue ""
+              @item_source_pile_signature = retVal["signature"] rescue ""
+              @item_source_pile_verification = retVal["verification"] rescue ""
             end
           end
         else

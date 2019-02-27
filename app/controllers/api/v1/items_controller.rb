@@ -380,7 +380,7 @@ module Api
             def merkle
                 mid = Merkle.where("length(oyd_transaction) < 66 or oyd_transaction IS NULL").pluck(:id)
                 mid << nil
-                @item = Item.where(merkle_id: mid)
+                @item = Item.where(merkle_id: mid).limit(4000)
                 render json: @item.to_json, 
                        status: 200
             end

@@ -701,8 +701,13 @@ module Api
 
             def app_support
                 if current_resource_owner.nil?
-                    user_id = Doorkeeper::Application.where(
-                        id: doorkeeper_token.application_id).first.owner_id
+                    if doorkeeper_token.nil?
+                        render json: { "error": "unauthorized"},
+                               status: 401
+                    else
+                        user_id = Doorkeeper::Application.where(
+                            id: doorkeeper_token.application_id).first.owner_id
+                    end
                 else
                     user_id = current_resource_owner.id
                 end
