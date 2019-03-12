@@ -37,6 +37,143 @@
           }
         }
       }
+    },
+    "/oauth/token/info": {
+      "get": {
+        "summary": "show token information",
+        "tags": [
+          "Authorization"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "Authorization",
+            "required": true,
+            "description": "Client token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "401": {
+            "description": "invalid request"
+          }
+        }
+      }
+    },
+    "/oauth/revoke": {
+      "post": {
+        "summary": "revoke token",
+        "tags": [
+          "Authorization"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "404": {
+            "description": "not found"
+          }
+        }
+      }
+    },
+    "/oauth/applications": {
+      "post": {
+        "summary": "create plugin",
+        "tags": [
+          "Authorization"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "Authorization",
+            "required": true,
+            "description": "Client token"
+          },
+          {
+            "in": "body",
+            "name": "input",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "401": {
+            "description": "invalid token"
+          }
+        }
+      }
+    },
+    "/oauth/applications/{id}": {
+      "delete": {
+        "summary": "remove plugin",
+        "tags": [
+          "Authorization"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "Authorization",
+            "required": true,
+            "description": "Client token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "description": "'id' of account",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "401": {
+            "description": "invalid token"
+          },
+          "404": {
+            "description": "not found"
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {

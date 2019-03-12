@@ -84,6 +84,9 @@ de:
     logOut: "Ausloggen"
     attention: "Achtung"
     recoveryTxt: "Deine Daten werden mit dem oben eingegebenem Passwort verschlüsselt. Falls du dieses Passwort verlierst, kannst du es mit dem Wiederherstellungspasswort zurücksetzen."
+    account_exist: "Du hast ein Konto?"
+    account_exist_link: "Melde dich an."
+    request_account: "Trage Namen und Emailadresse ein, um deinen OwnYourData Datentresor anzufordern."
   process:
     confirmationMailSent: "Email verschickt"
     confirmationMailSentBody: "Ein Email zur Aktivierung des Kontos wurde verschickt."

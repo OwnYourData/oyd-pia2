@@ -84,6 +84,9 @@ en:
     logOut: "Log out"   
     attention: "Watch out"
     recoveryTxt: "Your data is encrypted with the above password. If you forget this password you can reset it with the recovery password."
+    account_exist: "Have an account?"
+    account_exist_link: "Log in"
+    request_account: "Enter your name and email address to request an account."
   process:
     confirmationMailSent: "Mail sent"
     confirmationMailSentBody: "A mail to activate your account was sent."

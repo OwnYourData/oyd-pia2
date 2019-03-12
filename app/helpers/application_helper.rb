@@ -102,6 +102,8 @@ module ApplicationHelper
                 "Passwort zu kurz"
             when "Invalid recovery password"
                 "Ungültiges Wiederherstellungs-Passwort"
+            when "Email can't be blank, Email is invalid"
+                "fehlende Emailadresse"
             else
                 msg
             end

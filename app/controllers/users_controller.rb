@@ -222,11 +222,11 @@ class UsersController < ApplicationController
     end
 
     def create
-        if params[:access_code] != "oyd"
-            flash[:warning] = t('requestDataVault.invalidAccessCode')
-            redirect_to new_path
-            return
-        end
+        # if params[:access_code] != "oyd"
+        #     flash[:warning] = t('requestDataVault.invalidAccessCode')
+        #     redirect_to new_path
+        #     return
+        # end
         token = getToken()
         if !token.nil?
             create_user_url = getServerUrl() + "/api/users/create"

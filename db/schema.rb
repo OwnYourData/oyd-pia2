@@ -116,15 +116,6 @@ ActiveRecord::Schema.define(version: 2018_11_18_211833) do
     t.string "short"
   end
 
-  create_table "oyd_report_templates", force: :cascade do |t|
-    t.integer "plugin_id"
-    t.string "identifier"
-    t.text "data_prep"
-    t.text "data_view"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "oyd_reports", force: :cascade do |t|
     t.integer "plugin_id"
     t.string "identifier"
@@ -173,15 +164,6 @@ ActiveRecord::Schema.define(version: 2018_11_18_211833) do
     t.integer "inactive_duration"
     t.string "inactive_text"
     t.boolean "inactive_check"
-  end
-
-  create_table "oyd_task_templates", force: :cascade do |t|
-    t.integer "plugin_id"
-    t.string "identifier"
-    t.text "command"
-    t.string "schedule"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "oyd_tasks", force: :cascade do |t|
