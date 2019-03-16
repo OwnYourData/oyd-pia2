@@ -174,6 +174,157 @@
           }
         }
       }
+    },
+    "/api/repos/{repo_id}/items": {
+      "get": {
+        "summary": "read all records in repo",
+        "tags": [
+          "Read/Write Data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Permission denied"
+          }
+        }
+      },
+      "post": {
+        "summary": "create new record in repo",
+        "tags": [
+          "Read/Write Data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Permission denied"
+          }
+        }
+      }
+    },
+    "/api/items/{item_id}/details": {
+      "get": {
+        "summary": "read specific record",
+        "tags": [
+          "Read/Write Data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Permission denied"
+          }
+        }
+      }
+    },
+    "/api/repos/{repo_id}/items/{item_id}": {
+      "put": {
+        "summary": "update specific record in repo",
+        "tags": [
+          "Read/Write Data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "item_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Permission denied"
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete specific record in repo",
+        "tags": [
+          "Read/Write Data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "item_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "Permission denied"
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {

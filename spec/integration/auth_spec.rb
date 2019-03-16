@@ -3,7 +3,7 @@
 
 require 'swagger_helper'
 
-describe 'Data Vault API' do
+describe 'Data Vault Authentication API' do
 	path '/oauth/token' do
 		post 'request token' do
 			before do
