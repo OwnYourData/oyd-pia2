@@ -325,6 +325,328 @@
           }
         }
       }
+    },
+    "/api/items/merkle": {
+      "get": {
+        "summary": "list all records not yet archived in the blockchain",
+        "tags": [
+          "Blockchain Verification"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/api/items/{item_id}": {
+      "put": {
+        "summary": "update specific record in repo with blockchain reference",
+        "tags": [
+          "Blockchain Verification"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/api/merkles/create": {
+      "post": {
+        "summary": "create new merkle record",
+        "tags": [
+          "Blockchain Verification"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/api/merkles/{id}": {
+      "put": {
+        "summary": "update merkle record",
+        "tags": [
+          "Blockchain Verification"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/api/plugins/index": {
+      "get": {
+        "summary": "get list of installed plugins for current user",
+        "tags": [
+          "Plugins"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/api/plugins/create": {
+      "post": {
+        "summary": "create new plugin",
+        "tags": [
+          "Plugins"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/api/plugins/{plugin_id}": {
+      "get": {
+        "summary": "get plugin information",
+        "tags": [
+          "Plugins"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "plugin_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "permission denied"
+          }
+        }
+      },
+      "put": {
+        "summary": "update plugin information",
+        "tags": [
+          "Plugins"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "plugin_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "permission denied"
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete plugin",
+        "tags": [
+          "Plugins"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "plugin_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "403": {
+            "description": "permission denied"
+          }
+        }
+      }
+    },
+    "/api/users/show": {
+      "get": {
+        "summary": "get information from current user",
+        "tags": [
+          "User Management"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "422": {
+            "description": "invalid request"
+          }
+        }
+      }
+    },
+    "/api/users/create": {
+      "post": {
+        "summary": "create new user",
+        "tags": [
+          "User Management"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "400": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/api/users/update": {
+      "put": {
+        "summary": "update current user information",
+        "tags": [
+          "User Management"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/api/users/delete": {
+      "delete": {
+        "summary": "delete current user",
+        "tags": [
+          "User Management"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
     }
   },
   "securityDefinitions": {
