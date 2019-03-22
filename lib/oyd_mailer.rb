@@ -8,6 +8,7 @@ class OydMailer < Devise::Mailer
 			if record.language == 'de'
 				opts[:from] = 'Christoph von OwnYourData <oyd.email@gmail.com>'
 	  			opts[:reply_to] = 'Christoph von OwnYourData <christoph@ownyourdata.eu>'
+	  			opts[:subject] = "Nur mehr ein Schritt zu deinem Datentresor (OwnYourData)"
 	  		else
 				opts[:from] = 'Christoph from OwnYourData <oyd.email@gmail.com>'
 	  			opts[:reply_to] = 'Christoph from OwnYourData <christoph@ownyourdata.eu>'
