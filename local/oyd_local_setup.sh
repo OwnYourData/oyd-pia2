@@ -2,8 +2,7 @@
 
 # download relevant files
 wget -q https://raw.githubusercontent.com/OwnYourData/oyd-pia2/master/local/base_setup_template.yml
-wget -q https://raw.githubusercontent.com/OwnYourData/oyd-pia2/master/local/env_template.yml
-
+wget -q https://raw.githubusercontent.com/OwnYourData/oyd-pia2/master/local/env_template
 # ask options
 echo Beantworte die folgenden Fragen, um den OwnYourData Datentresor zu installieren!
 read -p 'IP-Adresse: ' oyd_ip_address
@@ -25,6 +24,10 @@ envsubst < "base_setup_template.yml" > "base_setup.yml"
 
 # start containers
 printf "\nDanke für die Eingabe, der Datentresor wird nun installiert\n"
+docker pull oydeu/srv-worker
+docker pull oydeu/oyd-pia2
+docker pull rabbitmq:3-management
+docker pull postgres:9.6.12
 docker rm -f oyd_web_1 oyd_worker_1 oyd_mq_1 oyd_db_1 2> /dev/null
 docker-compose -f base_setup.yml -p oyd up -d
 
