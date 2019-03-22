@@ -10,6 +10,6 @@ web:
     - "587:587"
 
 db:
-  image: postgres:9.4.5
+  image: postgres:9.6.12
   volumes:
     - docker-postgres:/var/lib/postgresql/data

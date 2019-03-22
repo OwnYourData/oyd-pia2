@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# download relevant files
+wget -q https://raw.githubusercontent.com/OwnYourData/oyd-pia2/master/local/base_setup_template.yml
+wget -q https://raw.githubusercontent.com/OwnYourData/oyd-pia2/master/local/env_template.yml
+
+# ask options
+echo Beantworte die folgenden Fragen, um den OwnYourData Datentresor zu installieren!
+read -p 'IP-Adresse: ' oyd_ip_address
+read -p 'Port: ' oyd_port
+read -p 'Gmail Benutzer: ' oyd_gmail_user
+read -sp 'Gmail Passwort: ' oyd_gmail_pwd
+secret_key=`od  -vN "64" -An -tx1 /dev/urandom | tr -d " \n" ; echo`
+
+export SECRET_KEY=$secret_key
+export OYD_IP_ADDRESS=$oyd_ip_address
+export OYD_PORT=$oyd_port
+export OYD_GMAIL_USER=$oyd_gmail_user
+export OYD_GMAIL_PWD=$oyd_gmail_pwd
+
+# write .env file
+rm -f .env base_setup.yml 2> /dev/null
+envsubst < "env_template" > ".env"
+envsubst < "base_setup_template.yml" > "base_setup.yml"
+
+# start containers
+printf "\nDanke für die Eingabe, der Datentresor wird nun installiert\n"
+docker rm -f oyd_web_1 oyd_worker_1 oyd_mq_1 oyd_db_1 2> /dev/null
+docker-compose -f base_setup.yml -p oyd up -d
+
+# post-installation actions
+docker exec -it oyd_web_1 rake db:create
+docker exec -it oyd_web_1 rake db:migrate
+docker exec -it oyd_web_1 bash -c "echo 'Doorkeeper::Application.destroy_all' | rails c"
+docker exec -it oyd_web_1 bash -c "echo 'Doorkeeper::Application.create!({name: \"web\", redirect_uri: \"https://localhost:3000/oauth/callback\"})' | rails c"
+docker exec -it oyd_web_1 bash -c "echo 'Doorkeeper::Application.create!({name: \"scheduler\", redirect_uri: \"https://localhost:3000/oauth/callback\"})' | rails c"
+docker exec -it oyd_mq_1 bash -c "rabbitmqctl change_password guest guest_secret; rabbitmqctl add_user test test; rabbitmqctl set_user_tags test administrator; rabbitmqctl delete_vhost /; rabbitmqctl add_vhost oyd; rabbitmqctl set_permissions -p oyd test '.*' '.*' '.*'"
+docker-compose -f base_setup.yml -p oyd restart worker
