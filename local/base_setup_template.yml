@@ -33,7 +33,7 @@ mq:
     - 5673:5671
     - 5674:5672
 
-db:
+db2:
   image: postgres:9.6.12
   mem_limit: 512m
   volumes:
