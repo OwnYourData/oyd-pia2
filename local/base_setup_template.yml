@@ -19,7 +19,7 @@ web:
     VAULT_URL: http://${OYD_IP_ADDRESS}:${OYD_PORT}
   mem_limit: 512m
   links:
-    - db
+    - db2
   ports:
     - ${OYD_PORT}:3000
 
