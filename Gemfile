@@ -22,10 +22,9 @@ gem 'coffee-rails'
 gem 'jquery-rails'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
-gem 'rack-cors', :require => 'rack/cors'
+gem 'rack-cors', ">= 1.0.4", :require => 'rack/cors'
 gem 'bcrypt', '~> 3.1.7'
 gem 'merkle-hash-tree'
-gem 'loofah', '~> 2.2.1'
 gem 'nokogiri'
 gem 'rails-html-sanitizer', '~> 1.0.4'
 gem 'rswag'
@@ -33,6 +32,10 @@ gem 'railties'
 gem 'actionview'
 gem 'rspec'
 gem 'leaflet-rails'
+
+# update for security fixes
+gem 'loofah', '~> 2.3', '>= 2.3.1'
+
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
