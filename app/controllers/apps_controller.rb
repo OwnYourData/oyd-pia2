@@ -37,14 +37,14 @@ class AppsController < ApplicationController
 		require "uri"
 		create_app_url = getServerUrl() + "/api/plugins/create"
 		token = session[:token]
-
+		
 		if params[:sam].to_s != "" && params[:sam].to_s != "0"
-			manifest = "https://sam.oydapp.eu/api/plugins/" + params[:sam]
-			response = HTTParty.post(create_app_url,
-	            headers: { 'Content-Type' => 'application/json',
-	                	   'Authorization' => 'Bearer ' + token },
-	            body: { source_url: manifest,
-	            	    config: {} }.to_json )
+			manifest = "https://sam.data-vault.eu/api/plugins/" + params[:sam]
+				response = HTTParty.post(create_app_url,
+		            headers: { 'Content-Type' => 'application/json',
+		                	   'Authorization' => 'Bearer ' + token },
+		            body: { source_url: manifest,
+		            	    config: {} }.to_json )
 		else
 			manifest = params[:manifest].to_s
 			uri = URI.parse(manifest.strip.gsub(/\s+/, " ")) rescue ""

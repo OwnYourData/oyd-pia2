@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: oyd-pia2-service
+spec:
+  selector:
+    app: oyd-pia2
+  type: LoadBalancer
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 3000

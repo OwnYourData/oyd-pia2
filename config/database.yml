@@ -15,9 +15,9 @@
 # gem 'pg'
 #
 default: &default
+  host: db
   adapter: postgresql
   encoding: unicode
-  host: db2
   port: 5432
   username: postgres
   password: <%= ENV['POSTGRES_PASSWORD'] %>
@@ -88,4 +88,7 @@ test:
 #
 production:
   <<: *default
-  database: oyd-pia2_production
+  database: <%= ENV['DB_NAME'] %>
+  host: <%= ENV['DB_HOST'] %>
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>

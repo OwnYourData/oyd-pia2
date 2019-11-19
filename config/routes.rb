@@ -123,6 +123,9 @@ Rails.application.routes.draw do
 				match 'merkles/create', to: 'items#merkle_create',      via: 'post'
 				match 'merkles/:id',    to: 'items#merkle_update',      via: 'put'
 
+				# News
+				match 'news', to: 'news#current', via: 'get'
+
 		end
 	end
 
@@ -194,6 +197,9 @@ Rails.application.routes.draw do
 
 		# OYD Assistant
 		match '/hide_assist', to: 'users#hide_assist', via: 'post', as: 'hide_assist'
+
+		# Knowledge Graph
+		match '/show_location', to: 'users#show_location', via: 'post'
 
 		# access from external applications
 		match '/external/gmaps_analysis/register', to: 'static_pages#gmaps', via: 'get'

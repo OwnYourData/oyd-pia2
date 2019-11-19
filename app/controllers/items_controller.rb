@@ -65,13 +65,17 @@ class ItemsController < ApplicationController
               merkle = Merkle.find(@item['merkle_id'])
               payload = JSON.parse(merkle.payload)
               transaction = merkle.oyd_transaction
-              mht = Marshal::load(Base64.decode64(merkle.merkle_tree.delete("\n")))
-              pos = payload.index(@item['id'])
-              leaf = Digest::SHA256.digest("\0" + Digest::SHA256.digest(@item['value']))
-              @valid_roothash = ((mht.send(:leaf_hash, pos) == leaf) &&
-               (mht.head.unpack('H*')[0] == merkle.root_hash))
-              @audit_proof = mht.audit_proof(pos).collect {|item| item.unpack('H*')[0] }.join(', ')
-
+              if merkle.merkle_tree.delete("\n") == ""
+                @valid_roothash = true
+                @audit_proof = ""
+              else
+                mht = Marshal::load(Base64.decode64(merkle.merkle_tree.delete("\n")))
+                pos = payload.index(@item['id'])
+                leaf = Digest::SHA256.digest("\0" + Digest::SHA256.digest(@item['value']))
+                @valid_roothash = ((mht.send(:leaf_hash, pos) == leaf) &&
+                 (mht.head.unpack('H*')[0] == merkle.root_hash))
+                @audit_proof = mht.audit_proof(pos).collect {|item| item.unpack('H*')[0] }.join(', ')
+              end
               # i = 0
               # h1 = Digest::SHA256.digest("\0" + Digest::SHA256.digest(@item['value']))
               # begin
@@ -85,7 +89,7 @@ class ItemsController < ApplicationController
               # end while i < mht.audit_proof(pos).length
               # valid = (mht.head == mht.send(:node_hash, h1, h2))
 
-              blockchain_url = 'http://' + ENV["DOCKER_LINK_BC"].to_s + ':3010/getTransactionStatus'
+              blockchain_url = 'http://' + ENV["DOCKER_LINK_BC"].to_s + ':' + (ENV["DOCKER_LINK_BC_PORT"] || "3010") + '/getTransactionStatus' 
               response = HTTParty.get(blockchain_url,
                 headers: { 'Content-Type' => 'application/json'},
                 body: { id:   merkle.id, 

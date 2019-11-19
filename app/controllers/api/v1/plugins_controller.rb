@@ -82,7 +82,7 @@ module Api
                 end
 
                 new_item = nil
-                @sam = HTTParty.get("https://sam.oydapp.eu/api/plugins").parsed_response
+                @sam = HTTParty.get("https://sam.data-vault.eu/api/plugins").parsed_response
                 @sam.each do |item| 
                     if (item["identifier"].to_s == plugin_id.to_s) && 
                         (item["language"].to_s == plugin_lang.to_s)
@@ -110,7 +110,7 @@ module Api
                         # @plugin.destroy - don't remove plugin, otherwise a new key/secret is generaed and external plugins would require re-pairing
 
                         # reinstall plugin
-                        response = HTTParty.get("https://sam.oydapp.eu/api/plugins/" + new_item["id"].to_s)
+                        response = HTTParty.get("https://sam.data-vault.eu/api/plugins/" + new_item["id"].to_s)
                         if response.code.to_s == "200"
                             pluginInfo = response.parsed_response rescue nil
                             retVal = create_plugin_helper(pluginInfo, user_id)

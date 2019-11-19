@@ -11,7 +11,7 @@ module Api
 
 			def active
 				@tasks = OydTask.where("next_run < ? or next_run IS ?", 
-									   Time.now, nil)
+									   Time.now, nil).first(20)
 				render json: @tasks.to_json, status: 200
 			end
 

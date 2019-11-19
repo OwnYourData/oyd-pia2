@@ -56,8 +56,13 @@ module UsersHelper
                                'Authorization' => 'Bearer ' + token.to_s }).parsed_response
             @avail = []
             @sam = []
-            response = HTTParty.get("https://sam.oydapp.eu/api/plugins")
-            if response.code == 200
+            response = nil
+            begin
+                response = HTTParty.get("https://sam.data-vault.eu/api/plugins")
+            rescue
+
+            end
+            if !response.nil? && response.code == 200
                 @sam = response.parsed_response
             end
             @plugins = []
@@ -99,7 +104,7 @@ module UsersHelper
                                 end
                             end
                         end
-                    end
+                    end unless @sam.count == 0
                     if found
                         break
                     end
@@ -171,8 +176,13 @@ module UsersHelper
                                'Authorization' => 'Bearer ' + token.to_s }).parsed_response
             @avail = []
             @sam = []
-            response = HTTParty.get("https://sam.oydapp.eu/api/plugins")
-            if response.code == 200
+            response = nil
+            begin
+                response = HTTParty.get("https://sam.data-vault.eu/api/plugins")
+            rescue
+
+            end
+            if !response.nil? && response.code == 200
                 @sam = response.parsed_response
                 @sam.each do |item| 
                     if item["language"] == I18n.locale.to_s && !@installed_plugins.pluck('identifier').include?(item["identifier"])

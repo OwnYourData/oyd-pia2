@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oyd-pia2-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: oyd-pia2
+  template:
+    metadata:
+      labels:
+        app: oyd-pia2
+    spec:
+      containers:
+      - name: oyd-pia2
+        image: oydeu/oyd-pia2:latest
+        ports:
+        - containerPort: 3000
+        env:
+          - name: LANG
+            value: C.UTF-8
+          - name: RAILS_LOG_TO_STDOUT
+            value: "TRUE"
+          - name: RAILS_SERVE_STATIC_FILES
+            value: "TRUE"
+          - name: RAILS_ENV
+            value: production
+          - name: VAULT_URL
+            value: "https://dv.data-container.net"
+          - name: DOCKER_LINK_BC
+            value: ethereum-blockchain-service-service.default.svc.cluster.local
+          - name: DOCKER_LINK_BC_PORT
+            value: "80"
+          - name: GMAIL_DOMAIN
+            value: gmail.com
+          - name: DB_HOST
+            value: db-cluster-postgresql.default.svc.cluster.local
+          - name: DB_NAME
+            value: oyd-pia2_production
+          - name: DB_USER
+            value: postgres
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: general-secrets
+                key: db-passwd
+          - name: SECRET_KEY_BASE
+            valueFrom:
+              secretKeyRef:
+                name: oyd-pia2-secrets
+                key: secret-key-base
+          - name: GMAIL_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: oyd-pia2-secrets
+                key: gmail-user
+          - name: GMAIL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: oyd-pia2-secrets
+                key: gmail-pwd

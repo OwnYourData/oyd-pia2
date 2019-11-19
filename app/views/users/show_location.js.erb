@@ -1,0 +1,16 @@
+var markerClusters = L.markerClusterGroup();
+var div_circle = L.divIcon({ className: 'marker_circle'})
+<%  lat = ""
+	lon = ""
+	@items.each do |item| 
+		lat = item["latitude"].to_s
+		lon = item["longitude"].to_s %>
+		// var marker = new L.CircleMarker([<%= lat %>, <%= lon %>]).addTo(mymap);
+		// var marker = L.marker([<%= lat %>, <%= lon %>], {icon: div_circle}).addTo(mymap);
+		markerClusters.addLayer( new L.marker([<%= lat %>, <%= lon %>], {icon: div_circle}) );
+
+<%  end 
+	if lat != "" and lon != "" %>
+		mymap.addLayer( markerClusters );
+		mymap.panTo(new L.LatLng(<%= lat %>, <%= lon %>));
+<%  end %>

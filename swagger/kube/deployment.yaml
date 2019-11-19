@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-dv-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-dv
+  template:
+    metadata:
+      labels:
+        app: api-dv
+    spec:
+      containers:
+      - name: api-dv
+        image: swaggerapi/swagger-ui:latest
+        ports:
+        - containerPort: 8080
+        env:
+          - name: SWAGGER_JSON
+            value: /local/data-vault/swagger.json
+        volumeMounts:
+          - name: nfs-volume
+            mountPath: /local
+      volumes:
+      - name: nfs-volume
+        nfs:
+          server: 152.89.105.62
+          path: /var/nfs/swagger

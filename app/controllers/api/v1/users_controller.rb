@@ -96,23 +96,34 @@ module Api
                                 recovery_password_key: key_encrypt(keyStr, params[:recovery_password]))
 
                             # install first beta setup !!! fix me
-                            # https://sam-en.oydapp.eu/api/plugins/1
-                            sam_url = "https://sam.oydapp.eu/api/plugins/"
-                            params = Hash.new
+                            # https://sam-en.data-vault.eu/api/plugins/1
+                            sam_url = "https://sam.data-vault.eu/api/plugins"
                             if @user.language == 'de'
-                                params[:source_url] = sam_url + "69"         # DE, oyd.base
-                                plugin_id = create_plugins(params, @user.id)
-                                params[:source_url] = sam_url + "71"         # DE, oyd.location
-                                plugin_id = create_plugins(params, @user.id)
-                                params[:source_url] = sam_url + "73"         # DE, oyd.allergy
-                                plugin_id = create_plugins(params, @user.id)
+                                response = HTTParty.get(sam_url + "?identifier=oyd.base&lang=de")
+                                pluginInfo = response.parsed_response rescue nil
+                                plugin_id = create_plugin_helper(pluginInfo, @user.id)
+
+                                response = HTTParty.get(sam_url + "?identifier=oyd.location&lang=de")
+                                pluginInfo = response.parsed_response rescue nil
+                                plugin_id = create_plugin_helper(pluginInfo, @user.id)
+
+                                response = HTTParty.get(sam_url + "?identifier=oyd.allergy&lang=de")
+                                pluginInfo = response.parsed_response rescue nil
+                                plugin_id = create_plugin_helper(pluginInfo, @user.id)
+
                             else 
-                                params[:source_url] = sam_url + "68"         # EN, oyd.base
-                                plugin_id = create_plugins(params, @user.id)
-                                params[:source_url] = sam_url + "70"         # EN, oyd.location
-                                plugin_id = create_plugins(params, @user.id)
-                                params[:source_url] = sam_url + "72"         # EN, oyd.allergy
-                                plugin_id = create_plugins(params, @user.id)
+                                response = HTTParty.get(sam_url + "?identifier=oyd.base&lang=en")
+                                pluginInfo = response.parsed_response rescue nil
+                                plugin_id = create_plugin_helper(pluginInfo, @user.id)
+
+                                response = HTTParty.get(sam_url + "?identifier=oyd.location&lang=en")
+                                pluginInfo = response.parsed_response rescue nil
+                                plugin_id = create_plugin_helper(pluginInfo, @user.id)
+
+                                response = HTTParty.get(sam_url + "?identifier=oyd.allergy&lang=en")
+                                pluginInfo = response.parsed_response rescue nil
+                                plugin_id = create_plugin_helper(pluginInfo, @user.id)
+
                             end
 
                             render json: { "user-id": @user.id }, 
@@ -586,7 +597,7 @@ module Api
                     # check for updated plugin version
                     @plugins = @user.oauth_applications
                     @sam = []
-                    response = HTTParty.get("https://sam.oydapp.eu/api/plugins")
+                    response = HTTParty.get("https://sam.data-vault.eu/api/plugins")
                     if response.code == 200
                         @sam = response.parsed_response
                     end

@@ -229,6 +229,16 @@ Myapps
     width: 100%;
     display: table;
 }
+.kg-wrapper{
+    background-color: #ffffff;
+    border: solid #999;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 10px;
+    margin: 0px 20px 20px 0px;
+    padding: 10px 17px 0px 17px;
+    width: 100%;
+    display: table;
+}
 .store-wrapper{
     height: 380px;
 }
@@ -627,3 +637,11 @@ on/off switch: https://proto.io/freebies/onoff/
     .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
         right: 0px; 
     }
+
+.marker_circle {
+  background: #0000ff;
+  border-radius: 50%;
+  box-shadow: 4px 4px 3px grey;
+  -moz-box-shadow: 4px 4px 3px grey;
+  -webkit-box-shadow: 4px 4px 3px grey;  
+}

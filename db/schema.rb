@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_18_211833) do
+ActiveRecord::Schema.define(version: 2019_11_17_234424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,19 @@ ActiveRecord::Schema.define(version: 2018_11_18_211833) do
     t.boolean "confidential", default: true, null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "oyd_accesses", force: :cascade do |t|
+    t.integer "timestamp"
+    t.integer "operation"
+    t.string "oyd_hash"
+    t.integer "merkle_id"
+    t.integer "plugin_id"
+    t.integer "item_id"
+    t.integer "user_id"
+    t.integer "previous_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "oyd_answers", force: :cascade do |t|
@@ -255,6 +268,13 @@ ActiveRecord::Schema.define(version: 2018_11_18_211833) do
     t.string "app_cipher"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "weekly_news", force: :cascade do |t|
+    t.string "week"
+    t.text "news_text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"

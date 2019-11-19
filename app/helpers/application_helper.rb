@@ -143,9 +143,17 @@ module ApplicationHelper
         end
     end
 
-    def readRawItems(app, repo_url)
-        headers = defaultHeaders(app["token"])
-        url_data = repo_url + '?size=2000'
+    def addParam(url, param)
+        if url.include?("?")
+            url + "&" + param.to_s
+        else
+            url + "?" + param.to_s
+        end
+    end
+
+    def readRawItems(repo_url, token)
+        headers = defaultHeaders(token)
+        url_data = addParam(repo_url, 'size=2000')
         response = HTTParty.get(url_data,
             headers: headers)
         response_parsed = response.parsed_response
@@ -157,7 +165,7 @@ module ApplicationHelper
             recs = response.headers["total-count"].to_i
             if recs > 2000
                 (2..(recs/2000.0).ceil).each_with_index do |page|
-                    url_data = repo_url + '?page=' + page.to_s + '&size=2000'
+                    url_data = addParam(repo_url, 'page=' + page.to_s + '&size=2000')
                     subresp = HTTParty.get(url_data,
                         headers: headers).parsed_response
                     response_parsed = response_parsed + subresp

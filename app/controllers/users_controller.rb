@@ -32,6 +32,14 @@ class UsersController < ApplicationController
 
         # OYD Assistant
         @show_assistant, @assist_text, @assist_type, @assist_id = oyd_assistant(token)
+
+        
+
+        if params[:view].to_s == "2"
+            respond_to do |format|
+                format.html { render layout: "application_map", template: "users/show2" }
+            end
+        end
     end
 
 	def new
@@ -448,8 +456,13 @@ class UsersController < ApplicationController
                            'Authorization' => 'Bearer ' + token.to_s }).parsed_response
         @avail = []
         @sam = []
-        response = HTTParty.get("https://sam.oydapp.eu/api/plugins")
-        if response.code == 200
+        response = nil
+        begin
+            response = HTTParty.get("https://sam.data-vault.eu/api/plugins")
+        rescue
+
+        end
+        if !response.nil? && response.code == 200
             @sam = response.parsed_response
             @sam.each do |item| 
                 if item["language"] == I18n.locale.to_s && !@installed_plugins.pluck('identifier').include?(item["identifier"])
@@ -504,6 +517,46 @@ class UsersController < ApplicationController
                 source["record_count"] = ""
             end
             @sources << source
+        end
+    end
+
+    def show_location
+        pia_url = getServerUrl()
+        token = session[:token]
+        master_key = params[:mk].to_s
+        headers = defaultHeaders(token)
+        current_user_url = pia_url + "/api/users/current"
+        @user = HTTParty.get(current_user_url,
+             headers: headers).parsed_response
+        nonce = @user["app_nonce"].to_s
+
+        nonce_url = pia_url + "/api/support/" + nonce
+        response = HTTParty.get(nonce_url)
+        cipher = response.parsed_response["cipher"]
+        cipherHex = [cipher].pack('H*')
+        nonceHex = [nonce].pack('H*')
+        keyHash = [master_key].pack('H*')
+        private_key = RbNaCl::PrivateKey.new(keyHash)
+        authHash = RbNaCl::Hash.sha256('auth'.force_encoding('ASCII-8BIT'))
+        auth_key = RbNaCl::PrivateKey.new(authHash).public_key
+        box = RbNaCl::Box.new(auth_key, private_key)
+        password = box.decrypt(nonceHex, cipherHex)
+        decrypt_key = decrypt_message(@user["password_key"], password)
+
+        location_items_url = pia_url + "/api/repos/oyd.location/items?last_days=14"
+        @location_items = readRawItems(location_items_url, token)
+        @items = []
+        @location_items.each do |item|
+            retVal = decrypt_message(item.to_s, decrypt_key)
+            if retVal.to_s != ""
+                retVal = JSON.parse(retVal)
+                retVal["id"] = JSON.parse(item)["id"]
+                @items << retVal
+            end
+        end
+
+        respond_to do |format|
+            format.js
         end
     end
 end

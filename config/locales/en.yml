@@ -35,7 +35,7 @@ en:
     account: "Account"
     password: "Password"
     passwordConfirmation: "Password Confirmation"
-    passwordRecovery: "Recovery Passwort"
+    passwordRecovery: "Recovery Password"
     passwordRecoveryConfirmation: "Recovery Password Confirmation"
     startpage: "to Main page"
     invalidAddress: "Invalid Address"
@@ -102,7 +102,7 @@ en:
     accessCodeLink: "Request an access code here."
     invalidAccessCode: "invalid access code"
   resetPwd:
-    title: "Reset Passwort"
+    title: "Reset Password"
     confirmTitle: "Set New Password"
     header: "Request new password"
     recoveryTxt: "We will send a mail to this address with a link to a page where you can reset your password. This link is only valid for 2 hours and you are then required to enter your recovery password in the process of setting a new password!"

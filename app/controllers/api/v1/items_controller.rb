@@ -3,7 +3,8 @@ module Api
         class ItemsController < ApiController
             include ApplicationHelper
             require 'will_paginate/array'
-            after_action only: [:index, :index_id] { set_pagination_headers(:items) rescue [] }
+            #after_action only: [:index, :index_id] { set_pagination_headers(:items) rescue [] }
+            after_action Proc.new{ set_pagination_headers(:items) }, only: [:index, :index_id]
 
             # respond only to JSON requests
             respond_to :json
@@ -35,10 +36,18 @@ module Api
                             end
                         end
                         if params[:last].nil? || !float?(params[:last].to_s)
-                            @items = @repo.items
-                                .order(:id)
-                                .pluck(:value)
-                                .paginate(page: params[:page], per_page: per_page_size)
+                            if params[:last_days].nil? || !float?(params[:last_days].to_s)
+                                @items = @repo.items
+                                    .order(:id)
+                                    .pluck(:value)
+                                    .paginate(page: params[:page], per_page: per_page_size)
+                            else
+                                @items = @repo.items
+                                    .where("created_at >= ?", params[:last_days].to_i.days.ago.utc)
+                                    .order(:id)
+                                    .pluck(:value)
+                                    .paginate(page: params[:page], per_page: per_page_size)
+                            end
                         else
                             @items = @repo.items
                                 .order(:id)
@@ -380,7 +389,7 @@ module Api
             def merkle
                 mid = Merkle.where("length(oyd_transaction) < 66 or oyd_transaction IS NULL").pluck(:id)
                 mid << nil
-                @item = Item.where(merkle_id: mid).limit(4000)
+                @item = Item.where(merkle_id: mid).limit(16380)
                 render json: @item.to_json, 
                        status: 200
             end

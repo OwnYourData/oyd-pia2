@@ -16,6 +16,7 @@ module PluginsHelper
     end
 
     def create_plugin_helper(pluginInfo, user_id)
+        pluginInfo = pluginInfo.deep_stringify_keys
         if pluginInfo.nil?
             return -1 # missing plugin info
         end

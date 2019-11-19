@@ -1,4 +1,4 @@
-FROM ruby:2.4.5
+FROM ruby:2.5.3
 MAINTAINER "Christoph Fabianek" christoph@ownyourdata.eu
 
 RUN mkdir -p /usr/src/app
@@ -8,7 +8,7 @@ RUN echo "deb http://deb.debian.org/debian stretch-backports main" >> /etc/apt/s
 	apt-get update && \
 	apt-get install -y --no-install-recommends \
 		build-essential \
-		libsodium-dev=1.0.16-2~bpo9+1 \
+		libsodium-dev=1.0.17-1~bpo9+1 \
 		libpq-dev \
 		nodejs \
 		postgresql-client && \
@@ -18,7 +18,7 @@ ENV RAILS_ROOT $WORKDIR
 RUN mkdir -p $RAILS_ROOT/tmp/pids
 COPY Gemfile /usr/src/app/
 
-RUN bundle install
+RUN bundle install --without development test
 RUN gem install bundler
 
 COPY . .
