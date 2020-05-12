@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_17_234424) do
+ActiveRecord::Schema.define(version: 2020_01_12_212349) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,6 +97,7 @@ ActiveRecord::Schema.define(version: 2019_11_17_234424) do
     t.string "language"
     t.boolean "assist_update"
     t.boolean "confidential", default: true, null: false
+    t.text "installation_hint"
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
@@ -112,6 +113,8 @@ ActiveRecord::Schema.define(version: 2019_11_17_234424) do
     t.integer "previous_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "repo_id"
+    t.string "query_params"
   end
 
   create_table "oyd_answers", force: :cascade do |t|
@@ -127,6 +130,14 @@ ActiveRecord::Schema.define(version: 2019_11_17_234424) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "short"
+  end
+
+  create_table "oyd_installs", force: :cascade do |t|
+    t.integer "plugin_id"
+    t.string "code"
+    t.datetime "requested_ts"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "oyd_reports", force: :cascade do |t|

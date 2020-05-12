@@ -17,7 +17,7 @@ module Api
                 end
                 render json: Doorkeeper::Application
                         .where('owner_id=' + user_id.to_s)
-                        .select(:id, :identifier, :name, :oyd_version, :description, :language, :uid, :secret, :assist_update),
+                        .select(:id, :identifier, :name, :oyd_version, :description, :language, :uid, :secret, :assist_update, :installation_hint),
                     status: 200
             end
 

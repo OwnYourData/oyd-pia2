@@ -35,18 +35,41 @@ module Api
                                 per_page_size = 2000
                             end
                         end
+                        if doorkeeper_token.application_id.nil?
+                            @app = @app.first
+                            query_prefix = "owner"
+                        end
                         if params[:last].nil? || !float?(params[:last].to_s)
                             if params[:last_days].nil? || !float?(params[:last_days].to_s)
                                 @items = @repo.items
                                     .order(:id)
                                     .pluck(:value)
                                     .paginate(page: params[:page], per_page: per_page_size)
+                                if params[:page].to_s != ""
+                                    doc_access(PermType::READ, @app.id, nil, @repo.id)
+                                else
+                                    doc_access(PermType::READ, @app.id, nil, @repo.id, 
+                                        [query_prefix, 
+                                         "page:" + params[:page].to_s, 
+                                         "size:" + per_page_size.to_s].compact.join(","))
+                                end
                             else
                                 @items = @repo.items
                                     .where("created_at >= ?", params[:last_days].to_i.days.ago.utc)
                                     .order(:id)
                                     .pluck(:value)
                                     .paginate(page: params[:page], per_page: per_page_size)
+                                if params[:page].to_s != ""
+                                    doc_access(PermType::READ, @app.id, nil, @repo.id,
+                                        [query_prefix, 
+                                         "last_days:" + params[:last_days].to_s].compact.join(","))
+                                else
+                                    doc_access(PermType::READ, @app.id, nil, @repo.id, 
+                                        [query_prefix,
+                                         "last_days:" + params[:last_days].to_s,
+                                         "page:" + params[:page].to_s,
+                                         "size:" + per_page_size.to_s].compact.join(","))
+                                end
                             end
                         else
                             @items = @repo.items
@@ -54,6 +77,17 @@ module Api
                                 .pluck(:value)
                                 .last(params[:last].to_i)
                                 .paginate(page: params[:page], per_page: per_page_size)
+                            if params[:page].to_s != ""
+                                doc_access(PermType::READ, @app.id, nil, @repo.id,
+                                    [query_prefix, 
+                                     "last:" + params[:last].to_s].compact.join(","))
+                            else
+                                doc_access(PermType::READ, @app.id, nil, @repo.id, 
+                                    [query_prefix, 
+                                     "last:" + params[:last].to_s,
+                                     "page:" + params[:page].to_s,
+                                     "size:" + per_page_size.to_s].compact.join(","))
+                            end
                         end
                         render json: @items, 
                                status: 200
@@ -92,6 +126,17 @@ module Api
                             .order(:id)
                             .pluck(:value)
                             .paginate(page: params[:page], per_page: per_page_size)
+                        query_prefix = nil
+                        if doorkeeper_token.application_id.nil?
+                            @app = @app.first
+                            query_prefix = "owner"
+                        end
+                        if params[:page].to_s != ""
+                            doc_access(PermType::READ, @app.id, nil, @repo.id, query_prefix)
+                        else
+                            doc_access(PermType::READ, @app.id, nil, @repo.id, 
+                                [query_prefix, "page:" + params[:page].to_s, "size:" + per_page_size.to_s].compact.join(","))
+                        end
                         render json: @items, 
                                status: 200
                     else
@@ -121,6 +166,15 @@ module Api
                             retVal["merkle_hash"] = @item.merkle.root_hash.to_s unless @item.merkle.nil? rescue ""
                             retVal["oyd_transaction"] = @item.merkle.oyd_transaction.to_s unless @item.merkle.nil? rescue ""
                             retVal["oyd_source_pile_email"] = @item.oyd_source_pile.email.to_s unless @item.oyd_source_pile_id.nil? rescue ""
+
+                            if doorkeeper_token.application_id.nil?
+                                @app = @app.first
+                                query_prefix = "owner"
+                            end
+                            doc_access(PermType::READ, @app.id, @item.id, nil, query_prefix)
+
+                            retVal["access_count"] = @item.oyd_accesses.count + OydAccess.where(repo_id: @repo.id, item_id: nil).count rescue 0
+
                             render json: retVal,
                                    status: 200
                         else
@@ -149,11 +203,12 @@ module Api
                            status: 200
             end
 
-            def write_item(repo, payload, pile_id)
+            def write_item(repo, payload, pile_id, plugin_id)
                 @item = Item.new(value: payload.to_s,
                                  repo_id: repo.id,
                                  oyd_source_pile_id: pile_id)
                 if @item.save
+                    doc_access(PermType::WRITE, plugin_id, @item.id)
                     val = JSON.parse(@item.value)
                     val["id"] = @item.id
                     @item.update_attributes(value: val.to_json.to_s)
@@ -166,7 +221,7 @@ module Api
                 end
             end
 
-            def create_item(repo, user_id, params)
+            def create_item(repo, user_id, params, plugin_id)
                 repo_identifier = params[:repo_identifier]
                 if repo.nil?
                     # check if oyd.settings is available and re-use public_key
@@ -201,7 +256,7 @@ module Api
                         if !pile_id.nil?
                             item = item.except( *[ "oyd_source_pile_id" ] )
                         end
-                        retVal = write_item(repo, item.to_json.to_s, pile_id)
+                        retVal = write_item(repo, item.to_json.to_s, pile_id, plugin_id)
                         return_array << retVal
                         if retVal[:status] != 200
                             status = retVal[:status]
@@ -223,18 +278,23 @@ module Api
                     if !pile_id.nil?
                         payload = payload.gsub(',\\"oyd_source_pile_id\\":' + pile_id.to_s, '')
                     end
-                    write_item(repo, payload, pile_id)
+                    write_item(repo, payload, pile_id, plugin_id)
                 end
             end
 
             def create
+                if doorkeeper_token.nil?
+                    render json: {"error": "invalid token"},
+                           status: 403
+                    return
+                end
                 repo_identifier = params[:repo_identifier]
                 if !doorkeeper_token.application_id.nil?
                     @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
                     if check_permission(repo_identifier, @app, PermType::WRITE)
                         @repo = Repo.where(identifier: repo_identifier, 
                                            user_id: @app.owner_id).first
-                        retVal = create_item(@repo, @app.owner_id, params)
+                        retVal = create_item(@repo, @app.owner_id, params, @app.id)
                         render json: retVal.except(:status), 
                                status: retVal[:status]
                     else 
@@ -250,7 +310,8 @@ module Api
                         retVal = create_item(
                             @repo,
                             doorkeeper_token.resource_owner_id, 
-                            params)
+                            params,
+                            @app.first.id)
                         render json: retVal.except(:status), 
                                status: retVal[:status]
                     else 
@@ -270,6 +331,7 @@ module Api
                     @item = Item.find(item_id)
                     if !@item.nil?
                         if @item.repo_id == @repo.id
+                            doc_access(PermType::UPDATE, @app.id, @item.id)
                             @item.update_attributes(value:
                                 params.except( *[:format, 
                                                  :controller, 
@@ -302,6 +364,7 @@ module Api
                     if !@item.nil?
                         if @item.repo_id == @repo.id
                             @item.destroy
+                            doc_access(PermType::DELETE, @app.id, item_id, @repo.id)
                             render json: { "item_id": item_id }, 
                                    status: 200
                         else
@@ -329,6 +392,7 @@ module Api
                         if !@item.nil?
                             if @item.repo_id == @repo.id
                                 @item.destroy
+                                doc_access(PermType::DELETE, @app.id, item_id, repo_id)
                                 render json: { "item_id": item_id }, 
                                        status: 200
                             else
@@ -351,6 +415,9 @@ module Api
                         if !@item.nil?
                             if @item.repo_id == @repo.id
                                 @item.destroy
+                                @app = @app.first
+                                query_prefix = "owner"
+                                doc_access(PermType::DELETE, @app.id, item_id, repo_id, query_prefix)
                                 render json: { "item_id": item_id }, 
                                        status: 200
                             else
@@ -422,6 +489,20 @@ module Api
                         render json: { message: @merkle.errors.messages }, 
                                status: 500
                     end
+                end
+            end
+
+            def doc_access(operation, plugin_id, item_id=nil, repo_id=nil, query_string=nil)
+                @oa = OydAccess.new(
+                    timestamp: Time.now.utc.to_i,
+                    operation: operation,
+                    plugin_id: plugin_id,
+                    item_id: item_id,
+                    repo_id: repo_id,
+                    query_params: query_string,
+                    user_id: Doorkeeper::Application.find(plugin_id).owner_id)
+                if !@oa.save
+                    puts "error in writing oyd_access"
                 end
             end
         end

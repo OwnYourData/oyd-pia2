@@ -1,6 +1,8 @@
 module Api
     module V1
         class UsersController < ApiController
+            skip_before_action :doorkeeper_authorize!, only: [:name_by_token, :support]
+
             # respond only to JSON requests
             respond_to :json
             respond_to :html, only: []
@@ -439,9 +441,45 @@ module Api
                 if @user.nil?
                     render json: { "error": "invalid token" }, status: 422
                 else
-                    cnt = 0
-                    @user.repos.each{ |repo| cnt = cnt + repo.items.count }
+                    cnt = Item.where(repo_id: Repo.where(user_id: user_id).pluck(:id)).count
                     render json: { "count": cnt }, status: 200
+                end
+            end
+
+            def access_count
+                if current_resource_owner.nil?
+                    render json: { "error": "invalid request"},
+                           status: 422
+                    return
+                else
+                    user_id = current_resource_owner.id
+                end
+                @user = User.find(user_id)
+                if @user.nil?
+                    render json: { "error": "invalid token" }, status: 422
+                else
+                    new_cnt = OydAccess.where(
+                        "created_at >= ?", 14.days.ago.utc).where(
+                        user_id: user_id,
+                        operation: PermType::WRITE).count
+                    read_cnt = OydAccess.where(
+                        "created_at >= ?", 14.days.ago.utc).where(
+                        user_id: user_id,
+                        operation: PermType::READ).count
+                    update_cnt = OydAccess.where(
+                        "created_at >= ?", 14.days.ago.utc).where(
+                        user_id: user_id,
+                        operation: PermType::UPDATE).count
+                    delete_cnt = OydAccess.where(
+                        "created_at >= ?", 14.days.ago.utc).where(
+                        user_id: user_id,
+                        operation: PermType::DELETE).count
+
+                    render json: { "create": new_cnt,
+                                   "read": read_cnt,
+                                   "update": update_cnt,
+                                   "delete": delete_cnt }, 
+                           status: 200
                 end
             end
 

@@ -9,8 +9,16 @@ Rails.application.routes.draw do
 		scope module: :v1,
 			constraints: ApiConstraints.new(version: 1, default: true) do
 
+				# Statistics
+				match 'stats',                  to: 'stats#index',            via: 'get'
+
+				# DEC112
+				match '/dec112/register',       to: 'decs#register',          via: 'post'
+				match '/dec112/revoke',         to: 'decs#revoke',            via: 'delete'
+
 				# App support
 				match 'support/:nonce',         to: 'users#support',          via: 'get'
+				match 'install/:key',           to: 'installs#show',          via: 'get'
 
 				# User handling
 				post 'users/create',            to: 'users#create'
@@ -24,6 +32,7 @@ Rails.application.routes.draw do
 				post 'users/update_recv_pwd',   to: 'users#update_recv_pwd'
 				get  'users/name_by_token/:id', to: 'users#name_by_token'
 				get  'users/record_count',      to: 'users#record_count'
+				get  'users/access_count',      to: 'users#access_count'
 				match 'users/current',          to: 'users#current',          via: 'get'
 				match 'users/archive',          to: 'users#archive',          via: 'get'
 				match 'users/delete',           to: 'users#delete',           via: 'get'
@@ -83,6 +92,7 @@ Rails.application.routes.draw do
 				match 'repos(/:identifier)/identifier', to: 'repos#show_identifier', via: 'get', constraints: {identifier: /[^\/]+/}
 				match 'repos/:id',             to: 'repos#delete',  via: 'delete'
 				match 'repos/:id/items',       to: 'repos#items',   via: 'get'
+				match 'repos/:id/count',       to: 'repos#count',   via: 'get'
 				match 'repos/:id/pub_key',     to: 'repos#pub_key', via: 'get', constraints: {id: /[^\/]+/}
 				# Repos for apps
 				match 'apps/:plugin_id/repos', to: 'repos#apps',    via: 'get'
@@ -170,6 +180,7 @@ Rails.application.routes.draw do
 		post   '/plugin/update',     to: 'apps#plugin_update'
 		get    '/plugin/:id/config', to: 'apps#plugin_config',   as: 'configure_plugin'
 		get    '/plugin/:id/update', to: 'apps#manifest_update', as: 'update_plugin'
+		get    '/plugins/code/:id',  to: 'apps#connection_key',  as: 'request_key'
 
 		# App handling
 		post   '/app/new',       to: 'apps#plugin_config'
@@ -199,7 +210,7 @@ Rails.application.routes.draw do
 		match '/hide_assist', to: 'users#hide_assist', via: 'post', as: 'hide_assist'
 
 		# Knowledge Graph
-		match '/show_location', to: 'users#show_location', via: 'post'
+		match '/show_kg', to: 'users#show_kg', via: 'post'
 
 		# access from external applications
 		match '/external/gmaps_analysis/register', to: 'static_pages#gmaps', via: 'get'

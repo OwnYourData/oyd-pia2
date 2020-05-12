@@ -17,4 +17,5 @@ class Item < ApplicationRecord
 	validates :repo_id, presence: true
 	belongs_to :merkle, optional: true
 	belongs_to :oyd_source_pile, optional: true
+	has_many :oyd_accesses
 end

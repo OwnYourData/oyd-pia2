@@ -120,6 +120,8 @@ class ItemsController < ApplicationController
               @item_source_pile_verification = retVal["verification"] rescue ""
             end
           end
+
+          @access_count = @item["access_count"].to_s
         else
           redirect_to info_path(title: t('general.invalidAddress'), 
               text: t('general.inexistentOrDenied'))

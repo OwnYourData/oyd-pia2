@@ -1,0 +1,117 @@
+var markerClusters = L.markerClusterGroup();
+var div_circle = L.divIcon({ className: 'marker_circle'})
+<%  lat = ""
+    lon = ""
+    @items.each do |item| 
+        lat = item["latitude"].to_s
+        lon = item["longitude"].to_s %>
+        // var marker = new L.CircleMarker([<%= lat %>, <%= lon %>]).addTo(mymap);
+        // var marker = L.marker([<%= lat %>, <%= lon %>], {icon: div_circle}).addTo(mymap);
+        markerClusters.addLayer( new L.marker([<%= lat %>, <%= lon %>], {icon: div_circle}) );
+
+<%  end 
+    if lat != "" and lon != "" %>
+        mymap.addLayer( markerClusters );
+        mymap.panTo(new L.LatLng(<%= lat %>, <%= lon %>));
+<%  end %>
+
+<%  if @wh_items.count > 0
+        wkg = "<table>"
+        @wh_items.each do |item| 
+            if item['img'].to_s.length > 0
+                wkg += "<tr><td align='right' style='padding: 0 10px;'>" + item['count'].to_s + "x</td><td><img width='16' height='16' alt='favicon' src='data:image/gif;base64," + item['img'].to_s + "' />&nbsp;" + item['host'].to_s + "</td></tr>"
+            else
+                wkg += "<tr><td align='right' style='padding: 0 10px;'>" + item['count'].to_s + "x</td><td>" + item['host'].to_s + "</td></tr>"
+              end
+           end 
+           wkg += "</table>" %>
+           $("#webhistory-kg").html("<%= wkg.html_safe %>");
+<%     end %>
+
+<%  if @diabetes_values != [] %>
+        var diabetes_ctx = document.getElementById('diabetes-chart').getContext('2d');
+        var diabetes_config = {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: 'CBG',
+                    data: <%= @diabetes_values.to_json.html_safe %>,
+                    backgroundColor: 'rgb(54, 162, 235)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    borderWidth: 1, pointRadius: 0,
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        time: {
+                            unit: 'minute'
+                        }
+                    }]
+                },
+                responsive: true,
+                legend: {
+                    display: false,
+                },
+                title: {
+                    display: false,
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        };
+        var diabetes_chart = new Chart(diabetes_ctx, diabetes_config);
+<%  end %>
+
+var ctx = document.getElementById('dv-chart').getContext('2d');
+var config = {
+    type: 'doughnut',
+    data: {
+        labels: ['<%= t('kg.read_access') %>', '<%= t('kg.created') %>', '<%= t('kg.updated') %>', '<%= t('kg.deleted') %>'],
+        datasets: [{
+            label: 'Data Vault',
+            data: [1, 1, 1, 1],
+            backgroundColor: [
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 99, 132, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 99, 132, 1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        legend: {
+            position: 'bottom',
+        },
+        title: {
+            display: false,
+        },
+        animation: {
+            animateScale: true,
+            animateRotate: true
+        }
+    }
+};
+var dv_chart = new Chart(ctx, config);
+$.ajax({
+    url: "<%= ENV["VAULT_URL"].to_s %>/api/users/access_count",
+    type: "GET",
+    beforeSend: function (xhr) {
+        xhr.setRequestHeader('Authorization', 'Bearer <%= session["token"] %>');
+    }
+}).done(function( data ) { 
+    dv_chart.data.datasets[0].data = [data.read, data.create, data.update, data.delete];
+    dv_chart.update(); });
+

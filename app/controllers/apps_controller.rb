@@ -646,4 +646,14 @@ class AppsController < ApplicationController
 			format.js
 		end
 	end
+
+
+	def connection_key
+		@plugin = Doorkeeper::Application.find(params[:id])
+		if !@plugin.nil?
+			@plugin.oyd_installs.destroy_all
+			@plugin.oyd_installs.new(code: '%06d' % rand(10 ** 6)).save
+		end
+		redirect_to plugins_path
+	end
 end

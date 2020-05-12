@@ -42,7 +42,7 @@ module SessionsHelper
 	        rescue => ex
 	            response = nil
 	        end
-	        if response.nil? or response.code != 200
+	        if response.body.nil? || response.body.empty? || response.code != 200
 	        	current_user = nil
 	        else
 	        	current_user = response.parsed_response

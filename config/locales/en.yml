@@ -44,6 +44,16 @@ en:
     paging_previous: "&laquo; Previous"
     paging_next: "Next &raquo;"
     not_anymore: "hide this hint in the future"
+  kg:
+    title: My personal knowledge graph
+    location: Location
+    webhistory: Webhistory
+    diabetes: Diabetes
+    items_overall: items overall
+    read_access: Read access
+    created: Created
+    updated: Updated
+    deleted: Deleted
   menu:
     myApps: "My Apps"
     myData: "My Data"
@@ -66,7 +76,7 @@ en:
     language: "Language"
   start:
     header: "Your data is precious."
-    text: "Learn from your data and get to know more about you and insights abut your life."
+    text: "Learn from your data and get to know more about you and insights about your life."
     email: "Email"
     password: "Password"
     remember: "Remember password"
@@ -170,7 +180,7 @@ en:
     mrh_description: 'A Merkle Root Hash is a distinct character string that condenses a group of hash values in a tree structure. Using the link "show audit proof" the other necessary hash values are displayed.<br><br>A green checkmark indicates that the hash value above together with the other hash values result in the shown Merkle Root Hash.'
     showAuditProof: "show audit proof"
     transaction_title: "Transaction"
-    transaction_description: 'The character string is the unique transaction addresse in the Ethereum blockchain that stores the Merkle Root Hash from above. Use for example e den Merkle Root Hash in der Zeile darüber enthält. Verwende zB die Webseite <a href="https://etherscan.io" target="_blank">https://etherscan.io</a> to show the transaction.<br><br>A green checkmark indicates the validity of the address and that it stores the Merkle Root Hash from above.'
+    transaction_description: 'The character string is the unique transaction address in the Ethereum blockchain that stores the Merkle Root Hash from above. Use for example <a href="https://etherscan.io" target="_blank">https://etherscan.io</a> to show the transaction.<br><br>A green checkmark indicates the validity of the address and that it stores the Merkle Root Hash from above.'
     showTransaction: "show on Etherscan.io"
     timestamp_title: "Blockchain Timestamp"
     timestamp_description: 'The timestamp shown here is taken from the transaction in the Ethereum blockchain and can be verified by clicking "show on Etherscan.io" above. Since it is from the decentralized blockchain it guarantees the timeliness of the record.<br><br>A green checkmark indicates conformance of the timestamp with the transaction information.'
@@ -183,6 +193,7 @@ en:
     verified_source: "Verified Source"
     verified_source_description: "There is a valid signature with the specified email address for the current record. To verify this signature independently, the entire source record must be used - use the link next to the email address."
     show_verified_source: "show source record"
+    data_access_count: "Access count"
   account:
     edit_header: "Your account information"
     account_group: "Your Account"
@@ -191,7 +202,7 @@ en:
     account_notifications: "Notifications:"
     update_button: "Update"
     update_successful_message: "Updates saved"
-    update_error_message: "An error occured when trying to save the updates."
+    update_error_message: "An error occurred when trying to save the updates."
     account_password_text: "Here you can update your password."
     current_password: "Current Password"
     new_password: "New Password"
@@ -223,7 +234,7 @@ en:
     archive_error: "An error occurred while creating the archive."
     archive_note: "Note"
     archive_text: "The download may take several minutes, depending on the available data. Please be patient! <br>After the download this dialog can be closed."
-    pia_delete_warning: "<strong>Attention:</strong> This action can not be undone!"
+    pia_delete_warning: "<strong>Attention:</strong> This action cannot be undone!"
     pia_delete_info: "This process deletes your vault, including all data, configurations, and user information."
     pia_delete_confirmation: "Please enter your password for confirmation"
     pia_delete_successful: "Account deleted"
@@ -232,6 +243,9 @@ en:
     download_apk_text: "download the APK"
   plugins:
     plugin_update_success: "The plugin was updated successfully."
+    installation_hint: "Installation hint"
+    request_connection_key: "request Key"
+    refresh_key: "renew Key"
   sources:
     last_record: "last created"
     record_count: "Records"

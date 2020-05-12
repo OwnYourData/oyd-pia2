@@ -193,6 +193,10 @@
 				<td><%= @item["repo_name"].to_s %> (id: <%= @item["repo_id"].to_s %>)</td>
 			</tr>
 			<tr>
+				<td><%= t('data.data_access_count') %></td>
+				<td><%= @access_count.to_s %></td>
+			</tr>
+			<tr>
 				<td><%= t('data.created_at') %></td>
 				<td><%= @item["created_at"].to_s %></td>
 			</tr>

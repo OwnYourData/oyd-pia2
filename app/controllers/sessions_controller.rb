@@ -4,6 +4,7 @@ class SessionsController < ApplicationController
 
 	def create
         login_user_url = getServerUrl() + "/oauth/token"
+        response_nil = false
         begin
             response = HTTParty.post(login_user_url, 
                 headers: { 'Content-Type' => 'application/json' },
@@ -11,9 +12,9 @@ class SessionsController < ApplicationController
                     password: params[:password], 
                     grant_type: "password" }.to_json )
         rescue => ex
-            response = nil
+            response_nil = true
         end
-        if !response.nil? && response.code == 200
+        if !response_nil && !response.body.nil? && response.code == 200
             token = response.parsed_response["access_token"].to_s
             log_in token
             params[:remember] == '1' ? remember(current_user) : forget(current_user)

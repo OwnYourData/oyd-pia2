@@ -70,6 +70,7 @@ module PluginsHelper
                 language: pluginInfo['language'],
                 assist_update: true,
                 description: pluginInfo['description'],
+                installation_hint: pluginInfo['installation'].to_s,
                 redirect_uri: "https://localhost:3000/oauth/callback" )
             retVal = @plugin.save
         else
@@ -81,6 +82,7 @@ module PluginsHelper
                 language: pluginInfo['language'],
                 assist_update: true,
                 description: pluginInfo['description'],
+                installation_hint: pluginInfo['installation'].to_s,
                 redirect_uri: "https://localhost:3000/oauth/callback" )
         end
 

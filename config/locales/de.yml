@@ -44,6 +44,16 @@ de:
     paging_previous: "&laquo; Zurück"
     paging_next: "Weiter &raquo;"
     not_anymore: "diesen Hinweis in Zukunft ausblenden"
+  kg:
+    title: Mein Wissensdiagramm
+    location: Ortsdaten
+    webhistory: Webverlauf
+    diabetes: Diabetes
+    items_overall: Datensätze insgesamt
+    read_access: Lesezugriffe
+    created: Neu erstellt
+    updated: Geändert
+    deleted: Gelöscht
   menu:
     myApps: "Meine Apps"
     myData: "Meine Daten"
@@ -83,13 +93,13 @@ de:
     settings: "Einstellungen"
     logOut: "Ausloggen"
     attention: "Achtung"
-    recoveryTxt: "Deine Daten werden mit dem oben eingegebenem Passwort verschlüsselt. Falls du dieses Passwort verlierst, kannst du es mit dem Wiederherstellungspasswort zurücksetzen."
+    recoveryTxt: "Deine Daten werden mit dem oben eingegebenen Passwort verschlüsselt. Falls du dieses Passwort verlierst, kannst du es mit dem Wiederherstellungspasswort zurücksetzen."
     account_exist: "Du hast ein Konto?"
     account_exist_link: "Melde dich an."
     request_account: "Trage Namen und Emailadresse ein, um deinen OwnYourData Datentresor anzufordern."
   process:
     confirmationMailSent: "Email verschickt"
-    confirmationMailSentBody: "Ein Email zur Aktivierung des Kontos wurde verschickt."
+    confirmationMailSentBody: "Ein E-Mail zur Aktivierung des Kontos wurde verschickt."
     accountConfirmed: "Dein Account wurde erfolgreich eingerichtet."
   requestDataVault:
     title: "Datentresor anfordern"
@@ -105,14 +115,14 @@ de:
     title: "Passwort zurücksetzen"
     confirmTitle: "Neues Passwort festlegen"
     header: "Neues Passwort anfordern"
-    recoveryTxt: "Wir senden dir eine Email an die angegebene Adresse mit einem Link zu einer Seite auf der du dein Passwort zurücksetzen kannst. Dieser Link ist nur 2 Stunden gültig und du musst dann ebenfalls dein Wiederherstellungs-Passwort eingeben, um ein neues Passwort festzulegen!"
+    recoveryTxt: "Wir senden dir eine E-Mail an die angegebene Adresse mit einem Link zu einer Seite auf der du dein Passwort zurücksetzen kannst. Dieser Link ist nur 2 Stunden gültig und du musst dann ebenfalls dein Wiederherstellungs-Passwort eingeben, um ein neues Passwort festzulegen!"
     emailSent: "Email verschickt"
-    emailSentInfo: "Ein Email zum Zurücksetzen deines Passworts wurde verschickt."
+    emailSentInfo: "Ein E-Mail zum Zurücksetzen deines Passworts wurde verschickt."
     problemTitle: "Fehler"
-    problemInfo: "Es konnte kein Email zum Zurücksetzen deines Passworts verschickt werden."
+    problemInfo: "Es konnte kein E-Mail zum Zurücksetzen deines Passworts verschickt werden."
     mailSubject: "[OwnYourData] Passwort zurücksetzen"
     newPassword: "Neues Passwort"
-    recoveryPasswordInfo: "Die Daten in deinem Datentresor sind mit deinem alten Passwort verschlüsselt und nur das Wiederherstellungs-Passwort macht es möglich, auf diese Daten trotzdem zuzugreifen. Ohne Wiederherstellungs-Passwort ist es leider nicht möglich, eine neues Passwort zu erstellen."
+    recoveryPasswordInfo: "Die Daten in deinem Datentresor sind mit deinem alten Passwort verschlüsselt und nur das Wiederherstellungs-Passwort macht es möglich, auf diese Daten trotzdem zuzugreifen. Ohne Wiederherstellungs-Passwort ist es leider nicht möglich, ein neues Passwort zu erstellen."
     back: "zurück zur Startseite"
     success: "Passwort erfolgreich geändert"
   apps:
@@ -122,7 +132,7 @@ de:
     delete: "Löschen"
     name: "Name"
     app_key: "Kennung"
-    app_secret: "Passwort"
+    app_secret: "Geheimnis"
     app_url: "Adresse"
     mobile_url: "Mobile Adresse"
     saveBtn: "Änderungen speichern"
@@ -183,6 +193,7 @@ de:
     verified_source: "Verifizierte Datenquelle"
     verified_source_description: "Für den aktuellen Datensatz existiert eine gültige Signatur mit der angegebenen Emailadresse. Um diese Signatur unabhängig zu überprüfen, muss der gesamte Quelldatensatz verwendet werden - verwende dazu den Link neben der Emailadresse."
     show_verified_source: "Quelldatensatz anzeigen"
+    data_access_count: "Anzahl der Zugriffe"
   account:
     edit_header: "Deine Kontodaten"
     account_group: "Dein Konto"
@@ -232,6 +243,9 @@ de:
     download_apk_text: "lade dir die APK-Datei herunter"
   plugins:
     plugin_update_success: "Die Erweiterung wurde erfolgreich aktualisiert."
+    installation_hint: "Hinweis zur Installation"
+    request_connection_key: "Code anfordern"
+    refresh_key: "Code erneuern"
   sources:
     last_record: "zuletzt erstellt"
     record_count: "Datensätze"

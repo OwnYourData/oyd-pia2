@@ -2,7 +2,15 @@
 	<td class="col-lg-8 col-md-8 col-xs-10 font-size-large">
 		<%= plugin_list["name"].to_s %><br>
 		<span style="color: gray; font-size: small;"><%= plugin_list["description"].to_s %></span>
-	</td>
+		<% if plugin_list["installation_hint"].to_s != "" %>
+			<br><span style="color: darkgray; font-size: small;"><em><strong><%= t('plugins.installation_hint') %>:</strong> <%= plugin_list["installation_hint"].to_s.html_safe %>
+			<% if plugin_list["access_code"].to_s == "" %>
+				</em></span><%= link_to t('plugins.request_connection_key'), request_key_path(id: plugin_list["id"]), class: "btn btn-default btn-xs", style: "margin-top: -3px; margin-left: 8px;" %>
+			<% else %>
+				</em><%= plugin_list["access_code"].to_s %></span><%= link_to t('plugins.refresh_key'), request_key_path(id: plugin_list["id"]), class: "btn btn-default btn-xs", style: "margin-top: -3px; margin-left: 8px;" %>
+			<% end %>
+		<% end %>
+ 	</td>
 
 	<td class="text-right col-lg-4 col-md-4 col-xs-2">
 		<div class="btn-group flex-btn-group-container">

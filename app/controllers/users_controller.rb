@@ -33,13 +33,18 @@ class UsersController < ApplicationController
         # OYD Assistant
         @show_assistant, @assist_text, @assist_type, @assist_id = oyd_assistant(token)
 
-        
+        @location_count = User.find(@user["id"]).repos.where(identifier: "oyd.location").first.items.count rescue 0
+        @webhistory_count = User.find(@user["id"]).repos.where(identifier: "dev.unterholzer.oyd.browsing").first.items.count rescue 0
+        diabetes_items_url = getServerUrl() + "/api/repos/oyd.diabetes/items?last_days=1"
+        @diabetes_items = readRawItems(diabetes_items_url, token)
+        @diabetes_count = @diabetes_items.count rescue 0
+        @diabetes_records = []
 
-        if params[:view].to_s == "2"
+        # if params[:view].to_s == "2"
             respond_to do |format|
                 format.html { render layout: "application_map", template: "users/show2" }
             end
-        end
+        # end
     end
 
 	def new
@@ -308,7 +313,7 @@ class UsersController < ApplicationController
         @full_name = ""
         token = getToken()
         full_name_by_token_url = getServerUrl() + 
-            "/api/users/name_by_token/" + params[:token]
+            "/api/users/name_by_token/" + params[:token].to_s
         response = HTTParty.get(full_name_by_token_url,
             headers: { 'Accept' => '*/*',
                        'Content-Type' => 'application/json',
@@ -486,6 +491,18 @@ class UsersController < ApplicationController
                     end
                 end
             end
+            plugin["access_code"] = ""
+            @tmp = Doorkeeper::Application.find(plugin["id"])
+            if !@tmp.nil?
+                case @tmp.oyd_installs.count
+                when 0
+                    plugin["access_code"] = ""
+                when 1
+                    plugin["access_code"] = @tmp.oyd_installs.first.code.to_s
+                else
+                    @tmp.oyd_installs.destroy_all
+                end
+            end
             @plugins << plugin
         end
     end
@@ -520,7 +537,7 @@ class UsersController < ApplicationController
         end
     end
 
-    def show_location
+    def show_kg
         pia_url = getServerUrl()
         token = session[:token]
         master_key = params[:mk].to_s
@@ -536,13 +553,14 @@ class UsersController < ApplicationController
         cipherHex = [cipher].pack('H*')
         nonceHex = [nonce].pack('H*')
         keyHash = [master_key].pack('H*')
-        private_key = RbNaCl::PrivateKey.new(keyHash)
+        private_key = RbNaCl::PrivateKey.new(keyHash) rescue nil
         authHash = RbNaCl::Hash.sha256('auth'.force_encoding('ASCII-8BIT'))
         auth_key = RbNaCl::PrivateKey.new(authHash).public_key
-        box = RbNaCl::Box.new(auth_key, private_key)
-        password = box.decrypt(nonceHex, cipherHex)
-        decrypt_key = decrypt_message(@user["password_key"], password)
+        box = RbNaCl::Box.new(auth_key, private_key) rescue nil
+        password = box.decrypt(nonceHex, cipherHex) rescue ""
+        decrypt_key = decrypt_message(@user["password_key"], password) rescue ""
 
+        # Location
         location_items_url = pia_url + "/api/repos/oyd.location/items?last_days=14"
         @location_items = readRawItems(location_items_url, token)
         @items = []
@@ -553,7 +571,74 @@ class UsersController < ApplicationController
                 retVal["id"] = JSON.parse(item)["id"]
                 @items << retVal
             end
+        end unless @location_items.nil?
+
+        # Webhistory
+        webhistory_items_url = pia_url + "/api/repos/dev.unterholzer.oyd.browsing/items?last_days=14"
+        @webhistory_items = readRawItems(webhistory_items_url, token)
+        @wh_items = []
+        if !@webhistory_items.nil? && @webhistory_items.count > 0
+            retVal = {}
+            @webhistory_items.each do |rec|
+                begin
+                    my_host = URI.parse(JSON(rec)["url"]).host
+                    if retVal.has_key?(my_host)
+                        retVal[my_host] += 1
+                    else
+                        retVal[my_host] = 1
+                    end
+                rescue
+                end
+            end unless @webhistory_items.count == 0
+            retVal.sort_by {|k,v| v}.reverse.first(5).each do |rec|
+                img64 = ""
+                begin
+                    uri = URI::HTTP.build({host: rec.first, path: '/favicon.ico'}).to_s
+                    res = HTTParty.get(uri)
+                    if res.code == 200
+                        img64 = Base64.strict_encode64(res.body)
+                    else
+                        uri = URI::HTTP.build({host: rec.first, path: '/'}).to_s
+                        res = HTTParty.get(uri)
+                        doc = Nokogiri::HTML(res)
+                        doc.xpath('//link[@rel="shortcut icon"]').each do |tag|
+                            # This is the contents of the "href" attribute, which we pass to Ruby's URI module for analysis
+                            taguri = URI(tag['href'])
+
+                            unless taguri.host.to_s.length < 1
+                                # There is a domain name in taguri, so we're good
+                                iconuri = taguri.to_s
+                            else
+                                # There is no domain name in taguri. It's a relative URI!
+                                # So we have to join it with the index URL we built at the beginning of the method
+                                iconuri = URI.join(uri, taguri).to_s
+                            end
+
+                            # Grab the icon and set the instance variables
+                            res = HTTParty.get(iconuri)
+                            if res.code == 200
+                                img64 = Base64.strict_encode64(res.body)
+                            end
+                        end
+
+                    end
+                rescue
+
+                end
+                @wh_items << {"count": rec.last, "host": rec.first, "img": img64}.stringify_keys
+            end
         end
+
+        # Diabetes
+        diabetes_items_url = pia_url + "/api/repos/oyd.diabetes/items?last_days=1"
+        @diabetes_items = readRawItems(diabetes_items_url, token)
+        @diabetes_values = []
+        @diabetes_items.each do |item|
+            retVal = decrypt_message(item.to_s, decrypt_key)
+            if retVal.to_s != ""
+                @diabetes_values << { x: JSON.parse(retVal)["time"], y: JSON.parse(retVal)["value"].to_f }
+            end
+        end unless @diabetes_items.nil?
 
         respond_to do |format|
             format.js

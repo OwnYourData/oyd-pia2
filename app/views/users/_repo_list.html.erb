@@ -3,7 +3,7 @@
 		<%= repo_list["name"].to_s %>
 	</td>
 	<td class="col-lg-2 col-md-2 col-xs-1 font-size-large statCount">
-		<%= repo_list["count"].to_s %>
+		<span id="repo_<%= repo_list["id"] %>_count"><%= repo_list["count"].to_s %></span>
 	</td>
 	<td class="text-right col-lg-2 col-md-3 col-xs-1">
 		<div class="btn-group flex-btn-group-container">
@@ -21,4 +21,13 @@
 			<% end %>
 		</div>
 	</td>
+	<script type="text/javascript">
+		$(document).load( $.ajax({
+			url: "<%= ENV["VAULT_URL"].to_s %>/api/repos/<%= repo_list["id"] %>/count",
+			type: "GET",
+			beforeSend: function (xhr) {
+			    xhr.setRequestHeader('Authorization', 'Bearer <%= session["token"] %>');
+			}
+		}).done(function( data ) { $("#repo_<%= repo_list["id"] %>_count").text( data.count ) }));
+	</script>
 </tr>
