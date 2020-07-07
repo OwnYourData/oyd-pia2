@@ -72,7 +72,7 @@ describe 'Permission API' do
 			end
 		end
 	end
-	path '/api/plugins/{plugin_id}/perms_destroy}' do
+	path '/api/plugins/{plugin_id}/perms_destroy' do
 		delete 'delete all permissions for the specified plugin' do
 			tags 'Permission Management'
 			produces 'application/json'

@@ -474,7 +474,7 @@
         ],
         "parameters": [
           {
-            "name": "item_id",
+            "name": "plugin_id",
             "in": "path",
             "type": "string",
             "required": true
@@ -482,6 +482,110 @@
           {
             "name": "input",
             "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/api/plugins/{plugin_id}/perms/{id}": {
+      "put": {
+        "summary": "update specified permission for the specified plugin",
+        "tags": [
+          "Permission Management"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "plugin_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "delete specified permission for the specified plugin",
+        "tags": [
+          "Permission Management"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "plugin_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
+    "/api/plugins/{plugin_id}/perms_destroy}": {
+      "delete": {
+        "summary": "delete all permissions for the specified plugin",
+        "tags": [
+          "Permission Management"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "plugin_id",
+            "in": "path",
+            "type": "string",
+            "required": true
           }
         ],
         "responses": {
