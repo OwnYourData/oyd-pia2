@@ -37,6 +37,11 @@ module Doorkeeper
 		has_many :oyd_reports,  foreign_key: 'plugin_id', dependent: :destroy
 		has_many :logs,         foreign_key: 'plugin_id', dependent: :destroy
 		has_many :oyd_installs, foreign_key: 'plugin_id', dependent: :destroy
+		has_many :oyd_access,   foreign_key: 'plugin_id', dependent: :destroy
 		belongs_to :user,       foreign_key: 'owner_id',  optional: true
+
+        def self.options_for_select
+            order("LOWER(name)").map { |e| [e.name, e.id] }
+        end
 	end
 end

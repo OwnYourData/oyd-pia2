@@ -12,6 +12,7 @@
 //
 //= require leaflet
 //= require jquery
+//= require filterrific/filterrific-jquery
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap

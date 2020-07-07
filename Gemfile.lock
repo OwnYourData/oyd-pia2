@@ -88,6 +88,7 @@ GEM
     erubi (1.9.0)
     execjs (2.7.0)
     ffi (1.12.2)
+    filterrific (5.2.1)
     font-awesome-rails (4.7.0.5)
       railties (>= 3.2, < 6.1)
     git-version-bump (0.16.0)
@@ -276,6 +277,7 @@ DEPENDENCIES
   coffee-rails
   devise
   doorkeeper
+  filterrific
   font-awesome-rails
   httparty
   jbuilder (~> 2.5)

@@ -20,21 +20,34 @@ module Api
 						.joins('INNER JOIN oauth_applications ON oauth_applications.id = oyd_views.plugin_id')
 						.where.not("oyd_views.view_type like ?", "%mobile%")
 						.where('oauth_applications.owner_id=' + user_id.to_s)
-						.select(:id, :plugin_id, :name, :uid, :secret, :identifier, :url, :view_type, :picture, "plugin_details.description as description"), 
+						.select(:id, :plugin_id, :name, :uid, :secret, :confidential, :identifier, :url, :view_type, :picture, "plugin_details.description as description"), 
 					status: 200
 			end
 
 			def show
 				if current_resource_owner.nil?
-					render json: Doorkeeper::Application
-						.where(id: params[:id])
-						.select(:id, :name, :identifier, :uid, :secret),
-						status: 200
+					@app = Doorkeeper::Application.where(id: params[:id]).first rescue nil
+					# render json: Doorkeeper::Application
+					# 	.where(id: params[:id])
+					# 	.select(:id, :name, :identifier, :uid, :secret, :confidential),
+					# 	status: 200
 				else
-					render json: Doorkeeper::Application
-						.where(owner_id: current_resource_owner.id, id: params[:id])
-						.select(:id, :name, :identifier, :uid, :secret),
-						status: 200
+					@app = Doorkeeper::Application.where(owner_id: current_resource_owner.id, id: params[:id]).first rescue nil
+					# render json: Doorkeeper::Application
+					# 	.where(owner_id: current_resource_owner.id, id: params[:id])
+					# 	.select(:id, :name, :identifier, :uid, :secret, :confidential),
+					# 	status: 200
+				end
+				if @app.nil?
+					render json: {"error": "not found"},
+						   status: 404
+				else
+					render json: [{ id: @app.id,
+						           name: @app.name,
+						           identifier: @app.identifier,
+						           uid: @app. uid,
+						           secret: @app.secret }],
+						   status: 200
 				end
 			end
 

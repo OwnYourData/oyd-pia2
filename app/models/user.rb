@@ -33,6 +33,9 @@
 #  reset_sent_at            :datetime
 #  app_nonce                :string
 #  app_cipher               :string
+#  phone_hash               :string
+#  phone_key                :string
+#  did                      :string
 #
 # Indexes
 #

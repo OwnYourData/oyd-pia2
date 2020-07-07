@@ -1,0 +1,44 @@
+<% provide(:title, t('menu.access_log')) %>
+
+<div class="well">
+  <h3 style="margin-top: 0;">Filter</h3>
+  <%= form_for_filterrific @filterrific do |f| %>
+  <!--   <div>
+      Search
+      <%# give the search field the 'filterrific-periodically-observed' class for live updates %>
+      <%= f.text_field(
+        :search_query,
+        class: 'filterrific-periodically-observed'
+      ) %>
+    </div> -->
+    <div>
+      <%= t('data.plugin_title') %>
+      <%= f.select(
+        :with_plugin_id,
+        @filterrific.select_options[:with_plugin_id],
+        { include_blank: '- ' + t('logs.any')  + ' -' }
+      ) %>
+    </div>
+    <div>
+      <%= t('logs.created_after') %>
+      <%= f.date_field(:with_created_at_gte, value: params[:filterrific].nil? ? "" : params[:filterrific][:with_created_at_gte].to_s, class: 'js-datepicker') %>
+    </div>
+    <!-- <div>
+      Sorted by
+      <%= f.select(:sorted_by, @filterrific.select_options[:sorted_by]) %>
+    </div> -->
+    <div>
+      <%= link_to(
+        t('logs.reset_filter'),
+        reset_filterrific_url,
+      ) %>
+    </div>
+    <%# add an automated spinner to your form when the list is refreshed %>
+    <%= render_filterrific_spinner %>
+  <% end %>
+</div>
+
+<%= render(
+  partial: 'logs/list',
+  locals: { logs: @logs }
+) %>

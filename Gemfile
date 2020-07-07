@@ -32,6 +32,7 @@ gem 'railties'
 gem 'actionview'
 gem 'rspec'
 gem 'leaflet-rails'
+gem 'filterrific'
 
 # update for security fixes
 gem 'loofah', '~> 2.3', '>= 2.3.1'

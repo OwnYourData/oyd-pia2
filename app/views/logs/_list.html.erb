@@ -1,0 +1,42 @@
+<div id="filterrific_results">
+
+  <div>
+    <%= page_entries_info logs %>
+  </div>
+
+  <table class="table">
+    <thead><tr>
+      <th scope="col"><%= filterrific_sorting_link(@filterrific, :plugin_id, {label: t('menu.permission')}) %></th>
+      <th scope="col"><%= t('logs.request') %></th>
+      <th scope="col"><%= filterrific_sorting_link(@filterrific, :operation, {label: t('logs.operation')}) %></th>
+      <th scope="col"><%= filterrific_sorting_link(@filterrific, :created_at, {label: t('data.created_at')}) %></th>
+    </tr></thead>
+    <tbody>
+    <% logs.each do |log| %>
+      <tr>
+        <td><%= log.oauth_application.name %></td>
+        <td><% if log.item_id.nil? || Item.where(id: log.item_id).count == 0 %>
+                <%= t('data.repo_title')%>: <%= Repo.find(log.repo_id).name rescue log.repo_id.to_s + " #deleted" %>;
+                <%= t('logs.parameters')%>: <%= log.query_params.to_s %>
+            <% else %>
+                <%= t('data.record_hdr')%> <%= link_to data_item_path(repo_id: log.repo_id || Item.find(log.item_id).repo_id, 
+                                           item_id: log.item_id) do %>#<%= log.item_id.to_s %><% end 
+               end %></td>
+        <td><%= case log.operation.to_s
+                when "1"
+                  t('logs.op_read')
+                when "2"
+                  t('logs.op_write')
+                when "3"
+                  t('logs.op_update')
+                when "4"
+                  t('logs.op_delete')
+                end %></td>
+        <td><%= log.created_at %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+
+<%= will_paginate logs, previous_label: t('general.paging_previous'), next_label: t('general.paging_next')  %>

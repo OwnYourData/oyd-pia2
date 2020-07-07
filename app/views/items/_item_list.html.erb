@@ -3,7 +3,11 @@
 		<%= JSON.parse(item_list)['id'].to_s rescue "" %>
 	</td>
 	<td class="col-md-8 col-sm-8 col-xs-7 truncate" style="word-wrap: break-word; max-width: 200px">
-		<%= JSON.parse(item_list)['value'].to_s rescue "" %>
+		<% if JSON.parse(item_list)['value'].to_s == "" %>
+			<%= item_list.to_json %>
+		<% else %>
+			<%= JSON.parse(item_list)['value'].to_s rescue "" %>
+		<% end %>
 	</td>
 	<td class="text-right col-md-3 col-sm-3 col-xs-4">
 		<% 	begin

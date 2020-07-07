@@ -110,6 +110,31 @@ module ApplicationHelper
         end
     end
 
+    def page_entries_info(collection, options = {})
+        %{%s: %d - %d %s %d %s} % [
+            t('logs.result'),
+            collection.offset + 1,
+            collection.offset + collection.length,
+            t('logs.of'),
+            collection.total_entries,
+            t('logs.records')
+        ]
+      # entry_name = options[:entry_name] || (collection.empty?? 'item' :
+      #     collection.first.class.name.split('::').last.titleize)
+      # if collection.total_pages < 2
+      #   case collection.size
+      #   when 0; "No #{entry_name.pluralize} found"
+      #   else; "Displaying all #{entry_name.pluralize}"
+      #   end
+      # else
+      #   %{Displaying %d - %d of %d #{entry_name.pluralize}} % [
+      #     collection.offset + 1,
+      #     collection.offset + collection.length,
+      #     collection.total_entries
+      #   ]
+      # end
+    end    
+
     def getServerUrl
         retVal = ENV["LOCAL_VAULT"]
         retVal ||= 'http://localhost:3000'
@@ -261,6 +286,99 @@ module ApplicationHelper
             else
                 false
             end
+        end
+    end
+
+    def create_item(repo, user_id, params, plugin_id)
+        repo_identifier = params[:repo_identifier]
+        if repo.nil?
+            # check if oyd.settings is available and re-use public_key
+            public_key = ''
+            @settings_repo = Repo.where(
+                user_id: user_id,
+                identifier: 'oyd.settings')
+            if @settings_repo.count > 0
+                public_key = @settings_repo.first.public_key
+            end
+            repo = Repo.new(
+                user_id: user_id,
+                identifier: repo_identifier,
+                name: repo_identifier,
+                public_key: public_key)
+            repo.save
+        end
+        input = params.except( *[:format, 
+                                 :controller, 
+                                 :action, 
+                                 :repo_identifier,
+                                 :item] )
+        if input[:_json]
+            item_array = JSON.parse(input.to_json)['_json']
+            if(item_array.class.to_s == 'String')
+                item_array = JSON.parse(item_array)
+            end
+            return_array = []
+            return_status = 200
+            item_array.each do |item|
+                pile_id = item["oyd_source_pile_id"] rescue nil
+                if !pile_id.nil?
+                    item = item.except( *[ "oyd_source_pile_id" ] )
+                end
+                retVal = write_item(repo, item.to_json.to_s, pile_id, plugin_id)
+                return_array << retVal
+                if retVal[:status] != 200
+                    status = retVal[:status]
+                end
+            end
+            retVal = { 
+                processed: return_array.count, 
+                responses: return_array,
+                status: 200 }
+        else
+            pile_id = params[:oyd_source_pile_id] rescue nil
+            payload = params.except( *[ :format, 
+                                        :controller, 
+                                        :action, 
+                                        :repo_identifier,
+                                        :oyd_source_pile_id,
+                                        :item ] ).to_json.to_s
+            pile_id = JSON.parse(JSON.parse(payload.to_s.gsub("=>",":"))["value"])["oyd_source_pile_id"] rescue nil
+            if !pile_id.nil?
+                payload = payload.gsub(',\\"oyd_source_pile_id\\":' + pile_id.to_s, '')
+            end
+            write_item(repo, payload, pile_id, plugin_id)
+        end
+    end
+
+    def write_item(repo, payload, pile_id, plugin_id)
+        @item = Item.new(value: payload.to_s,
+                         repo_id: repo.id,
+                         oyd_source_pile_id: pile_id)
+        if @item.save
+            doc_access(PermType::WRITE, plugin_id, @item.id)
+            val = JSON.parse(@item.value)
+            val["id"] = @item.id
+            @item.update_attributes(value: val.to_json.to_s)
+            { id: @item.id, status: 200 }
+        else
+            {
+                error: @item.errors.messages.to_s,
+                status: 400 
+            }
+        end
+    end
+
+    def doc_access(operation, plugin_id, item_id=nil, repo_id=nil, query_string=nil)
+        @oa = OydAccess.new(
+            timestamp: Time.now.utc.to_i,
+            operation: operation,
+            plugin_id: plugin_id,
+            item_id: item_id,
+            repo_id: repo_id,
+            query_params: query_string,
+            user_id: Doorkeeper::Application.find(plugin_id).owner_id)
+        if !@oa.save
+            puts "error in writing oyd_access"
         end
     end
 end

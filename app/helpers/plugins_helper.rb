@@ -62,6 +62,7 @@ module PluginsHelper
             identifier: pluginInfo['identifier'])
         if @plugin.nil? || @plugin.count == 0
             @plugin = Doorkeeper::Application.new(
+                confidential: false,
                 owner_id: user_id,
                 owner_type: 'User',
                 name: pluginInfo['name'],

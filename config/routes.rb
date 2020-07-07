@@ -14,7 +14,15 @@ Rails.application.routes.draw do
 
 				# DEC112
 				match '/dec112/register',       to: 'decs#register',          via: 'post'
+				match '/dec112/query/:did',     to: 'decs#query',             via: 'get', constraints: {did: /[^\/]+/}
 				match '/dec112/revoke',         to: 'decs#revoke',            via: 'delete'
+
+				# SC Consent
+				match '/consent',               to: 'consents#create',        via: 'post'
+				match '/consent',               to: 'consents#index',         via: 'get'
+				match '/consent/:id',           to: 'consents#show',          via: 'get'
+				match '/consent/:id',           to: 'consents#update',        via: 'put'
+				match '/consent/:id',           to: 'consents#delete',        via: 'delete'
 
 				# App support
 				match 'support/:nonce',         to: 'users#support',          via: 'get'
@@ -86,6 +94,13 @@ Rails.application.routes.draw do
 				match 'apps/:plugin_id/perms/:id',     to: 'perms#delete',     via: 'delete'
 				match 'apps/:plugin_id/perms_destroy', to: 'perms#delete_all', via: 'post'
 
+				# Permission handling
+				match 'plugins/:plugin_id/perms',         to: 'perms#index',      via: 'get'
+				match 'plugins/:plugin_id/perms',         to: 'perms#create',     via: 'post'
+				match 'plugins/:plugin_id/perms/:id',     to: 'perms#update',     via: 'put'
+				match 'plugins/:plugin_id/perms/:id',     to: 'perms#delete',     via: 'delete'
+				match 'plugins/:plugin_id/perms_destroy', to: 'perms#delete_all', via: 'post'
+
 				# Repo handling
 				match 'repos/index',           to: 'repos#index',   via: 'get'
 				match 'repos/:id',             to: 'repos#show',    via: 'get'
@@ -153,6 +168,9 @@ Rails.application.routes.draw do
 		post   '/login',  to: 'sessions#create'
 		delete '/logout', to: 'sessions#destroy'
 		get    '/logout',  to: 'sessions#destroy'
+		match '/phone_login',      to: 'static_pages#phone',     via: 'get'
+		match '/phone_code',       to: 'static_pages#code',      via: 'get'
+		match '/phone_code',       to: 'static_pages#code',      via: 'post'
 
 		# User handling
 		get  '/user',              to: 'users#show'
@@ -205,6 +223,9 @@ Rails.application.routes.draw do
 		match '/sources/remove',   to: 'sources#destroy', via: 'delete'
 		match '/sources/:id/edit', to: 'sources#edit',    via: 'get',   as: 'configure_source'
 		match '/sources/update',   to: 'sources#update',  via: 'post'
+
+		# Access Log
+		match '/log', 			   to: 'logs#index',      via: 'get'
 
 		# OYD Assistant
 		match '/hide_assist', to: 'users#hide_assist', via: 'post', as: 'hide_assist'

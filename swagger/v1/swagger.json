@@ -435,6 +435,68 @@
         }
       }
     },
+    "/api/plugins/{plugin_id}/perms": {
+      "get": {
+        "summary": "list all permission for the specific plugin",
+        "tags": [
+          "Permission Management"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "plugin_id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      },
+      "post": {
+        "summary": "create a new permission for the specified plugin",
+        "tags": [
+          "Permission Management"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "input",
+            "in": "body"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success"
+          },
+          "404": {
+            "description": "not found"
+          },
+          "500": {
+            "description": "error"
+          }
+        }
+      }
+    },
     "/api/plugins/index": {
       "get": {
         "summary": "get list of installed plugins for current user",

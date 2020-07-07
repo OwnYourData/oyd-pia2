@@ -3,6 +3,9 @@ class SessionsController < ApplicationController
     include SessionsHelper
 
 	def create
+        if params.has_key?(:phone_code)
+            # validate phone_code
+        end
         login_user_url = getServerUrl() + "/oauth/token"
         response_nil = false
         begin
@@ -27,18 +30,22 @@ class SessionsController < ApplicationController
                         cipher: params[:cipher] }.to_json )
             redirect_back_or user_path
         else
-            if response.nil?
+            if response.to_s == ""
                 msg = "Can't access backend"
             else 
                 err = response.parsed_response["error"]
                 if(err.class.to_s == "String")
                     msg = err
                 else 
-                    msg = err.join(", ")
+                    msg = err.join(", ") rescue ""
                 end
             end
             flash[:warning] = oyd_backend_translate(msg, params[:locale])
-            redirect_to root_path
+            if params.has_key?(:phone_code)
+                redirect_to phone_login_path
+            else
+                redirect_to root_path
+            end
         end
 	end
 

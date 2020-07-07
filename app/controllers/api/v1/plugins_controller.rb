@@ -15,10 +15,25 @@ module Api
                 else
                     user_id = current_resource_owner.id
                 end
-                render json: Doorkeeper::Application
-                        .where('owner_id=' + user_id.to_s)
-                        .select(:id, :identifier, :name, :oyd_version, :description, :language, :uid, :secret, :assist_update, :installation_hint),
-                    status: 200
+                @plugins = Doorkeeper::Application.where('owner_id=' + user_id.to_s)
+                retVal = []
+                @plugins.each do |p|
+                    retVal << {
+                        id: p.id, 
+                        identifier: p.identifier, 
+                        name: p.name, 
+                        oyd_version: p.oyd_version, 
+                        description: p.description, 
+                        language: p.language, 
+                        uid: p.uid, 
+                        secret: p.secret, 
+                        assist_update: p.assist_update, 
+                        installation_hint: p.installation_hint
+                    }
+                end
+
+                render json: retVal,
+                       status: 200
             end
 
             def create
@@ -150,16 +165,25 @@ module Api
 
             def show
                 if current_resource_owner.nil?
-                    render json: Doorkeeper::Application
-                        .where(id: params[:id])
-                        .select(:id, :name, :identifier, :uid, :secret, :oyd_version),
-                        status: 200
+                    @plugins = Doorkeeper::Application.where(id: params[:id])
                 else
-                    render json: Doorkeeper::Application
-                        .where(owner_id: current_resource_owner.id, id: params[:id])
-                        .select(:id, :name, :identifier, :uid, :secret, :oyd_version),
-                        status: 200
+                    @plugins = Doorkeeper::Application.where(owner_id: current_resource_owner.id, id: params[:id])
                 end
+                retVal = []
+                @plugins.each do |p|
+                    retVal << {
+                        id: p.id, 
+                        identifier: p.identifier, 
+                        name: p.name, 
+                        oyd_version: p.oyd_version, 
+                        description: p.description, 
+                        language: p.language, 
+                        uid: p.uid, 
+                        secret: p.secret, 
+                    }
+                end
+                render json: retVal,
+                       status: 200
             end
 
             def show_identifier
@@ -167,10 +191,22 @@ module Api
                     render json: { "error": "Permission denied" }, 
                            status: 403
                 else
-                    render json: Doorkeeper::Application
-                        .where(owner_id: current_resource_owner.id, identifier: params[:id])
-                        .select(:id, :name, :identifier, :uid, :secret, :oyd_version),
-                        status: 200
+                    @plugins = Doorkeeper::Application.where(owner_id: current_resource_owner.id, id: params[:id])
+                    retVal = []
+                    @plugins.each do |p|
+                        retVal << {
+                            id: p.id, 
+                            identifier: p.identifier, 
+                            name: p.name, 
+                            oyd_version: p.oyd_version, 
+                            description: p.description, 
+                            language: p.language, 
+                            uid: p.uid, 
+                            secret: p.secret, 
+                        }
+                    end
+                    render json: retVal,
+                           status: 200
                 end
             end
 
@@ -210,9 +246,17 @@ module Api
                     @plugin = Doorkeeper::Application
                         .joins("INNER JOIN users ON users.id = oauth_applications.owner_id")
                         .where(id: doorkeeper_token.application_id)
-                        .select(:id, :name, :identifier, :uid, :secret, :full_name, :email, "users.language as language", :email_notif)
+                        # .select(:id, :name, :identifier, :uid, :secret, :confidential, :full_name, :email, "users.language as language", :email_notif)
                     if !@plugin.nil?
-                        render json: @plugin.first,
+                        @plugin = @plugin.first
+                        @user = @plugin.user
+                        render json: { id: @plugin.id,
+                                       name: @plugin.name,
+                                       uid: @plugin.uid,
+                                       secret: @plugin.secret,
+                                       full_name: @user.full_name,
+                                       email: @user.email,
+                                       language: @plugin.language },
                                status: 200
                     else
                         render json: { "error": "plugin not found" }, 
