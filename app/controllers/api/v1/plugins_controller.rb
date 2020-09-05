@@ -63,35 +63,8 @@ module Api
                     return
                 end
 
-                old_version = false
-                if @plugin.identifier == "en.ownyourdata"
-                    plugin_lang = "en"
-                    plugin_id = "oyd.base"
-                    old_version = true
-                elsif @plugin.identifier == "de.ownyourdata"
-                    plugin_lang = "de"
-                    plugin_id = "oyd.base"
-                    old_version = true
-                elsif @plugin.identifier == "en.oyd.location"
-                    plugin_lang = "en"
-                    plugin_id = "oyd.location"
-                    old_version = true
-                elsif @plugin.identifier == "de.oyd.location"
-                    plugin_lang = "de"
-                    plugin_id = "oyd.location"
-                    old_version = true
-                elsif @plugin.identifier == "en.oyd.allergy"
-                    plugin_lang = "en"
-                    plugin_id = "oyd.allergy"
-                    old_version = true
-                elsif @plugin.identifier == "de.oyd.allergy"
-                    plugin_lang = "de"
-                    plugin_id = "oyd.allergy"
-                    old_version = true
-                else
-                    plugin_lang = @plugin.language
-                    plugin_id = @plugin.identifier
-                end
+                plugin_lang = @plugin.language
+                plugin_id = @plugin.identifier
                 if plugin_lang.to_s == ""
                     plugin_lang = "en"
                 end
@@ -112,55 +85,36 @@ module Api
                     return
                 end
 
-                # puts "update plugin " + @plugin.id.to_s + " (" + @plugin.identifier.to_s + ", v"  + @plugin.oyd_version.to_s + ") to " + new_item["identifier"].to_s + " (v" + new_item["version"].to_s + ", " + new_item["language"] + ")"
+                # reinstall plugin
+                response = HTTParty.get("https://sam.data-vault.eu/api/plugins/" + new_item["id"].to_s)
+                if response.code.to_s == "200"
+                    pluginInfo = response.parsed_response rescue nil
+                    retVal = create_plugin_helper(pluginInfo, user_id)
 
-                # if (@plugin.identifier == "en.ownyourdata" or
-                #     @plugin.identifier == "de.ownyourdata" or
-                #     @plugin.identifier == "en.oyd.location" or
-                #     @plugin.identifier == "de.oyd.location" or
-                #     @plugin.identifier == "en.oyd.allergy" or
-                #     @plugin.identifier == "de.oyd.allergy")
-
-                        # delete plugin
-                        # @plugin.destroy - don't remove plugin, otherwise a new key/secret is generaed and external plugins would require re-pairing
-
-                        # reinstall plugin
-                        response = HTTParty.get("https://sam.data-vault.eu/api/plugins/" + new_item["id"].to_s)
-                        if response.code.to_s == "200"
-                            pluginInfo = response.parsed_response rescue nil
-                            retVal = create_plugin_helper(pluginInfo, user_id)
-
-                            if retVal == -1
-                                render json: { "error": "missing plugin info" },
-                                       status: 400
-                            elsif retVal == -2
-                                render json: { "error": "invalid plugin" },
-                                       status: 400
-                            elsif retVal == -3
-                                render json: { "error": "missing attributes" },
-                                       status: 400
-                            elsif retVal == -4
-                                render json: { "error": "plugin already exists" },
-                                       status: 400
-                            elsif retVal == -5
-                                render json: { "error": "unmet dependency" },
-                                       status: 400
-                            else
-                                if old_version
-                                    Doorkeeper::Application.find(params[:id]).destroy
-                                end
-                                render json: { "update": "via re-install",
-                                               "id": retVal },
-                                       status: 200
-                            end
-                        else
-                            render json: { "error": "can't update " + plugin_id.to_s },
-                                   status: 500
-                        end
-                # end
-
-                # render json: { plugin_id: plugin_id }, status: 200
-                #!!! include code to update plugin here
+                    if retVal == -1
+                        render json: { "error": "missing plugin info" },
+                               status: 400
+                    elsif retVal == -2
+                        render json: { "error": "invalid plugin" },
+                               status: 400
+                    elsif retVal == -3
+                        render json: { "error": "missing attributes" },
+                               status: 400
+                    elsif retVal == -4
+                        render json: { "error": "plugin already exists" },
+                               status: 400
+                    elsif retVal == -5
+                        render json: { "error": "unmet dependency" },
+                               status: 400
+                    else
+                        render json: { "update": "via re-install",
+                                       "id": retVal },
+                               status: 200
+                    end
+                else
+                    render json: { "error": "can't update " + plugin_id.to_s },
+                           status: 500
+                end
             end
 
             def show
@@ -339,46 +293,6 @@ module Api
                     render json: { "assist": true }, 
                            status: 200
                 end
-            end
-
-            def configure_DEPRECATED
-                if current_resource_owner.nil?
-                    if doorkeeper_token.application_id.to_i != params[:id].to_i
-                        render json: { "error": "Permission denied" }, 
-                               status: 403
-                        return
-                    end
-                else
-                    if !Doorkeeper::Application.where(owner_id: current_resource_owner.id).pluck(:id)
-                            .include?(params[:id].to_i)
-                        render json: { "error": "Permission denied" }, 
-                               status: 403
-                        return
-                    end
-                end
-                @plugin = Doorkeeper::Application.find(params[:id])
-                if !@plugin.nil?
-                    plugin_config = JSON.parse(params[:config].to_s)
-                    create_tasks(@plugin, JSON.parse(@plugin.tasks.to_s), plugin_config)
-                    if !plugin_config["repos"].nil?
-                        repos_config = JSON.parse(Base64.decode64(plugin_config["repos"]).to_s.gsub('=>', ':')) rescue []
-                        params_config = plugin_config.except("utf8",
-                                            "authenticity_token", 
-                                            "plugin_id",
-                                            "repos",
-                                            "button",
-                                            "controller",
-                                            "action",
-                                            "locale")
-                        create_repos(@plugin, repos_config, params_config)
-                    end
-                    render json: { "plugin_id": params[:id] }, 
-                           status: 200
-                else
-                    render json: { "error": "not found" },
-                           status: 404
-                end
-
             end
         end
     end
