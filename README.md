@@ -1,30 +1,30 @@
-# <img src="https://raw.githubusercontent.com/OwnYourData/oyd-pia2/master/app/assets/images/logo_grey.png" width="92"> Datentresor
+# <img src="https://raw.githubusercontent.com/OwnYourData/oyd-pia2/master/app/assets/images/logo_grey.png" width="92"> Data Vault
 
-## Dein Datentresor
-Üblicherweise musst du deine Daten an die Betreiber von Webservices und Apps weitergeben, um diese nutzen zu können. OwnYourData dreht den Spieß jedoch um: Du behältst all deine Daten und du verwahrst sie in deinem eigenen Datentresor. Apps (Datensammlung, Algorithmen und Visualisierung) holst du zu dir, in den Datentresor hinein.
+## Your Data Vault    
+Usually you have to pass on your data to the operators of web services and apps in order to be able to use them. OwnYourData, however, turns the tables: You keep all your data and you keep them in your own data vault. You bring apps (data collection, algorithms and visualization) to you in the data vault.
 
-weitere Infos: https://www.ownyourdata.eu    
-Online Datentresor: https://data-vault.eu    
-für Entwickler: https://www.ownyourdata.eu/developer/    
-Datentresor als Docker Image: https://hub.docker.com/r/oydeu/oyd-pia2/    
+more information: https://www.ownyourdata.eu    
+online Data Vault: https://data-vault.eu    
+for developers: https://www.ownyourdata.eu/developer/    
+Data Vault as Docker Image: https://hub.docker.com/r/oydeu/oyd-pia2/    
 
 &nbsp;    
 
-## Verbessere den OwnYourData Datentresor
+## Improve the OwnYourData Data Vault
 
-Bitte melde Fehler oder Vorschläge im [GitHub Issue-Tracker](https://github.com/OwnYourData/oyd-pia2/issues) und halte dich dabei an die [Contributor Guidelines](https://github.com/twbs/ratchet/blob/master/CONTRIBUTING.md).
 
-Wenn du selbst an der App mitentwickeln möchtest, folge diesen Schritten:
+Please report bugs and suggestions for new features using the [GitHub Issue-Tracker](https://github.com/OwnYourData/oyd-pia2/issues) and follow the [Contributor Guidelines](https://github.com/twbs/ratchet/blob/master/CONTRIBUTING.md).
+
+If you want to contribute, please follow these steps:
 
 1. Fork it!
-2. erstelle einen Feature Branch: `git checkout -b my-new-feature`
-3. Commit deine Änderungen: `git commit -am 'Add some feature'`
-4. Push in den Branch: `git push origin my-new-feature`
-5. Sende einen Pull Request
-
+2. Create a feature branch: `git checkout -b my-new-feature`
+3. Commit changes: `git commit -am 'Add some feature'`
+4. Push into branch: `git push origin my-new-feature`
+5. Send a Pull Request
 
 &nbsp;    
 
 ## Lizenz
 
-[MIT Lizenz 2019 - OwnYourData.eu](https://raw.githubusercontent.com/OwnYourData/oyd-pia2/master/LICENSE)
+[MIT License 2020 - OwnYourData.eu](https://raw.githubusercontent.com/OwnYourData/oyd-pia2/master/LICENSE)
