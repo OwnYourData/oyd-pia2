@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_27_222827) do
+ActiveRecord::Schema.define(version: 2020_08_21_094655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 2020_05_27_222827) do
     t.string "description"
     t.string "language"
     t.boolean "assist_update"
-    t.boolean "confidential", default: false, null: false
+    t.boolean "confidential", default: true, null: false
     t.text "installation_hint"
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
@@ -280,6 +280,8 @@ ActiveRecord::Schema.define(version: 2020_05_27_222827) do
     t.string "phone_hash"
     t.string "phone_key"
     t.string "did"
+    t.string "sms_code"
+    t.string "did_private_key"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

@@ -1,7 +1,7 @@
 module Api
     module V1
         class UsersController < ApiController
-            skip_before_action :doorkeeper_authorize!, only: [:name_by_token, :support]
+            skip_before_action :doorkeeper_authorize!, only: [:name_by_token, :support, :create]
 
             # respond only to JSON requests
             respond_to :json
@@ -586,6 +586,21 @@ module Api
                         end
                         if !last.nil? and last > 1.week.ago
                             source_count += 1
+                        else
+                            repo_identifiers = JSON.parse(source.config).inspect.scan(/#{"repo_identifier".inspect}=>([^,}]*)[,}]/).flatten.map {|s| eval s} rescue []
+                            repo_identifiers.each do |ri|
+                                @user.repos.where(identifier: ri).each do |repo|
+                                    c = repo.items.count
+                                    if !c.nil? && c > 0
+                                        if last.nil? || repo.items.last.created_at > last
+                                            last = repo.items.last.created_at
+                                        end
+                                    end
+                                end
+                            end
+                            if !last.nil? and last > 1.week.ago
+                                source_count += 1
+                            end
                         end
                     end
 
@@ -735,7 +750,20 @@ module Api
                             end
                         end
                         if last.nil? or last < 1.week.ago
-                            retVal << source["inactive_text"]
+                            repo_identifiers = JSON.parse(source.config).inspect.scan(/#{"repo_identifier".inspect}=>([^,}]*)[,}]/).flatten.map {|s| eval s} rescue []
+                            repo_identifiers.each do |ri|
+                                @user.repos.where(identifier: ri).each do |repo|
+                                    c = repo.items.count
+                                    if !c.nil? && c > 0
+                                        if last.nil? || repo.items.last.created_at > last
+                                            last = repo.items.last.created_at
+                                        end
+                                    end
+                                end
+                            end
+                            if last.nil? or last < 1.week.ago
+                                retVal << source["inactive_text"]
+                            end
                         end
                     end
 

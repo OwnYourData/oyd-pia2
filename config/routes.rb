@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  mount Rswag::Ui::Engine => '/api-docs'
-  mount Rswag::Api::Engine => '/api-docs'
+	mount Rswag::Ui::Engine => '/api-docs'
+	mount Rswag::Api::Engine => '/api-docs'
 	use_doorkeeper
 	devise_for :users
 
@@ -237,5 +237,10 @@ Rails.application.routes.draw do
 		match '/external/gmaps_analysis/register', to: 'static_pages#gmaps', via: 'get'
 
 	end
+
+	# did:web
+	match '/u/:did',          to: 'dids#show', via: 'get', defaults: { format: 'json' }
+	match '/u/:did/did.json', to: 'dids#show', via: 'get', defaults: { format: 'json' }
+
 	match ':not_found' => 'application#missing', :constraints => { :not_found => /.*/ }, via: [:get, :post]
 end

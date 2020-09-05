@@ -104,6 +104,7 @@ de:
     requestCodeBtn: "Code anfordern"
     emailLogin: "mit Email und Passwort einloggen"
     phone_login: "Anmelden mit Telefon-Nr"
+    code_info: "Ein SMS mit dem Zugangscode wurde an die angegebene TelefonNr versandt. Gib zum Login den Code ein:"
   process:
     confirmationMailSent: "Email verschickt"
     confirmationMailSentBody: "Ein E-Mail zur Aktivierung des Kontos wurde verschickt."

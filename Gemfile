@@ -33,6 +33,9 @@ gem 'actionview'
 gem 'rspec'
 gem 'leaflet-rails'
 gem 'filterrific'
+gem 'shamir-secret-sharing'
+gem 'ed25519'
+gem 'base58'
 
 # update for security fixes
 gem 'loofah', '~> 2.3', '>= 2.3.1'

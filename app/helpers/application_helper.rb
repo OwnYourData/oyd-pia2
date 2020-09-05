@@ -40,6 +40,10 @@ module ApplicationHelper
                 "Invalid Token - please restart password recovery"
             when "expired token"
                 "Expired Token - please restart password recovery"
+            when "secret_code"
+                "is your OwnYourData Data Vault access code."
+            when "sms_error"
+                "Error on sending SMS."
             else
                 msg
             end
@@ -104,6 +108,10 @@ module ApplicationHelper
                 "Ungültiges Wiederherstellungs-Passwort"
             when "Email can't be blank, Email is invalid"
                 "fehlende Emailadresse"
+            when "secret_code"
+                "ist der Zugangscode zum OwnYourData Datentresor."
+            when "sms_error"
+                "Fehler beim SMS Versand."
             else
                 msg
             end
@@ -165,6 +173,22 @@ module ApplicationHelper
             nil
         else
             response.parsed_response["access_token"].to_s
+        end
+    end
+
+    def getSemConToken(server_url, app_key, app_secret, scope)
+        auth_url = server_url + '/oauth/token'
+        query = {
+            client_id: ENV["PI2_KEY"],
+            client_secret: ENV["PI2_SECRET"],
+            scope: "admin",
+            grant_type: "client_credentials" }
+        response = HTTParty.post(auth_url, query: query)
+        token = response.parsed_response["access_token"]
+        if token.nil?
+            nil
+        else
+            token
         end
     end
 

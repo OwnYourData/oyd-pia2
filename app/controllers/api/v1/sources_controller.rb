@@ -328,25 +328,40 @@ module Api
                     user_id = current_resource_owner.id
                 end
                 if !user_id.nil?
+                    @user = User.find(user_id)
                     inactive_sources = []
                     @sources = OydSource.joins(
                         "INNER JOIN oauth_applications ON oauth_applications.id = oyd_sources.plugin_id").where(
                         'oauth_applications.owner_id=' + user_id.to_s)
                     @sources.each do |source|
-                        if (!source["inactive_duration"].nil? and (source["inactive_check"].nil? or source["inactive_check"]))
+                        if (!source["inactive_duration"].nil? && (source["inactive_check"].nil? || source["inactive_check"]))
                             count = 0
                             last = nil
                             source.oyd_source_repos.each do |osr|
                                 c = osr.repo.items.count
                                 if !c.nil? && c > 0
                                     count += c
-                                    if (last.nil? or osr.repo.items.last.created_at > last)
+                                    if (last.nil? || osr.repo.items.last.created_at > last)
                                         last = osr.repo.items.last.created_at
                                     end
                                 end
                             end
-                            if (last.nil? or last < (Time.now - source["inactive_duration"].to_i.days))
-                                inactive_sources << source
+                            if (last.nil? || last < (Time.now - source["inactive_duration"].to_i.days))
+                                repo_identifiers = JSON.parse(source.config).inspect.scan(/#{"repo_identifier".inspect}=>([^,}]*)[,}]/).flatten.map {|s| eval s} rescue []
+                                repo_identifiers.each do |ri|
+                                    @user.repos.where(identifier: ri).each do |repo|
+                                        c = repo.items.count
+                                        if !c.nil? && c > 0
+                                            count += c
+                                            if last.nil? || repo.items.last.created_at > last
+                                                last = repo.items.last.created_at
+                                            end
+                                        end
+                                    end
+                                end
+                                if (last.nil? || last < (Time.now - source["inactive_duration"].to_i.days))
+                                    inactive_sources << source
+                                end
                             end
                         end
                     end

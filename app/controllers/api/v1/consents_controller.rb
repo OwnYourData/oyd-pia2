@@ -15,7 +15,7 @@ module Api
 			#     payload: any information provided by the user
 			# }
 			def create
-                did = params[:consent]["did"].to_s.split(":").last rescue ""
+                did = params[:consent]["did"].to_s
                 @user = User.find_by_did(did)
                 if @user.nil? || did == ""
                     render json: {"error": "DID not found"},

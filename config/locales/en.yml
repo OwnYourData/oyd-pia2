@@ -104,6 +104,7 @@ en:
     requestCodeBtn: "Request Code"
     emailLogin: "login with email and password"
     phone_login: "Login with phone number"
+    code_info: "An SMS with the access code was sent to the specified telephone number. Enter the code to login:"
   process:
     confirmationMailSent: "Mail sent"
     confirmationMailSentBody: "A mail to activate your account was sent."

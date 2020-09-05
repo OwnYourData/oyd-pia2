@@ -256,7 +256,8 @@ module Api
                                        secret: @plugin.secret,
                                        full_name: @user.full_name,
                                        email: @user.email,
-                                       language: @plugin.language },
+                                       language: @plugin.language,
+                                       email_notif: @user.email_notif },
                                status: 200
                     else
                         render json: { "error": "plugin not found" }, 
