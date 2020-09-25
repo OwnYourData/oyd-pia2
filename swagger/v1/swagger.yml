@@ -14,6 +14,10 @@ info:
   license:
     name: MIT License
     url: https://opensource.org/licenses/MIT
+
+servers:
+- url: https://data-vault.eu/
+  description: Official production system hosted by OwnYourData
 security:
   - BearerAuth: []
 paths:
@@ -24,10 +28,17 @@ paths:
         - Authorization
       security: []
       requestBody:
-        $ref: "#/components/requestBodies/Input"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestTokenBody"
       responses:
         "200":
-          description: success
+          description: Return token object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
         "401":
           description: invalid
   /oauth/token/info:
@@ -499,6 +510,29 @@ paths:
         "500":
           description: error
 components:
+  schemas:
+    RequestTokenBody:
+      properties:
+        client_id:
+          type: string
+        client_secret:
+          type: string
+        grant_type:
+          enum:
+            - "client_credentials"
+            - "password"
+    TokenResponse:
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+        expires_in:
+          type: integer
+        created_at:
+          type: integer
+        username:
+          type: string
   requestBodies:
     Input:
       content:
