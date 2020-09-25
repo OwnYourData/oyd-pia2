@@ -97,7 +97,7 @@ module Api
 
                 # install emergency information plugin
                 sam_url = "https://sam.data-vault.eu/api/plugins"
-                response = HTTParty.get(sam_url + "?identifier=oyd.dec112&lang=de")
+                response = HTTParty.get(sam_url + "?identifier=oyd.dec112&lang=en")
                 pluginInfo = response.parsed_response rescue nil
                 plugin_id = create_plugin_helper(pluginInfo, @user.id)
 

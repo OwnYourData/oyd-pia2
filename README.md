@@ -12,7 +12,6 @@ Data Vault as Docker Image: https://hub.docker.com/r/oydeu/oyd-pia2/
 
 ## Improve the OwnYourData Data Vault
 
-
 Please report bugs and suggestions for new features using the [GitHub Issue-Tracker](https://github.com/OwnYourData/oyd-pia2/issues) and follow the [Contributor Guidelines](https://github.com/twbs/ratchet/blob/master/CONTRIBUTING.md).
 
 If you want to contribute, please follow these steps:

@@ -192,15 +192,15 @@ module Api
             end
 
             def count
-                    if doorkeeper_token.application_id.nil?
-                        @repos = Repo.where(user_id: doorkeeper_token.resource_owner_id)
-                    else
-                        @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
-                        @repos = Repo.where(user_id: @app.owner_id)
-                    end
-                    count = Item.where(repo_id: @repos.pluck(:id)).count
-                    render json: { "count": count },
-                           status: 200
+                if doorkeeper_token.application_id.nil?
+                    @repos = Repo.where(user_id: doorkeeper_token.resource_owner_id)
+                else
+                    @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
+                    @repos = Repo.where(user_id: @app.owner_id)
+                end
+                count = Item.where(repo_id: @repos.pluck(:id)).count
+                render json: { "count": count },
+                       status: 200
             end
 
             def create

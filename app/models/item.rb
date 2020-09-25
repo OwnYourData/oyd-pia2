@@ -10,6 +10,14 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  oyd_source_pile_id :integer
+#  dri                :string
+#  schema_id          :string
+#  mime_type          :string
+#
+# Indexes
+#
+#  index_items_on_dri        (dri)
+#  index_items_on_schema_id  (schema_id)
 #
 
 class Item < ApplicationRecord

@@ -36,6 +36,8 @@
 #  phone_hash               :string
 #  phone_key                :string
 #  did                      :string
+#  sms_code                 :string
+#  did_private_key          :string
 #
 # Indexes
 #

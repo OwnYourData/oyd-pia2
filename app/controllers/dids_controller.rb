@@ -41,12 +41,14 @@ class DidsController < ApplicationController
 #     },
 #     "usage": "signing"
 # }
+#
+#     "@context": ["https://w3id.org/security/v1"],
+
 
         my_did = JSON.parse('{
 "@context": "https://w3id.org/did/v1",
 "id": "did:web:data-vault.eu:u:' + did_ + '",
 "publicKey": [{
-    "@context": ["https://w3id.org/security/v1"],
     "id": "did:web:data-vault.eu:u:' + did_ + '#key-1",
     "type": "Ed25519VerificationKey2018",
     "controller": "did:web:data-vault.eu:u:' + did_ + '",
@@ -57,7 +59,6 @@ class DidsController < ApplicationController
     "id": "PersonalInfo",
     "type": "AgentService",
     "serviceEndpoint": {
-        "@context": "schema.identity.foundation/hub",
         "@type": "UserServiceEndpoint",
         "instance": ["https://data-vault.eu/api/dec112/query"]
     }

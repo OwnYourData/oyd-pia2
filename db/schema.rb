@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_21_094655) do
+ActiveRecord::Schema.define(version: 2020_09_23_113733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,11 @@ ActiveRecord::Schema.define(version: 2020_08_21_094655) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "oyd_source_pile_id"
+    t.string "dri"
+    t.string "schema_dri"
+    t.string "mime_type"
+    t.index ["dri"], name: "index_items_on_dri"
+    t.index ["schema_dri"], name: "index_items_on_schema_dri"
   end
 
   create_table "logs", force: :cascade do |t|
@@ -96,7 +101,7 @@ ActiveRecord::Schema.define(version: 2020_08_21_094655) do
     t.string "description"
     t.string "language"
     t.boolean "assist_update"
-    t.boolean "confidential", default: true, null: false
+    t.boolean "confidential", default: false, null: false
     t.text "installation_hint"
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true

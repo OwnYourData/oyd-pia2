@@ -18,7 +18,7 @@
 #  description       :string
 #  language          :string
 #  assist_update     :boolean
-#  confidential      :boolean          default(TRUE), not null
+#  confidential      :boolean          default(FALSE), not null
 #  installation_hint :text
 #
 # Indexes
