@@ -1,0 +1,512 @@
+openapi: 3.0.0
+info:
+  title: OwnYourData Data Vault API
+  version: v1
+  description: >-
+    The data vault is the central element for securley storing personal data
+    with OwnYourData.
+
+     Further information:
+     - learn more about the Data Vault at https://data-vault.eu
+     - view other [OwnYourData Service API's](https://api-docs.ownyourdata.eu)
+  contact:
+    email: office@ownyourdata.eu
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+security:
+  - BearerAuth: []
+paths:
+  /oauth/token:
+    post:
+      summary: request token
+      tags:
+        - Authorization
+      security: []
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "401":
+          description: invalid
+  /oauth/token/info:
+    get:
+      summary: show token information
+      tags:
+        - Authorization
+      responses:
+        "200":
+          description: success
+        "401":
+          description: invalid request
+  /oauth/revoke:
+    post:
+      summary: revoke token
+      tags:
+        - Authorization
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "404":
+          description: not found
+  /oauth/applications:
+    post:
+      summary: create plugin
+      tags:
+        - Authorization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+      responses:
+        "200":
+          description: success
+        "401":
+          description: invalid token
+  "/oauth/applications/{id}":
+    delete:
+      summary: remove plugin
+      tags:
+        - Authorization
+      parameters:
+        - name: id
+          in: path
+          description: "'id' of account"
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+        "401":
+          description: invalid token
+        "404":
+          description: not found
+  "/api/repos/{repo_id}/items":
+    get:
+      summary: read all records in repo
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: repo_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+        "403":
+          description: Permission denied
+    post:
+      summary: create new record in repo
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: repo_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "403":
+          description: Permission denied
+  /api/data:
+    post:
+      summary: create new record
+      tags:
+        - Read/Write Data
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "403":
+          description: Permission denied
+    get:
+      summary: read specific record by querying record ID
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: item_id
+          in: query
+          required: true
+          description: Identifier of the item
+          schema:
+            type: string
+        - name: dri
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: schema_dri
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+        "403":
+          description: Permission denied
+  "/api/items/{item_id}/details":
+    get:
+      summary: read specific record
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+        "403":
+          description: Permission denied
+
+  "/api/repos/{repo_id}/items/{item_id}":
+    put:
+      summary: update specific record in repo
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: repo_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "403":
+          description: Permission denied
+    delete:
+      summary: delete specific record in repo
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: repo_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+        "403":
+          description: Permission denied
+  /api/items/merkle:
+    get:
+      summary: list all records not yet archived in the blockchain
+      tags:
+        - Blockchain Verification
+      responses:
+        "200":
+          description: success
+  "/api/items/{item_id}":
+    put:
+      summary: update specific record in repo with blockchain reference
+      tags:
+        - Blockchain Verification
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "404":
+          description: not found
+        "500":
+          description: error
+  /api/merkles/create:
+    post:
+      summary: create new merkle record
+      tags:
+        - Blockchain Verification
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "500":
+          description: error
+  "/api/merkles/{id}":
+    put:
+      summary: update merkle record
+      tags:
+        - Blockchain Verification
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "404":
+          description: not found
+        "500":
+          description: error
+  "/api/plugins/{plugin_id}/perms":
+    get:
+      summary: list all permission for the specific plugin
+      tags:
+        - Permission Management
+      parameters:
+        - name: plugin_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: success
+        "404":
+          description: not found
+        "500":
+          description: error
+    post:
+      summary: create a new permission for the specified plugin
+      tags:
+        - Permission Management
+      parameters:
+        - name: plugin_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "404":
+          description: not found
+        "500":
+          description: error
+  "/api/plugins/{plugin_id}/perms/{id}":
+    put:
+      summary: update specified permission for the specified plugin
+      tags:
+        - Permission Management
+      parameters:
+        - name: plugin_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "404":
+          description: not found
+        "500":
+          description: error
+    delete:
+      summary: delete specified permission for the specified plugin
+      tags:
+        - Permission Management
+      parameters:
+        - name: plugin_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+        "404":
+          description: not found
+        "500":
+          description: error
+  "/api/plugins/{plugin_id}/perms_destroy":
+    delete:
+      summary: delete all permissions for the specified plugin
+      tags:
+        - Permission Management
+      parameters:
+        - name: plugin_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+        "404":
+          description: not found
+        "500":
+          description: error
+  /api/plugins/index:
+    get:
+      summary: get list of installed plugins for current user
+      tags:
+        - Plugins
+      responses:
+        "200":
+          description: success
+  /api/plugins/create:
+    post:
+      summary: create new plugin
+      tags:
+        - Plugins
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "400":
+          description: error
+  "/api/plugins/{plugin_id}":
+    get:
+      summary: get plugin information
+      tags:
+        - Plugins
+      parameters:
+        - name: plugin_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+        "403":
+          description: permission denied
+    put:
+      summary: update plugin information
+      tags:
+        - Plugins
+      parameters:
+        - name: plugin_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "403":
+          description: permission denied
+    delete:
+      summary: delete plugin
+      tags:
+        - Plugins
+      parameters:
+        - name: plugin_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+        "403":
+          description: permission denied
+  /api/users/show:
+    get:
+      summary: get information from current user
+      tags:
+        - User Management
+      responses:
+        "200":
+          description: success
+        "422":
+          description: invalid request
+  /api/users/create:
+    post:
+      summary: create new user
+      tags:
+        - User Management
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "400":
+          description: error
+  /api/users/update:
+    put:
+      summary: update current user information
+      tags:
+        - User Management
+      requestBody:
+        $ref: "#/components/requestBodies/Input"
+      responses:
+        "200":
+          description: success
+        "422":
+          description: invalid request
+        "500":
+          description: error
+  /api/users/delete:
+    delete:
+      summary: delete current user
+      tags:
+        - User Management
+      responses:
+        "200":
+          description: success
+        "500":
+          description: error
+components:
+  requestBodies:
+    Input:
+      content:
+        application/json:
+          schema: {}
+  securitySchemes:
+    BearerAuth:
+      description: Authorization token
+      type: apiKey
+      name: Authorization
+      in: header
