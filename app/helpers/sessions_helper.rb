@@ -36,42 +36,45 @@ module SessionsHelper
 	def current_user
         user_info_url = getServerUrl() + "/api/users/show"
         if !session[:token].nil?
+        	response_nil = false
 	        begin
 	            response = HTTParty.get(user_info_url, 
-					headers: { "Authorization": "Bearer " + session[:token] })
+					headers: { "Authorization": "Bearer " + session[:token].to_s })
 	        rescue => ex
-	            response = nil
+	            response_nil = true
 	        end
-	        if response.body.nil? || response.body.empty? || response.code != 200
-	        	current_user = nil
+	        if !response_nil && !response.body.nil? && response.code == 200
+	        	current_user = response.parsed_response rescue nil
 	        else
-	        	current_user = response.parsed_response
+	        	current_user = nil
 	        end
 	    elsif (user_id = cookies.signed[:user_id])
 	    	remember_url = getServerUrl() + "/api/users/remember"
+	    	response_nil = false
 	    	begin
 	    		response = HTTParty.post(remember_url, 
 	                headers: { 'Content-Type' => 'application/json' },
 	                body: { user_id: user_id,
 	                        token: cookies[:remember_token] }.to_json )
 	    	rescue => ex
-	    		response = nil
+	    		response_nil = true
 	    	end
-	        if response.nil? or response.code != 200
-	        	current_user = nil
-	        else
+	        if !response_nil && !response.body.nil? && response.code == 200
 	        	log_in response.parsed_response["token"]
+	        	response_nil = false
 		        begin
 		            response = HTTParty.get(user_info_url, 
 						headers: { "Authorization": "Bearer " + session[:token] })
 		        rescue => ex
-		            response = nil
+		            response_nil = true
 		        end
-		        if response.nil? or response.code != 200
-		        	current_user = nil
-		        else
+		        if !response_nil && !response.body.nil? && response.code == 200
 		        	current_user = response.parsed_response
+		        else
+		        	current_user = nil
 		        end
+		    else
+		    	current_user = nil
 	        end
         else
         	current_user = nil

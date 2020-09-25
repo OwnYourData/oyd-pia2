@@ -4,26 +4,20 @@ class SessionsController < ApplicationController
 
 	def create
         if params.has_key?(:phone_code)
-puts "phone_code detected"            
             # validate phone_code
             @phone_number = params[:password].to_s
-puts "phone_number: " + @phone_number.to_s
             @user = User.find_by_email(Base64.strict_encode64(Digest::SHA256.digest(@phone_number)).downcase)
             if @user.nil?
                 flash[:warning] = oyd_backend_translate("invalid_grant", params[:locale])
                 redirect_to phone_login_path
                 return
             end
-puts "user: " + @user.id.to_s
-puts "check: " + params[:phone_code].to_s + " " + @user.sms_code.to_s
             if params[:phone_code].to_s != @user.sms_code.to_s
-puts " - failed"
                 flash[:warning] = oyd_backend_translate("invalid_grant", params[:locale])
                 redirect_to phone_login_path
                 return
             end                
         end
-puts "default login"        
         login_user_url = getServerUrl() + "/oauth/token"
         response_nil = false
         begin

@@ -40,11 +40,9 @@ class UsersController < ApplicationController
         @diabetes_count = @diabetes_items.count rescue 0
         @diabetes_records = []
 
-        # if params[:view].to_s == "2"
-            respond_to do |format|
-                format.html { render layout: "application_map", template: "users/show2" }
-            end
-        # end
+        respond_to do |format|
+            format.html { render layout: "application_map", template: "users/show2" }
+        end
     end
 
 	def new

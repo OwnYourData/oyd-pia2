@@ -43,30 +43,14 @@ class StaticPagesController < ApplicationController
         body += "&route=3"
         body += "&text=" + secret_code_text.to_s
         begin
-puts "=======INPUT========="
-# puts "headers"
-# puts hdr.to_json
-puts "body"
-puts body.to_json
-
             response = HTTParty.post(sms_url, body: body )
-puts "response"
-puts response.to_json
-puts "response.code"
-puts response.code.to_s
-puts "response.parsed"
-puts response.parsed_response
-
         rescue => ex
             response_nil = true
         end
         if !response_nil && !response.body.nil? && response.code == 200
             @user = User.find_by_email(Base64.strict_encode64(Digest::SHA256.digest(@phone_number)).downcase)
             if !@user.nil?
-puts "User: " + @user.id.to_s                
                 @user.update_attribute("sms_code", secret_code.to_s)
-            else
-puts "no user"
             end
         else
             flash[:warning] = oyd_backend_translate("sms_error", params[:locale])
