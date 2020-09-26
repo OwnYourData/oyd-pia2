@@ -120,10 +120,12 @@ Rails.application.routes.draw do
 				match 'repos(/:repo_identifier)/items/:id',   to: 'items#update',    via: 'put',    constraints: {repo_identifier: /[^\/]+/}
 				match 'repos(/:repo_identifier)/items/:id',   to: 'items#delete',    via: 'delete', constraints: {repo_identifier: /[^\/]+/}
 				match 'items/:id/details',                    to: 'items#details',   via: 'get',    as: "item_id"
+				match 'dri/:dri/details',                     to: 'items#dri',       via: 'get'
 				match 'items/count', 						  to: 'items#count',     via: 'get'
 
 				match '/data',                                to: 'data#read',        via: 'get'
 				match '/data',                                to: 'data#write',       via: 'post'
+				match '/data',    							  to: 'data#delete',     via: 'delete'
 				match '/meta/schemas',                        to: 'semantics#schema', via: 'get'
 
 				# Scheduler

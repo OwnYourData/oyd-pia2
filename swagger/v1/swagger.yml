@@ -173,6 +173,22 @@ paths:
           description: success
         "403":
           description: Permission denied
+    delete:
+      summary: delete specific record
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: item_id
+          in: query
+          required: true
+          description: Identifier of the item
+          schema:
+            type: string
+        - name: dri
+          in: query
+          required: true
+          schema:
+            type: string
   "/api/items/{item_id}/details":
     get:
       summary: read specific record
@@ -180,6 +196,22 @@ paths:
         - Read/Write Data
       parameters:
         - name: item_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+        "403":
+          description: Permission denied
+  "/api/dri/{dri}/details":
+    get:
+      summary: read specific record
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: dri
           in: path
           required: true
           schema:

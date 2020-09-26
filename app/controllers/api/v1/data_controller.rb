@@ -49,9 +49,9 @@ module Api
                         render json: { "error": "not found" },
                                status: 404
                     end
-                elsif !params[:schema].nil?
+                elsif !params[:schema_dri].nil?
                     user_repos = @app.user.repos.pluck(:id)
-                    @items = Item.where(repo_id: user_repos, schema_dri: params[:schema])
+                    @items = Item.where(repo_id: user_repos, schema_dri: params[:schema_dri])
                     if @items.count > 0
                         retVal = []
                         @items.each do |item|
@@ -97,7 +97,7 @@ module Api
                 schema_dri = params["schema_dri"] rescue nil
                 mime_type = params["mime_type"] rescue "application/json"                
                 repo_identifier = params["table_name"].to_s rescue "default"
-                params = content
+                params = { "content": content }
                 if repo_identifier.to_s == ""
                     repo_identifier = "default"
                 end
@@ -146,6 +146,49 @@ module Api
                 end
             end
 
+            def delete
+                if doorkeeper_token.nil?
+                    render json: {"error": "invalid token"},
+                           status: 403
+                    return
+                end
+                @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
+                user_id = @app.owner_id
+                if !params[:id].nil? || !params[:dri].nil?
+                    if !params[:id].nil?
+                        @item = Item.find(params[:id])
+                        retVal = { "id": params[:id]}
+                    else
+                        @item = Item.find_by_dri(params[:dri])
+                        retVal = { "dri": params[:dri]}
+                    end
+                    if !@item.nil?
+                        @repo = Repo.find(@item.repo_id)
+                        if user_id == @repo.user_id
+                            repo_identifier = @repo.identifier
+                            if check_permission(repo_identifier, @app, PermType::DELETE)
+                                doc_access(PermType::DELETE, @app.id, @item.id, @repo.id, retVal.to_json)
+                                @item.destroy
+                                render json: retVal,
+                                       status: 200
+                            else
+                                render json: { "error": "Permission denied" }, 
+                                       status: 403
+                            end
+                        else
+                            render json: { "error": "Permission denied" }, 
+                                   status: 403
+                        end
+
+                    else
+                        render json: { "error": "not found" },
+                               status: 404
+                    end
+                else
+                    render json: { "error": "missing request parameter" },
+                           status: 500
+                end
+            end
         end
     end
 end

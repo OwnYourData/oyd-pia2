@@ -191,6 +191,53 @@ module Api
                 end
             end
 
+            def dri
+                if !doorkeeper_token.application_id.nil?
+                    @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
+                    user_id = @app.owner_id
+                else
+                    @app = Doorkeeper::Application.where(owner_id: doorkeeper_token.resource_owner_id)
+                    user_id = doorkeeper_token.resource_owner_id
+                end
+                user_repos = User.find(user_id).repos.pluck(:id)
+                @items = Item.where(repo_id: user_repos, dri: params[:dri])
+                if @items.count > 0
+                    @item = @items.first
+                    @repo = Repo.find(@item.repo_id)
+                    # check user
+                    if user_id == @repo.user_id
+                        repo_identifier = @repo.identifier
+                        if check_permission(repo_identifier, @app, PermType::READ)
+                            retVal = @item.as_json
+                            retVal["repo_name"] = @item.repo.name.to_s rescue ""
+                            retVal["merkle_hash"] = @item.merkle.root_hash.to_s unless @item.merkle.nil? rescue ""
+                            retVal["oyd_transaction"] = @item.merkle.oyd_transaction.to_s unless @item.merkle.nil? rescue ""
+                            retVal["oyd_source_pile_email"] = @item.oyd_source_pile.email.to_s unless @item.oyd_source_pile_id.nil? rescue ""
+
+                            if doorkeeper_token.application_id.nil?
+                                @app = @app.first
+                                query_prefix = "owner"
+                            end
+                            doc_access(PermType::READ, @app.id, @item.id, nil, query_prefix)
+
+                            retVal["access_count"] = @item.oyd_accesses.count + OydAccess.where(repo_id: @repo.id, item_id: nil).count rescue 0
+
+                            render json: retVal,
+                                   status: 200
+                        else
+                            render json: { "error": "Permission denied" }, 
+                                   status: 403
+                        end
+                    else
+                        render json: { "error": "Permission denied" }, 
+                               status: 403
+                    end
+                else
+                    render json: { "error": "Item not found" }, 
+                           status: 404
+                end
+            end
+
             def count
                 if doorkeeper_token.application_id.nil?
                     @repos = Repo.where(user_id: doorkeeper_token.resource_owner_id)

@@ -46,5 +46,8 @@ module OydPia2
       end
     end
 
+    require './lib/middleware/catch_json_parse_errors.rb'
+    config.middleware.use CatchJsonParseErrors
+
   end
 end
