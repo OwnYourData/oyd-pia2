@@ -39,6 +39,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TokenResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestBody"
         "401":
           description: invalid
   /oauth/token/info:
@@ -49,8 +55,13 @@ paths:
       responses:
         "200":
           description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenInfoResponse"
         "401":
-          description: invalid request
+          description: Not authorized
+
   /oauth/revoke:
     post:
       summary: revoke token
@@ -137,14 +148,23 @@ paths:
           description: Permission denied
   /api/data:
     post:
-      summary: create new record
+      summary: Store data with OCA schema
       tags:
         - Read/Write Data
       requestBody:
-        $ref: "#/components/requestBodies/Input"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DataBody"
       responses:
         "200":
           description: success
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
         "403":
           description: Permission denied
     get:
@@ -152,25 +172,19 @@ paths:
       tags:
         - Read/Write Data
       parameters:
-        - name: item_id
-          in: query
-          required: true
-          description: Identifier of the item
-          schema:
-            type: string
         - name: dri
+          description: DRI (Decentralized Resource Identifier) of the content to fetch
           in: query
-          required: true
           schema:
             type: string
         - name: schema_dri
           in: query
-          required: true
+          description: DRI (Decentralized Resource Identifier) of the OCA schema base describing the data
           schema:
             type: string
       responses:
         "200":
-          description: success
+          description: Return raw data, or an array of raw data
         "403":
           description: Permission denied
   "/api/items/{item_id}/details":
@@ -511,6 +525,17 @@ paths:
           description: error
 components:
   schemas:
+    BadRequestBody:
+      properties:
+        status:
+          type: integer
+          example: 400
+        error:
+          type: string
+          example: Bad request
+      required:
+        - status
+        - error
     RequestTokenBody:
       properties:
         client_id:
@@ -518,9 +543,14 @@ components:
         client_secret:
           type: string
         grant_type:
+          type: string
           enum:
             - "client_credentials"
             - "password"
+      required:
+        - client_id
+        - client_secret
+        - grant_type
     TokenResponse:
       properties:
         access_token:
@@ -533,6 +563,38 @@ components:
           type: integer
         username:
           type: string
+    TokenInfoResponse:
+      properties:
+        resource_owner_id:
+          type: string
+        scope:
+          type: array
+          items:
+            type: string
+        expires_in:
+          type: integer
+        application:
+          type: object
+          properties:
+            uid:
+              type: string
+        created_at:
+          type: integer
+    DataBody:
+      properties:
+        content:
+          description: Key value json file representing data from schema base
+          type: object
+        dri:
+          type: string
+        schema_dri:
+          type: string
+        mime_type:
+          type: string
+          example: "application/json"
+        table_name:
+          type: string
+          description: name of the target repository in which data should be stored
   requestBodies:
     Input:
       content:
@@ -540,7 +602,5 @@ components:
           schema: {}
   securitySchemes:
     BearerAuth:
-      description: Authorization token
-      type: apiKey
-      name: Authorization
-      in: header
+      type: http
+      scheme: bearer
