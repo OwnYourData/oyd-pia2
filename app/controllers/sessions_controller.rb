@@ -62,8 +62,12 @@ class SessionsController < ApplicationController
 	end
 
 	def destroy
-        log_out if logged_in?
-        log_out if logged_in?
-		redirect_to login_url
+        begin
+            log_out if logged_in?
+            log_out if logged_in?
+    		redirect_to login_url
+        rescue
+            redirect_to login_url
+        end
 	end
 end

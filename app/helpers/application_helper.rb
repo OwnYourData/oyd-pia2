@@ -179,8 +179,8 @@ module ApplicationHelper
     def getSemConToken(server_url, app_key, app_secret, scope)
         auth_url = server_url + '/oauth/token'
         query = {
-            client_id: ENV["PI2_KEY"],
-            client_secret: ENV["PI2_SECRET"],
+            client_id: app_key,
+            client_secret: app_secret,
             scope: "admin",
             grant_type: "client_credentials" }
         response = HTTParty.post(auth_url, query: query)

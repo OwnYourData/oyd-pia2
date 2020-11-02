@@ -33,11 +33,18 @@ module Api
                 end
 
                 phone_hash = Base64.strict_encode64(Digest::SHA256.digest(phone_number))
-                if !User.find_by_email(phone_hash.downcase).nil?
-                    render json: {"error": "phone number already exists"},
-                           status: 409
+                @user = User.find_by_email(phone_hash.downcase)
+                if !@user.nil?
+                    # return DID
+                    render json: {"did": @user.did.to_s },
+                           status: 200
                     return
                 end
+                # if !User.find_by_email(phone_hash.downcase).nil?
+                #     render json: {"error": "phone number already exists"},
+                #            status: 409
+                #     return
+                # end
 
                 payload = params["payload"].to_json rescue ""
                 if payload == ""
@@ -131,7 +138,7 @@ module Api
                 else
                     render json: {"error": "PI2 error"},
                            status: 500
-                end                    
+                end
             end
 
             def query

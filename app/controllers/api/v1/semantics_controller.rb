@@ -3,6 +3,8 @@ module Api
         class SemanticsController < ApiController
             include ApplicationHelper
 
+            skip_before_action :doorkeeper_authorize!, only: [:active]
+
             # respond only to JSON requests
             respond_to :json
             respond_to :html, only: []
@@ -30,6 +32,12 @@ module Api
                        status: 200
             end
 
+            def active
+                render json: { 
+                    "active": true,
+                    "auth": true,
+                    "repos": true }, status: 200
+            end
         end
     end
 end

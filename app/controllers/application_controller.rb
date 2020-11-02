@@ -2,6 +2,11 @@ class ApplicationController < ActionController::Base
 	protect_from_forgery with: :exception, unless: -> { request.format.json? }
 	before_action :set_locale, :cors_preflight_check
 	after_action :cors_set_access_control_headers
+	rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_login_path
+
+	def redirect_to_login_path
+	    redirect_to login_path
+	end
 	
 	include SessionsHelper
 

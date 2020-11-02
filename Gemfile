@@ -9,6 +9,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
 gem 'devise'
 gem 'doorkeeper'
+gem 'doorkeeper-openid_connect'
 gem 'will_paginate'
 gem 'bootstrap-will_paginate'
 gem 'api_pagination_headers'
@@ -36,6 +37,8 @@ gem 'filterrific'
 gem 'shamir-secret-sharing'
 gem 'ed25519'
 gem 'base58'
+gem 'pagy', '~> 3.5'
+
 
 # update for security fixes
 gem 'loofah', '~> 2.3', '>= 2.3.1'

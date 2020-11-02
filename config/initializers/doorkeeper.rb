@@ -19,7 +19,7 @@ Doorkeeper.configure do
     # u if u && u.valid_password?(params[:password])
   end
 
-  grant_flows %w(password client_credentials)
+  grant_flows %w(password client_credentials authorization_code implicit_oidc)
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
   # admin_authenticator do

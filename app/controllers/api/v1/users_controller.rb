@@ -790,9 +790,9 @@ module Api
                 end
                 @user = User.find(user_id)
                 if !@user.nil?
-                    if @user.update_attributes(
-                            app_nonce: params[:nonce],
-                            app_cipher: params[:cipher])
+                    @user.app_nonce = params[:nonce].to_s
+                    @user.app_cipher = params[:cipher].to_s
+                    if @user.save(validate: false)
                         render json: { "support": true },
                                status: 200
                     else
@@ -816,6 +816,10 @@ module Api
                            status: 200
                 end
             end
+
+            def usage
+                render plain: default_usage_policy
+            end    
         end
     end
 end

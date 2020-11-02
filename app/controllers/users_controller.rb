@@ -3,7 +3,7 @@ class UsersController < ApplicationController
     include SessionsHelper
     include UsersHelper
 
-    before_action :logged_in_user, only: [:show, :edit, :update, :updatePwd, :updateRecvPwd, :pia_delete, :data, :plugins, :sources] #, :archive_decrypt, :archive_process]
+    before_action :logged_in_user, only: [:show, :edit, :update, :updatePwd, :updateRecvPwd, :pia_delete, :data, :plugins, :sources, :usage] #, :archive_decrypt, :archive_process]
 
 	require 'httparty'
 

@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 	mount Rswag::Ui::Engine => '/api-docs'
 	mount Rswag::Api::Engine => '/api-docs'
 	use_doorkeeper
+	use_doorkeeper_openid_connect
 	devise_for :users
 
 	# API Routes ==============
@@ -123,10 +124,13 @@ Rails.application.routes.draw do
 				match 'dri/:dri/details',                     to: 'items#dri',       via: 'get'
 				match 'items/count', 						  to: 'items#count',     via: 'get'
 
-				match '/data',                                to: 'data#read',        via: 'get'
+				match '/data',                                to: 'data#index',       via: 'get'
+				match '/data/:id',                            to: 'data#index',       via: 'get'
 				match '/data',                                to: 'data#write',       via: 'post'
-				match '/data',    							  to: 'data#delete',     via: 'delete'
+				match '/data/:id', 							  to: 'data#delete',      via: 'delete'
 				match '/meta/schemas',                        to: 'semantics#schema', via: 'get'
+				match '/meta/usage',                          to: 'users#usage',      via: 'get'
+				match '/active',                              to: 'semantics#active', via: 'get'
 
 				# Scheduler
 				match 'tasks/index',  to: 'tasks#index',  via: 'get'

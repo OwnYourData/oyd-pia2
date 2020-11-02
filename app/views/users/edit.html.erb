@@ -281,7 +281,7 @@
 </div>
 <script>
 	function draw_qr() {
-		var qr_content = '{"PIA_URL":"' + $('#address').val() + '","email":"' + $('#user').val() + '","password":"' + $('#password').val() + '"}';
+		var qr_content = '{"PIA_URL":"' + $('#address').val() + '","email":"' + $('#user').val() + '","password":"' + $('#password').val() + '","password2":"' + encodeURI($('#password').val()) + '","version":"2.0"}';
 		$('#qr_container').empty().qrcode({
 			render: 'div',
 			ecLevel: 'H',
