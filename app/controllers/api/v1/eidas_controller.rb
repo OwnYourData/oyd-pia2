@@ -17,7 +17,7 @@ module Api
                 # check if token is correct and add/update signature
                 @item = Item.find(id)
                 if !@item.nil?
-                    if @item.token == token
+                    if @item.eidas_token == token
                         val = JSON.parse(@item.value)
                         val["eidas-signature"] = signature
                         @item.update_attributes(value: val.to_json)
