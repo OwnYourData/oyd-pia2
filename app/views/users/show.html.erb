@@ -30,9 +30,11 @@
 
 <div style="clear:both;"></div>
 <script type="text/javascript">
-	if (typeof sessionStorage["app_support"] != 'undefined'){
+	// if (typeof sessionStorage["app_support"] != 'undefined'){
+	if (typeof localStorage.getItem('app_support') != 'undefined'){
 		$('.app_link').each(function(i, obj){
-			$(this).attr("href", $(this).attr("href") + "&MASTER_KEY=" + sessionStorage["app_support"]);
+			// $(this).attr("href", $(this).attr("href") + "&MASTER_KEY=" + sessionStorage["app_support"]);
+			$(this).attr("href", $(this).attr("href") + "&MASTER_KEY=" + localStorage.getItem('app_support'));
 		})
 	}
 </script>

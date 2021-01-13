@@ -1,0 +1,15 @@
+{
+    "name":"TDA Plugin",
+    "identifier":"oyd.tda",
+    "language":"en","version":"0.1.0",
+    "description":"Plugin for Trusted Digital Assistant",
+    "info_url":"",
+    "picture":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+    "permissions":[".*:*"],
+    "sources":[],
+    "views":[],
+    "mobiles":[],
+    "tasks":[],
+    "answers":[],
+    "reports":[]
+}

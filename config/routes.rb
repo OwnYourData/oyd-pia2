@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
 	mount Rswag::Ui::Engine => '/api-docs'
 	mount Rswag::Api::Engine => '/api-docs'
+
+	match '/oauth/authorize', to: 'oauth_applications#new',    via: 'get'
+	match '/oauth/authorize', to: 'oauth_applications#create', via: 'post'
+
 	use_doorkeeper
-	use_doorkeeper_openid_connect
 	devise_for :users
 
 	# API Routes ==============
@@ -124,13 +127,22 @@ Rails.application.routes.draw do
 				match 'dri/:dri/details',                     to: 'items#dri',       via: 'get'
 				match 'items/count', 						  to: 'items#count',     via: 'get'
 
+				# Item handling /api/data
 				match '/data',                                to: 'data#index',       via: 'get'
 				match '/data/:id',                            to: 'data#index',       via: 'get'
 				match '/data',                                to: 'data#write',       via: 'post'
+				match '/data/:id',                            to: 'data#write',       via: 'put'
 				match '/data/:id', 							  to: 'data#delete',      via: 'delete'
 				match '/meta/schemas',                        to: 'semantics#schema', via: 'get'
+				match '/meta/tables',                         to: 'semantics#table',  via: 'get'
+				match '/meta/info',                           to: 'semantics#info',   via: 'get'
 				match '/meta/usage',                          to: 'users#usage',      via: 'get'
-				match '/active',                              to: 'semantics#active', via: 'get'
+				match '/active',                              to: 'semantics#active', via: 'get'				
+
+				#watermarking
+				match 'watermark/recipients', to: 'watermarks#recipients', via: 'get'
+				match 'watermark/:id',        to: 'watermarks#show',       via: 'get'
+				match 'watermark/:id',        to: 'watermarks#apply',      via: 'post'
 
 				# Scheduler
 				match 'tasks/index',  to: 'tasks#index',  via: 'get'
@@ -161,6 +173,16 @@ Rails.application.routes.draw do
 				# News
 				match 'news', to: 'news#current', via: 'get'
 
+				# Sharing & Watermarking
+				match 'share_data',     to: 'sharings#create',          via: 'post'
+
+				# Relations
+				match 'relation', to: 'relations#index', via: 'get'
+				match 'relation', to: 'relations#create', via: 'post'
+
+				# eIDAS signing
+				match 'eidas',       to: 'eidas#create', via: 'post'
+				match 'eidas/token', to: 'eidas#token',  via: 'post'
 		end
 	end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_23_113733) do
+ActiveRecord::Schema.define(version: 2020_12_10_223714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(version: 2020_09_23_113733) do
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
     t.string "scopes"
+    t.string "code_challenge"
+    t.string "code_challenge_method"
     t.index ["application_id"], name: "index_oauth_access_grants_on_application_id"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
@@ -143,6 +145,26 @@ ActiveRecord::Schema.define(version: 2020_09_23_113733) do
     t.datetime "requested_ts"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "oyd_recipients", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "source_id"
+    t.string "recipient_did"
+    t.string "fragment_identifier"
+    t.text "fragment_array"
+    t.integer "key"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "oyd_relations", force: :cascade do |t|
+    t.integer "source_id"
+    t.integer "target_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["source_id"], name: "index_oyd_relations_on_source_id"
+    t.index ["target_id"], name: "index_oyd_relations_on_target_id"
   end
 
   create_table "oyd_reports", force: :cascade do |t|

@@ -19,7 +19,7 @@ Bundler.require(*Rails.groups)
 module OydPia2
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.1
+    config.load_defaults 5.2
 
     # use custome_token_response.rb
     config.autoload_paths << "#{Rails.root}/lib"
@@ -46,8 +46,8 @@ module OydPia2
       end
     end
 
-    require './lib/middleware/catch_json_parse_errors.rb'
-    config.middleware.use CatchJsonParseErrors
+    # require './lib/middleware/catch_json_parse_errors.rb'
+    # config.middleware.use CatchJsonParseErrors
 
   end
 end

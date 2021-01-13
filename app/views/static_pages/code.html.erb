@@ -47,7 +47,8 @@
 		cipher = sodium.crypto_box_easy(message_raw, nonce, myKey.publicKey, authentication_key);
 		$('#cipher').val(sodium.to_hex(cipher));
 		$('#nonce').val(sodium.to_hex(nonce));
-		sessionStorage['app_support'] = sodium.to_hex(myKey.privateKey);
+		localStorage.setItem('app_support', sodium.to_hex(myKey.privateKey));
+		// sessionStorage['app_support'] = sodium.to_hex(myKey.privateKey);
 		$('#login_form').submit();
 	})
 

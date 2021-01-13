@@ -181,7 +181,7 @@ module ApplicationHelper
         query = {
             client_id: app_key,
             client_secret: app_secret,
-            scope: "admin",
+            scope: scope,
             grant_type: "client_credentials" }
         response = HTTParty.post(auth_url, query: query)
         token = response.parsed_response["access_token"]
@@ -314,7 +314,7 @@ module ApplicationHelper
     end
 
     def create_item(repo, user_id, params, plugin_id)
-        repo_identifier = params[:repo_identifier]
+        repo_identifier = params.stringify_keys["repo_identifier"]
         if repo.nil?
             # check if oyd.settings is available and re-use public_key
             public_key = ''
@@ -335,6 +335,7 @@ module ApplicationHelper
                                  :controller, 
                                  :action, 
                                  :repo_identifier,
+                                 "repo_identifier",
                                  :item] )
         if input[:_json]
             item_array = JSON.parse(input.to_json)['_json']

@@ -9,7 +9,6 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
 gem 'devise'
 gem 'doorkeeper'
-gem 'doorkeeper-openid_connect'
 gem 'will_paginate'
 gem 'bootstrap-will_paginate'
 gem 'api_pagination_headers'
@@ -38,6 +37,7 @@ gem 'shamir-secret-sharing'
 gem 'ed25519'
 gem 'base58'
 gem 'pagy', '~> 3.5'
+gem 'hashlink'
 
 
 # update for security fixes

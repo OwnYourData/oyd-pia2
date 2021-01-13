@@ -113,6 +113,159 @@ paths:
           description: invalid token
         "404":
           description: not found
+  '/api/data/{val}':
+    get:
+      summary: read specific record
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: val
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: p
+          description: parameter type (is val and id or DRI)
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - id
+              - dri
+        - name: f
+          description: output format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - plain
+              - full
+              - meta
+              - validation
+            default: full
+      responses:
+        '200':
+          description: Return raw data
+        '403':
+          description: Permission denied
+    put:
+      summary: updated specific record
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: val
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: p
+          description: parameter type (is val and id or DRI)
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - id
+              - dri
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataBody'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+        '403':
+          description: Permission denied
+  /api/data:
+    get:
+      summary: read records
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: schema_dri
+          in: query
+          description: >-
+            DRI (Decentralized Resource Identifier) of the OCA schema base
+            describing the data
+          schema:
+            type: string
+        - name: table
+          in: query
+          description: all records with specified table name
+          schema:
+            type: string
+        - name: repo_id
+          in: query
+          description: all records from specified repository id
+          schema:
+            type: integer
+        - name: f
+          description: output format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - plain
+              - full
+              - meta
+              - validation
+            default: full
+      responses:
+        '200':
+          description: 'Return raw data, or an array of raw data'
+        '403':
+          description: Permission denied
+    post:
+      summary: Store data
+      tags:
+        - Read/Write Data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataBody'
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+        '403':
+          description: Permission denied
+    delete:
+      summary: delete specific record
+      tags:
+        - Read/Write Data
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: Identifier of the item
+          schema:
+            type: string
+        - name: dri
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: success
+        '403':
+          description: Permission denied
   "/api/repos/{repo_id}/items":
     get:
       summary: read all records in repo
@@ -146,63 +299,6 @@ paths:
           description: success
         "403":
           description: Permission denied
-  /api/data:
-    post:
-      summary: Store data with OCA schema
-      tags:
-        - Read/Write Data
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/DataBody"
-      responses:
-        "200":
-          description: success
-          content:
-            application/json:
-              schema:
-                properties:
-                  id:
-                    type: integer
-        "403":
-          description: Permission denied
-    get:
-      summary: read specific record by querying record ID
-      tags:
-        - Read/Write Data
-      parameters:
-        - name: dri
-          description: DRI (Decentralized Resource Identifier) of the content to fetch
-          in: query
-          schema:
-            type: string
-        - name: schema_dri
-          in: query
-          description: DRI (Decentralized Resource Identifier) of the OCA schema base describing the data
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Return raw data, or an array of raw data
-        "403":
-          description: Permission denied
-    delete:
-      summary: delete specific record
-      tags:
-        - Read/Write Data
-      parameters:
-        - name: id
-          in: query
-          required: true
-          description: Identifier of the item
-          schema:
-            type: string
-        - name: dri
-          in: query
-          required: true
-          schema:
-            type: string
   "/api/items/{item_id}/details":
     get:
       summary: read specific record
@@ -509,6 +605,58 @@ paths:
           description: success
         "403":
           description: permission denied
+  /api/relation:
+    get:
+      summary: read related records
+      tags:
+        - Relations
+      parameters:
+        - name: id
+          description: Item ID of the record for which the relations are to be queried
+          in: query
+          schema:
+            type: integer
+        - name: ttl
+          description: number of iteration levels for relations (default 0 - only directly related records are returned)
+          in: query
+          schema:
+            type: integer
+        - name: mode
+          description: only show 'upstream', 'downstream', or 'undirected' (= upstream & downstream) relations
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RelationResponse"
+        "400":
+          description: invalid request
+        "403":
+          description: permission violation
+        "404":
+          description: id not found
+    post:
+      summary: create a new relation between records
+      tags:
+        - Relations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RelationBody"
+      responses:
+        "200":
+          description: success
+        "400":
+          description: invalid request
+        "403":
+          description: permission violation
+        "404":
+          description: id not found
   /api/users/show:
     get:
       summary: get information from current user
@@ -627,6 +775,33 @@ components:
         table_name:
           type: string
           description: name of the target repository in which data should be stored
+    RelationBody:
+      properties:
+        source_id:
+          description: Item ID of the source record
+          type: integer
+        target_ids:
+          description: Array of item IDs for target records
+          type: array
+          items:
+            type: integer
+    RelationResponse:
+      type: array
+      items:
+        properties:
+          id:
+            description: Item ID of the respective record
+            type: integer
+          downstream:
+            description: Array of item IDs related downstream
+            type: array
+            items:
+              type: integer
+          upstram:
+            description: Array of item IDs related upstream
+            type: array
+            items:
+              type: integer
   requestBodies:
     Input:
       content:

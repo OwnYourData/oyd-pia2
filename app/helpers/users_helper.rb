@@ -237,36 +237,38 @@ module UsersHelper
     def default_usage_policy
         "<http://w3id.org/semcon/ns/ontology#ContainerPolicy> a <http://www.w3.org/2002/07/owl#Class>;
     <http://www.w3.org/2002/07/owl#equivalentClass> [
-    a <http://www.w3.org/2002/07/owl#Class>;
-    <http://www.w3.org/2002/07/owl#intersectionOf> ([
-    a <http://www.w3.org/2002/07/owl#Restriction>;
-    <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasData>;
-    <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyData>
-    ] [
-    a <http://www.w3.org/2002/07/owl#Restriction>;
-    <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasProcessing>;
-    <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyProcessing>
-    ] [
-    a <http://www.w3.org/2002/07/owl#Restriction>;
-    <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasPurpose>;
-    <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyPurpose>
-    ] [
-    a <http://www.w3.org/2002/07/owl#Restriction>;
-    <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasRecipient>;
-    <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyRecipient>
-    ] [
-    a <http://www.w3.org/2002/07/owl#Restriction>;
-    <http://www.w3.org/2002/07/owl#intersectionOf> ([
-    a <http://www.w3.org/2002/07/owl#Restriction>;
-    <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasLocation>;
-    <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyLocation>
-    ] [
-    a <http://www.w3.org/2002/07/owl#Restriction>;
-    <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasDuration>;
-    <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyDuration>
-    ]);
-    <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasStorage>
-    ])
+        a <http://www.w3.org/2002/07/owl#Class>;
+        <http://www.w3.org/2002/07/owl#intersectionOf> ([
+            a <http://www.w3.org/2002/07/owl#Restriction>;
+            <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasData>;
+            <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyData>
+        ] [
+            a <http://www.w3.org/2002/07/owl#Restriction>;
+            <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasProcessing>;
+            <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyProcessing>
+        ] [
+            a <http://www.w3.org/2002/07/owl#Restriction>;
+            <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasPurpose>;
+            <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyPurpose>
+        ] [
+            a <http://www.w3.org/2002/07/owl#Restriction>;
+            <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasRecipient>;
+            <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyRecipient>
+        ] [
+            a <http://www.w3.org/2002/07/owl#Restriction>;
+            <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasStorage>;
+            <http://www.w3.org/2002/07/owl#someValuesFrom> [
+                <http://www.w3.org/2002/07/owl#intersectionOf> ([
+                    a <http://www.w3.org/2002/07/owl#Restriction>;
+                    <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasLocation>;
+                    <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyLocation>
+                ] [
+                    a <http://www.w3.org/2002/07/owl#Restriction>;
+                    <http://www.w3.org/2002/07/owl#onProperty> <http://www.specialprivacy.eu/langs/usage-policy#hasDuration>;
+                    <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.specialprivacy.eu/langs/usage-policy#AnyDuration>
+                ])
+            ]
+        ])
     ] ."
     end
 

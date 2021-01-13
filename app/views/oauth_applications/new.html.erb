@@ -1,0 +1,32 @@
+<header class="page-header" role="banner">
+  <h1><%= t('Authorization required') %></h1>
+</header>
+
+<main role="main">
+  <p class="h4">
+    <%= "Authorize '" + @plugin.name.to_s + "' to access Data Vault? " %>
+  </p>
+
+  <% if @plugin.permissions.count > 0 %>
+    <div id="oauth-permissions">
+      <p><%= "Permissions" %>:</p>
+
+      <ul class="text-info">
+        <% @plugin.permissions.each do |scope| %>
+          <li><%= scope.repo_identifier.to_s %>: <%= ["", "READ", "WRITE", "UPDATE", "DELETE"][scope.perm_type] %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form_tag oauth_authorize_path, method: :post do %>
+      <%= hidden_field_tag :plugin_id, @plugin.id %>
+      <%= submit_tag t('doorkeeper.authorizations.buttons.authorize'), class: "btn btn-success btn-lg btn-block" %>
+    <% end %>
+    <%= form_tag oauth_authorize_path, method: :post do %>
+      <%= hidden_field_tag :plugin_id, @plugin.id %>
+      <%= submit_tag t('doorkeeper.authorizations.buttons.deny'), class: "btn btn-danger btn-lg btn-block" %>
+    <% end %>
+  </div>
+</main>

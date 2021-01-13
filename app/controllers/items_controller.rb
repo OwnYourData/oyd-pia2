@@ -63,45 +63,49 @@ class ItemsController < ApplicationController
           @timestamp = nil
           if @item['merkle_id'].to_s != ""
               merkle = Merkle.find(@item['merkle_id'])
-              payload = JSON.parse(merkle.payload)
-              transaction = merkle.oyd_transaction
-              if merkle.merkle_tree.delete("\n") == ""
-                @valid_roothash = true
-                @audit_proof = ""
-              else
-                mht = Marshal::load(Base64.decode64(merkle.merkle_tree.delete("\n")))
-                pos = payload.index(@item['id'])
-                leaf = Digest::SHA256.digest("\0" + Digest::SHA256.digest(@item['value']))
-                @valid_roothash = ((mht.send(:leaf_hash, pos) == leaf) &&
-                 (mht.head.unpack('H*')[0] == merkle.root_hash))
-                @audit_proof = mht.audit_proof(pos).collect {|item| item.unpack('H*')[0] }.join(', ')
-              end
-              # i = 0
-              # h1 = Digest::SHA256.digest("\0" + Digest::SHA256.digest(@item['value']))
-              # begin
-              #   h2 = mht.audit_proof(pos)[i]
-              #   # take care to take left/right node in tree
-              #   if ???
-              #     h1 = mht.send :node_hash, h1, h2
-              #   else
-              #     h1 = mht.send :node_hash, h2, h1
-              #   i = i+1
-              # end while i < mht.audit_proof(pos).length
-              # valid = (mht.head == mht.send(:node_hash, h1, h2))
+              if !merkle.nil?
+                payload = JSON.parse(merkle.payload) rescue []
+                transaction = merkle.oyd_transaction
+                if transaction.to_s != "" && merkle.merkle_tree.to_s != ""
+                  if merkle.merkle_tree.delete("\n") == ""
+                    @valid_roothash = true
+                    @audit_proof = ""
+                  else
+                    mht = Marshal::load(Base64.decode64(merkle.merkle_tree.delete("\n")))
+                    pos = payload.index(@item['id'])
+                    leaf = Digest::SHA256.digest("\0" + Digest::SHA256.digest(@item['value']))
+                    @valid_roothash = ((mht.send(:leaf_hash, pos) == leaf) &&
+                     (mht.head.unpack('H*')[0] == merkle.root_hash))
+                    @audit_proof = mht.audit_proof(pos).collect {|item| item.unpack('H*')[0] }.join(', ')
+                  end
+                  # i = 0
+                  # h1 = Digest::SHA256.digest("\0" + Digest::SHA256.digest(@item['value']))
+                  # begin
+                  #   h2 = mht.audit_proof(pos)[i]
+                  #   # take care to take left/right node in tree
+                  #   if ???
+                  #     h1 = mht.send :node_hash, h1, h2
+                  #   else
+                  #     h1 = mht.send :node_hash, h2, h1
+                  #   i = i+1
+                  # end while i < mht.audit_proof(pos).length
+                  # valid = (mht.head == mht.send(:node_hash, h1, h2))
 
-              blockchain_url = 'http://' + ENV["DOCKER_LINK_BC"].to_s + ':' + (ENV["DOCKER_LINK_BC_PORT"] || "3010") + '/getTransactionStatus' 
-              response = HTTParty.get(blockchain_url,
-                headers: { 'Content-Type' => 'application/json'},
-                body: { id:   merkle.id, 
-                        hash: transaction }.to_json ).parsed_response
-              if !response["transaction-status"].nil?
-                transaction_check = response["transaction-status"]["transactionHash"]
-                @valid_transaction = (transaction_check == transaction)
-                @transaction_address = transaction
-                @transaction_address[0..1] = ''
+                  blockchain_url = 'http://' + ENV["DOCKER_LINK_BC"].to_s + ':' + (ENV["DOCKER_LINK_BC_PORT"] || "3010") + '/api/getTransactionStatus' 
+                  response = HTTParty.get(blockchain_url,
+                    headers: { 'Content-Type' => 'application/json'},
+                    body: { id:   merkle.id, 
+                            hash: transaction }.to_json ).parsed_response
+                  if !response["transaction-status"].nil?
+                    transaction_check = response["transaction-status"]["transactionHash"]
+                    @valid_transaction = (transaction_check == transaction)
+                    @transaction_address = transaction
+                    @transaction_address[0..1] = ''
 
-                blockTimestamp = response["transaction-status"]["blockTimestamp"]
-                @bcts = Time.at(blockTimestamp.to_i(16)).strftime('%Y-%m-%dT%H:%M:%SZ')
+                    blockTimestamp = response["transaction-status"]["blockTimestamp"]
+                    @bcts = Time.at(blockTimestamp.to_i(16)).strftime('%Y-%m-%dT%H:%M:%SZ')
+                  end
+                end
               end
           end
           if !@item['oyd_source_pile_id'].nil?

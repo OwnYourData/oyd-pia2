@@ -19,13 +19,17 @@ module Api
                 @repos = @user.repos
                 retVal = []
                 @repos.each do |repo|
-                    if repo.identifier.match?(/#{Permission.where(
-                                plugin_id: @user.oauth_applications.pluck(:id),
-                                perm_type: PermType::READ
-                            ).pluck(:repo_identifier).join('|')}/)
-                        retVal << { "id": repo.id,
-                                    "name": repo.name, 
-                                    "count": "?" } #repo.items.count }
+                    begin
+                        if repo.identifier.match?(/#{Permission.where(
+                                    plugin_id: @user.oauth_applications.pluck(:id),
+                                    perm_type: PermType::READ
+                                ).pluck(:repo_identifier).join('|')}/)
+                            retVal << { "id": repo.id,
+                                        "name": repo.name, 
+                                        "count": "?" } #repo.items.count }
+                        end
+                    rescue
+
                     end
                 end unless @repos.nil?
                 render json: retVal, status: 200

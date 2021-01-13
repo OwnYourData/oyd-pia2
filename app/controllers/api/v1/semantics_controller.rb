@@ -2,6 +2,7 @@ module Api
     module V1
         class SemanticsController < ApiController
             include ApplicationHelper
+            include SessionsHelper
 
             skip_before_action :doorkeeper_authorize!, only: [:active]
 
@@ -32,11 +33,31 @@ module Api
                        status: 200
             end
 
+            def table
+                if doorkeeper_token.nil?
+                    render json: {"error": "invalid token"},
+                           status: 403
+                    return
+                end
+                @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
+                tables = @app.user.repos.pluck(:name).uniq.compact rescue []
+                render json: tables,
+                       status: 200
+             end
+
+            def info
+                @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
+                user_name = @app.user.email.to_s rescue ""
+                render json: {"name": user_name},
+                       status: 200
+            end
+
             def active
                 render json: { 
                     "active": true,
                     "auth": true,
-                    "repos": true }, status: 200
+                    "repos": true,
+                    "oauth": {"type": "authorization_code"} }, status: 200
             end
         end
     end

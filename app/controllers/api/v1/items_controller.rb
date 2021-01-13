@@ -354,51 +354,61 @@ module Api
                 item_id = params[:id]
                 if !doorkeeper_token.application_id.nil?
                     @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
-                    @repo = Repo.find(repo_id)
-                    if check_permission(@repo.identifier, @app, PermType::DELETE)
-                        @item = Item.find(item_id)
-                        if !@item.nil?
-                            if @item.repo_id == @repo.id
-                                @item.destroy
-                                doc_access(PermType::DELETE, @app.id, item_id, repo_id)
-                                render json: { "item_id": item_id }, 
-                                       status: 200
-                            else
-                                render json: { "error": "Item Repo mismatch" }, 
-                                       status: 401
-                            end
-                        else
-                            render json: { "error": "Item missing" }, 
-                                   status: 404
-                        end
-                    else
+                    @repo = Repo.where(id: repo_id, user_id: @app.first.owner_id).first rescue nil
+                    if @repo.nil?
                         render json: { "error": "Permission denied" }, 
                                status: 403
+                    else
+                        if check_permission(@repo.identifier, @app, PermType::DELETE)
+                            @item = Item.find(item_id)
+                            if !@item.nil?
+                                if @item.repo_id == @repo.id
+                                    @item.destroy
+                                    doc_access(PermType::DELETE, @app.id, item_id, repo_id)
+                                    render json: { "item_id": item_id }, 
+                                           status: 200
+                                else
+                                    render json: { "error": "Item Repo mismatch" }, 
+                                           status: 401
+                                end
+                            else
+                                render json: { "error": "Item missing" }, 
+                                       status: 404
+                            end
+                        else
+                            render json: { "error": "Permission denied" }, 
+                                   status: 403
+                        end
                     end
                 else # !doorkeeper_token.resource_owner_id.nil?
                     @app = Doorkeeper::Application.where(owner_id: doorkeeper_token.resource_owner_id)
-                    @repo = Repo.find(repo_id)
-                    if check_permission(@repo.identifier, @app, PermType::DELETE)
-                        @item = Item.find(item_id)
-                        if !@item.nil?
-                            if @item.repo_id == @repo.id
-                                @item.destroy
-                                @app = @app.first
-                                query_prefix = "owner"
-                                doc_access(PermType::DELETE, @app.id, item_id, repo_id, query_prefix)
-                                render json: { "item_id": item_id }, 
-                                       status: 200
-                            else
-                                render json: { "error": "Item Repo mismatch" }, 
-                                       status: 401
-                            end
-                        else
-                            render json: { "error": "Item missing" }, 
-                                   status: 404
-                        end
-                    else
+                    @repo = Repo.where(id: repo_id, user_id: @app.first.owner_id).first rescue nil
+                    if @repo.nil?
                         render json: { "error": "Permission denied" }, 
                                status: 403
+                    else
+                        if check_permission(@repo.identifier, @app, PermType::DELETE)
+                            @item = Item.find(item_id)
+                            if !@item.nil?
+                                if @item.repo_id == @repo.id
+                                    @item.destroy
+                                    @app = @app.first
+                                    query_prefix = "owner"
+                                    doc_access(PermType::DELETE, @app.id, item_id, repo_id, query_prefix)
+                                    render json: { "item_id": item_id }, 
+                                           status: 200
+                                else
+                                    render json: { "error": "Item Repo mismatch" }, 
+                                           status: 401
+                                end
+                            else
+                                render json: { "error": "Item missing" }, 
+                                       status: 404
+                            end
+                        else
+                            render json: { "error": "Permission denied" }, 
+                                   status: 403
+                        end
                     end
                 end
             end
