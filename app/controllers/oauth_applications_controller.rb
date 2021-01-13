@@ -24,7 +24,7 @@ class OauthApplicationsController < ApplicationController
   end
 
   def create
-    if params["commit"].to_s == "Authorize"
+    if params[:commit].to_s == "Authorize"
       @plugin = Doorkeeper::Application.find(params[:plugin_id])
       @ag = Doorkeeper::AccessGrant.new(
                 resource_owner_id: @plugin.user.id, 
