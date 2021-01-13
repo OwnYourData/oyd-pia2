@@ -25,22 +25,30 @@ class OauthApplicationsController < ApplicationController
 
   def create
     require 'securerandom'
+puts "in create"
+puts "commit: " + params[:commit].to_s
     if params[:commit].to_s == "Authorize"
       @plugin = Doorkeeper::Application.find(params[:plugin_id])
+puts "Plugin"
+puts @plugin.to_json
       @ag = Doorkeeper::AccessGrant.new(
                 resource_owner_id: @plugin.user.id, 
                 application_id: @plugin.id, 
                 token: SecureRandom.alphanumeric(32), 
                 expires_in: Time.now+2.hours, 
-                redirect_uri: params[:redirect_uri].to_s)
+                redirect_uri: @plugin.redirect_uri.to_s)
+puts @ag.to_json
       @ag.save
-      redirect_to params[:redirect_uri].to_s + "?client_id=" + @plugin.uid + "&client_secret=" + @plugin.secret + "&code=" + @ag.token
+puts "URL: " + @plugin.redirect_uri.to_s + "?client_id=" + @plugin.uid + "&client_secret=" + @plugin.secret + "&code=" + @ag.token
+      redirect_to @plugin.redirect_uri.to_s + "?client_id=" + @plugin.uid + "&client_secret=" + @plugin.secret + "&code=" + @ag.token
     else
       redirect_to root_path
     end
   end
 
-  def edit; end
+  def edit
+
+  end
 
   def update
     if @application.update(application_params)
