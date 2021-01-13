@@ -41,7 +41,7 @@ module Api
                         user_id = doorkeeper_token.resource_owner_id
                     end
                     if user_id == @repo.user_id
-                        @item.update_attributes(eidas_otken: token)
+                        @item.update_attributes(eidas_token: token)
                         render json: {"token": token}, 
                                status: 200
                         return
