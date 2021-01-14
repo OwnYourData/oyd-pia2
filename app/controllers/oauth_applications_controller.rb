@@ -13,6 +13,7 @@ class OauthApplicationsController < ApplicationController
   end
 
   def new
+puts "in new"
     @user = User.find(current_user["id"])
     @plugin = @user.oauth_applications.where(identifier: params[:client_id].to_s)
     if @plugin.count == 0
@@ -23,7 +24,7 @@ class OauthApplicationsController < ApplicationController
     end
   end
 
-  def create
+  def create2
     require 'securerandom'
 puts "in create"
 puts "commit: " + params[:commit].to_s

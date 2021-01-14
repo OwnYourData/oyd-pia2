@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 	mount Rswag::Api::Engine => '/api-docs'
 
 	match '/oauth/authorize', to: 'oauth_applications#new',    via: 'get'
-	match '/oauth/authorize', to: 'oauth_applications#create', via: 'post'
+	match '/oauth/authorize', to: 'oauth_applications#create2', via: 'post'
 
 	use_doorkeeper
 	devise_for :users
