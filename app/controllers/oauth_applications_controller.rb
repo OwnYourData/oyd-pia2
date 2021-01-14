@@ -1,5 +1,6 @@
 class OauthApplicationsController < ApplicationController
   include ApplicationHelper
+  include PluginsHelper
   include SessionsHelper
 
   before_action :logged_in_user
@@ -13,34 +14,34 @@ class OauthApplicationsController < ApplicationController
   end
 
   def new
-puts "in new"
     @user = User.find(current_user["id"])
     @plugin = @user.oauth_applications.where(identifier: params[:client_id].to_s)
     if @plugin.count == 0
-      @plugin = @user.oauth_applications.new(name: params[:client_id].to_s, identifier: params[:client_id].to_s, redirect_uri: params[:redirect_uri].to_s).save
+      response = HTTParty.get("https://sam.data-vault.eu/api/plugins/").parsed_response rescue []
+      lang = params["locale"] || "en"
+      pluginInfo = {}
+      response.each {|i| pluginInfo = i if (i["identifer"] == params[:client_id].to_s || i["language"] == lang)}
+      plugin_id = create_plugin_helper(pluginInfo, @user.id)
+      @plugin = Doorkeeper::Application.find(plugin_id)
+      @plugin.update_attributes(redirect_uri: params[:redirect_uri].to_s)
     else
       @plugin = @plugin.first
-      @plugin.update_attributes(redirect_uri: params[:redirect_uri].to_s)
+      redirect_to params[:redirect_uri].to_s + "?client_id=" + @plugin.uid + "&client_secret=" + @plugin.secret
+      return
     end
   end
 
   def create2
     require 'securerandom'
-puts "in create"
-puts "commit: " + params[:commit].to_s
     if params[:commit].to_s == "Authorize"
       @plugin = Doorkeeper::Application.find(params[:plugin_id])
-puts "Plugin"
-puts @plugin.to_json
       @ag = Doorkeeper::AccessGrant.new(
                 resource_owner_id: @plugin.user.id, 
                 application_id: @plugin.id, 
                 token: SecureRandom.alphanumeric(32), 
                 expires_in: Time.now+2.hours, 
                 redirect_uri: @plugin.redirect_uri.to_s)
-puts @ag.to_json
       @ag.save
-puts "URL: " + @plugin.redirect_uri.to_s + "?client_id=" + @plugin.uid + "&client_secret=" + @plugin.secret + "&code=" + @ag.token
       redirect_to @plugin.redirect_uri.to_s + "?client_id=" + @plugin.uid + "&client_secret=" + @plugin.secret + "&code=" + @ag.token
     else
       redirect_to root_path
