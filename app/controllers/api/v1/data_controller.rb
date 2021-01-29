@@ -443,7 +443,7 @@ module Api
                     @pagy, @records = pagy(Item.where(repo_id: valid_repo_ids, schema_dri: params[:schema_dri].to_s).select(:id, :value, :dri, :schema_dri, :created_at, :updated_at, :mime_type), page: page)
                 elsif params[:table].to_s != ""
                     # check read permission for repo
-                    repo_ids = Repo.where(user_id: app.owner_id, identifier: params[:table].to_s).pluck(:id, :identifier) rescue []
+                    repo_ids = Repo.where(user_id: app.owner_id, name: params[:table].to_s).pluck(:id, :identifier) rescue []
                     valid_repo_ids = []
                     repo_ids.each do |repo_id, repo_identifier|
                         if check_permission(repo_identifier, app, PermType::READ)
@@ -458,8 +458,13 @@ module Api
                         if @repo.nil?
                             @pagy = nil
                             retVal = { "error": "not found", "status": 404 }.stringify_keys
-                        else                       
-                            @pagy, @records = pagy(Item.where(repo_id: @repo.first.id).select(:id, :value, :dri, :schema_dri, :created_at, :updated_at, :mime_type), page: page)
+                        else
+                            if @repo.count == 0
+                                @pagy = nil
+                                retVal = { "error": "not found", "status": 404 }.stringify_keys
+                            else
+                                @pagy, @records = pagy(Item.where(repo_id: @repo.first.id).select(:id, :value, :dri, :schema_dri, :created_at, :updated_at, :mime_type), page: page)
+                            end
                         end
                     else
                         @pagy = nil

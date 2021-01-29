@@ -26,7 +26,8 @@ module Api
                                 ).pluck(:repo_identifier).join('|')}/)
                             retVal << { "id": repo.id,
                                         "name": repo.name, 
-                                        "count": "?" } #repo.items.count }
+                                        "count": "?",
+                                        "identifier": repo.identifier } #repo.items.count }
                         end
                     rescue
 

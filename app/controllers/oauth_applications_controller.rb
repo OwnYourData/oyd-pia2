@@ -20,18 +20,29 @@ class OauthApplicationsController < ApplicationController
       response = HTTParty.get("https://sam.data-vault.eu/api/plugins/").parsed_response rescue []
       lang = params["locale"] || "en"
       pluginInfo = {}
-      response.each {|i| pluginInfo = i if (i["identifer"] == params[:client_id].to_s || i["language"] == lang)}
-      plugin_id = create_plugin_helper(pluginInfo, @user.id)
-      @plugin = Doorkeeper::Application.find(plugin_id)
-      @plugin.update_attributes(redirect_uri: params[:redirect_uri].to_s)
+      response.each {|i| pluginInfo = i if (i["identifier"] == params[:client_id].to_s && i["language"] == lang)}
+      if pluginInfo == {}
+        flash[:error] = "Unknown Plugin '" + params[:client_id].to_s + "'"
+        redirect_to root_path
+        return
+      else
+        plugin_id = create_plugin_helper(pluginInfo, @user.id)
+        @plugin = Doorkeeper::Application.find(plugin_id)
+        @plugin.update_attributes(redirect_uri: params[:redirect_uri].to_s)
+      end
     else
       @plugin = @plugin.first
-      redirect_to params[:redirect_uri].to_s + "?client_id=" + @plugin.uid + "&client_secret=" + @plugin.secret
+      ru = params[:redirect_uri].to_s
+      if ru.include?("?")
+        redirect_to params[:redirect_uri].to_s + "&client_id=" + @plugin.uid + "&client_secret=" + @plugin.secret
+      else
+        redirect_to params[:redirect_uri].to_s + "?client_id=" + @plugin.uid + "&client_secret=" + @plugin.secret
+      end
       return
     end
   end
 
-  def create2
+  def create
     require 'securerandom'
     if params[:commit].to_s == "Authorize"
       @plugin = Doorkeeper::Application.find(params[:plugin_id])

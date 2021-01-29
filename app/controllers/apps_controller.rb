@@ -369,7 +369,7 @@ class AppsController < ApplicationController
                        'Content-Type' => 'application/json',
                        'Authorization' => 'Bearer ' + token }).parsed_response
         @repos = @perm_info.map{ |x| x["repo_identifier"] }.uniq
-        @perm_html = ''
+        @perm_html = '<tr id="placeholder"></tr>'
         i = 0
         @repos.each do |repo|
 	        @perm_html += '<tr>'
@@ -509,7 +509,7 @@ class AppsController < ApplicationController
                        'Content-Type' => 'application/json',
                        'Authorization' => 'Bearer ' + token }).parsed_response
         @repos = @perm_info.map{ |x| x["repo_identifier"] }.uniq
-        @perm_html = ''
+        @perm_html = '<tr id="placeholder"></tr>'
         i = 0
         @repos.each do |repo|
 	        @perm_html += '<tr>'

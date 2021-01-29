@@ -75,11 +75,11 @@ module Api
 			end
 
 			def delete_all
-				if !Doorkeeper::Application
-						.where(id: params[:plugin_id], 
-							   owner_id: current_resource_owner.id)
-						.nil?
-					@perm = Permission.where(repo_identifier: params[:repo_identifier])
+				@plugin = Doorkeeper::Application.where(
+								id: params[:plugin_id], 
+								owner_id: current_resource_owner.id).first rescue nil
+				if !@plugin.nil?
+					@perm = Permission.where(plugin_id: @plugin.id, repo_identifier: params[:repo_identifier])
 					if @perm.nil?
 						render json: { "error": "not found" }, status: 404
 					else

@@ -91,12 +91,16 @@
 									</tr> 
 								</thead>
 								<tbody id="listPermissions">
+									<tr id="placeholder"></tr>
 								</tbody> 
 							</table>
 							<button type="button" class="btn btn-info btn-sm" id="addPerm"><%= t('apps.addPermBtn') %></button>
 							<script type="text/javascript">
 								$('#addPerm').click(function() {
-									var cnt = parseInt($('#permTable tr:last input:first').attr('id').split('_')[2])+1;
+									var cnt = 0;
+									try {
+										cnt = parseInt($('#permTable tr:last input:first').attr('id').split('_')[2])+1;
+									} catch {};
 									var newTr = "<tr>";
 									newTr = newTr.concat('<td><input type="text" id="perm_IDENTIFIER_', cnt, '" name="perm_IDENTIFIER_', cnt, '" style="margin-bottom: 0; width: 90%;">');
 									newTr = newTr.concat('<span class="deletePerm" onclick="$(this).closest(\'tr\').hide();$(\'#perm_IDENTIFIER_', cnt, '_delete\').val(\'true\');"><i class="fa fa-trash" aria-hidden="true"></i></span>')
