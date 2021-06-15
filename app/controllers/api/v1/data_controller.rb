@@ -19,8 +19,11 @@ module Api
                            status: 403
                     return
                 end
-                @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
-                user_id = @app.owner_id
+                if !doorkeeper_token.application_id.nil?
+                    @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
+                else
+                    @app = Doorkeeper::Application.where(owner_id: doorkeeper_token.resource_owner_id).first rescue nil
+                end
 
                 @pagy, provision = getProvision(params, @app, "read " + params.to_json)
                 if @pagy.nil?

@@ -29,8 +29,12 @@ module Api
                            status: 403
                     return
                 end
-                @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
-                user_id = @app.owner_id
+                if current_resource_owner.nil?
+                    user_id = Doorkeeper::Application.where(
+                        id: doorkeeper_token.application_id).first.owner_id
+                else
+                    user_id = current_resource_owner.id
+                end
 
                 id = params[:id]
                 ttl = params[:ttl].to_i rescue 0
@@ -81,27 +85,50 @@ module Api
                            status: 403
                     return
                 end
-                @app = Doorkeeper::Application.find(doorkeeper_token.application_id)
-                user_id = @app.owner_id
-
-                sid = params[:source_id].to_i rescue 0
-                tid = JSON.parse(params[:target_ids].to_json) rescue 0
-
-                @item = Item.find(sid) rescue nil
-                if @item.nil?
-                    render json: {"error": "invalid source_id"},
-                           status: 404
-                    return
-                end
-                if @item.repo.user_id != user_id
-                    render json: {"error": "invalid source_id"},
-                           status: 403
-                    return
+                if current_resource_owner.nil?
+                    user_id = Doorkeeper::Application.where(
+                        id: doorkeeper_token.application_id).first.owner_id
+                else
+                    user_id = current_resource_owner.id
                 end
 
-                if tid.is_a? Array 
-                    tid.each do |i|
-                        @item = Item.find(i) rescue nil
+                mode = params[:p].to_s rescue "id"
+                if mode == ""
+                    mode = "id"
+                end
+                sid = params[:source].to_s rescue ""
+                tid = JSON.parse(params[:targets].to_json) rescue ""
+
+                case mode
+                when "id"
+                    @item = Item.find(sid.to_i) rescue nil
+                    if @item.nil?
+                        render json: {"error": "invalid source id"},
+                               status: 404
+                        return
+                    end
+                    if @item.repo.user_id != user_id
+                        render json: {"error": "invalid source id"},
+                               status: 403
+                        return
+                    end
+
+                    if tid.is_a? Array 
+                        tid.each do |i|
+                            @item = Item.find(i) rescue nil
+                            if @item.nil?
+                                render json: {"error": "invalid target_ids"},
+                                       status: 404
+                                return
+                            end
+                            if @item.repo.user_id != user_id
+                                render json: {"error": "invalid target_ids"},
+                                       status: 403
+                                return
+                            end
+                        end
+                    elsif tid.is_a? Integer
+                        @item = Item.find(tid) rescue nil
                         if @item.nil?
                             render json: {"error": "invalid target_ids"},
                                    status: 404
@@ -112,35 +139,84 @@ module Api
                                    status: 403
                             return
                         end
-                    end
-                elsif tid.is_a? Integer
-                    @item.find(tid) rescue nil
-                    if @item.nil?
+                    else
                         render json: {"error": "invalid target_ids"},
+                               status: 400
+                        return
+                    end
+
+                    if tid.is_a? Array 
+                        tid.each do |i|
+                            OydRelation.new(
+                                source_id: sid,
+                                target_id: i).save
+                        end
+                    else
+                        OydRelation.new(
+                            source_id: sid,
+                            target_id: tid).save
+                    end
+
+                when "dri"
+                    repos = Repo.where(user_id: user_id).pluck(:id)
+                    @item = Item.where(dri: sid.to_s, repo_id: repos).first rescue nil
+                    if @item.nil?
+                        render json: {"error": "invalid source dri"},
                                status: 404
                         return
                     end
                     if @item.repo.user_id != user_id
-                        render json: {"error": "invalid target_ids"},
+                        render json: {"error": "invalid source dri"},
                                status: 403
                         return
                     end
-                else
-                    render json: {"error": "invalid target_ids"},
-                           status: 400
-                    return
-                end
+                    sid = @item.id
 
-                if tid.is_a? Array 
-                    tid.each do |i|
+                    tid_ids = []
+                    if tid.is_a? Array 
+                        tid.each do |i|
+                            @item = Item.where(dri: i.to_s, repo_id: repos).first rescue nil
+                            if @item.nil?
+                                render json: {"error": "invalid target dris"},
+                                       status: 404
+                                return
+                            end
+                            if @item.repo.user_id != user_id
+                                render json: {"error": "invalid target dris"},
+                                       status: 403
+                                return
+                            end
+                            tid_ids << @item.id
+                        end
+                    elsif tid.is_a? String
+                        @item = Item.where(dri: tid.to_s, repo_id: repos).first rescue nil
+                        if @item.nil?
+                            render json: {"error": "invalid target dris"},
+                                   status: 404
+                            return
+                        end
+                        if @item.repo.user_id != user_id
+                            render json: {"error": "invalid target dris"},
+                                   status: 403
+                            return
+                        end
+                        tid_ids << @item.id
+                    else
+                        render json: {"error": "invalid target dris"},
+                               status: 400
+                        return
+                    end
+
+                    tid_ids.each do |i|
                         OydRelation.new(
                             source_id: sid,
                             target_id: i).save
                     end
+
                 else
-                    OydRelation.new(
-                        source_id: sid,
-                        target_id: tid).save
+                    render json: {"error": "unknown p (use 'id' or 'dri')"},
+                           status: 403
+                    return
                 end
 
                 render plain: "",

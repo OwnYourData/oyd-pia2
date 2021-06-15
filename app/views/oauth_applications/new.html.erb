@@ -22,10 +22,14 @@
   <div class="actions">
     <%= form_tag oauth_authorize_path, method: :post do %>
       <%= hidden_field_tag :plugin_id, @plugin.id %>
+      <%= hidden_field_tag :code_challenge, @code_challenge %>
+      <%= hidden_field_tag :code_challenge_method, @code_challenge_method %>
       <%= submit_tag t('doorkeeper.authorizations.buttons.authorize'), class: "btn btn-success btn-lg btn-block" %>
     <% end %>
     <%= form_tag oauth_authorize_path, method: :post do %>
       <%= hidden_field_tag :plugin_id, @plugin.id %>
+      <%= hidden_field_tag :code_challenge, @code_challenge %>
+      <%= hidden_field_tag :code_challenge_method, @code_challenge_method %>
       <%= submit_tag t('doorkeeper.authorizations.buttons.deny'), class: "btn btn-danger btn-lg btn-block" %>
     <% end %>
   </div>

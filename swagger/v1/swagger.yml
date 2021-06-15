@@ -643,6 +643,16 @@ paths:
       summary: create a new relation between records
       tags:
         - Relations
+      parameters:
+        - in: query
+          name: p
+          description: parameter type (id is default)
+          required: false
+          schema:
+            type: string
+            enum:
+              - id
+              - dri
       requestBody:
         content:
           application/json:
@@ -777,14 +787,14 @@ components:
           description: name of the target repository in which data should be stored
     RelationBody:
       properties:
-        source_id:
-          description: Item ID of the source record
+        source:
+          description: Item ID or DRI of the source record
           type: integer
-        target_ids:
-          description: Array of item IDs for target records
+        targets:
+          description: Array of item IDs or DRIs for target records
           type: array
           items:
-            type: integer
+            type: string
     RelationResponse:
       type: array
       items:
