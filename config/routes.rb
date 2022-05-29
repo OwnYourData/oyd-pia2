@@ -28,6 +28,10 @@ Rails.application.routes.draw do
 				match '/consent/:id',           to: 'consents#update',        via: 'put'
 				match '/consent/:id',           to: 'consents#delete',        via: 'delete'
 
+				# QR Code handling
+				match 'read_qr/:did',			to: 'qrs#read',               via: 'get', constraints: {did: /[^\/]+/}
+				match 'connect',                to: 'qrs#qr_connect',         via: 'post'
+
 				# App support
 				match 'support/:nonce',         to: 'users#support',          via: 'get'
 				match 'install/:key',           to: 'installs#show',          via: 'get'
@@ -203,6 +207,7 @@ Rails.application.routes.draw do
 		match '/phone_login',      to: 'static_pages#phone',     via: 'get'
 		match '/phone_code',       to: 'static_pages#code',      via: 'get'
 		match '/phone_code',       to: 'static_pages#code',      via: 'post'
+		match '/oidc',             to: 'sessions#oidc',          via: 'get'
 
 		# User handling
 		get  '/user',              to: 'users#show'
@@ -221,6 +226,10 @@ Rails.application.routes.draw do
 		match '/archive_decrypt',  to: 'users#archive_decrypt',  via: 'post'
 		match '/user_archive',     to: 'users#user_archive',     via: 'get', defaults: { format: 'json' }
 		match '/pia_delete',       to: 'users#pia_delete',       via: 'post'
+
+		# OIDC handling
+		match '/login_sowl',       to: 'sessions#login_sowl',    via: 'get'
+		match 'signin-oidc',       to: 'application#oidc',       via: 'get'
 
 		# Plugin handling
 		match  '/plugins',           to: 'users#plugins',        via: 'get'
@@ -273,6 +282,9 @@ Rails.application.routes.draw do
 	# did:web
 	match '/u/:did',          to: 'dids#show', via: 'get', defaults: { format: 'json' }
 	match '/u/:did/did.json', to: 'dids#show', via: 'get', defaults: { format: 'json' }
+
+	# SemCon Connect
+	match '/connect',         to: 'connections#create', via: 'post'
 
 	match ':not_found' => 'application#missing', :constraints => { :not_found => /.*/ }, via: [:get, :post]
 end

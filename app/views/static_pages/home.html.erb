@@ -27,13 +27,15 @@
 								<%= t('start.remember') %>
 							</div>
 						</div>
-						<%= link_to t('start.forgot'), password_reset_path, class: "pull-right need-help", style: "margin-top: -5px;" %><span class="clearfix"></span>
+						<%= link_to t('start.forgot'), password_reset_path, class: "pull-right need-help", style: "margin-top: -5px;" %>
+						<span class="clearfix"></span>
 			    	</fieldset>
 		      	<% end %>
 		    </div>
 		</div>
-		<div style="margin: -10px auto 60px; display: table;">
-			<%= link_to t('dialog.signUp'), new_path %>
+		<div style="margin: -10px auto 60px; display: table; text-align: center;">
+			<%= link_to t('dialog.signUp'), new_path %><br>
+			<%= link_to t('start.login_SOWL'), login_sowl_path %>
 		</div>
 	</div>
 	<div class="col-md-7 col-md-pull-5">

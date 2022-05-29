@@ -28,9 +28,9 @@ while [ $# -gt 0 ]; do
 done
 
 if $BUILD_CLEAN; then
-    docker build --no-cache -t $REPOSITORY/$CONTAINER .
+    docker build --platform linux/amd64 --no-cache -t $REPOSITORY/$CONTAINER .
 else
-    docker build -t $REPOSITORY/$CONTAINER .
+    docker build --platform linux/amd64 -t $REPOSITORY/$CONTAINER .
 fi
 
 if $DOCKER_UPDATE; then

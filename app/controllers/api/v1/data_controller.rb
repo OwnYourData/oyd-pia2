@@ -4,7 +4,7 @@ module Api
             include ApplicationHelper
             include UsersHelper
             include Pagy::Backend
-
+            include PlantumlHelper
 
             # respond only to JSON requests
             respond_to :json
@@ -99,6 +99,10 @@ module Api
                             "dlt-reference": dlt_reference
                         }
                     }.stringify_keys
+
+                elsif params[:f].to_s == "provis"
+                    retVal = [plantuml(provision)]
+                    # retVal = ["@startuml\nallowmixing\nskinparam shadowing false\nactor :Person dri-p1s...: as p1\nstate \"Activity: **create cattle**\" as a1 #palegreen\na1 : ts: 2021-01-01T01:00:00Z ref: dri-a10s...\nmap \" Entity: ** Cattle ** \" as e1 {\n  id => 10\n  dri => dri-e10s...\n}\nnode s1 #aliceblue [\nAgent: **SemCon** (Farmer)\nsemcon/sc-base:latest\nguid: id-sc1s...\n]\na1 <-up- e1 : wasGeneratedBy\na1 -> s1 : wasAssociatedWith\ns1 <-left- e1 : attributedTo\ns1 --> p1 : actedOnBehalfOf\n@enduml"]
 
                 else # format=full
                     if provision == [] || provision == ""
@@ -348,7 +352,7 @@ module Api
                 if @records.count > 0
                     @records.each do |el| 
                         if el["value"].is_a? String
-                            val = {"content": JSON(el["value"]).except("id")}.stringify_keys
+                            val = {"content": JSON(el["value"]).except("id")}.stringify_keys rescue {}
                         else
                             val = {"content": el["value"]}.stringify_keys
                         end

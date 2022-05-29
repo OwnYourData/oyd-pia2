@@ -57,7 +57,7 @@ module Api
                     "active": true,
                     "auth": true,
                     "repos": true,
-                    "oauth": {"type": "authorization_code"} }, status: 200
+                    "oauth": [{"type": "authorization_code"}] }, status: 200
             end
         end
     end

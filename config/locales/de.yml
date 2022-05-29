@@ -44,6 +44,7 @@ de:
     paging_previous: "&laquo; Zurück"
     paging_next: "Weiter &raquo;"
     not_anymore: "diesen Hinweis in Zukunft ausblenden"
+    log_out_sowl: "von SOWL abmelden"
   kg:
     title: Mein Wissensdiagramm
     location: Ortsdaten
@@ -86,6 +87,8 @@ de:
     phone_number: "Deine Telefonnummer (0043...)"
     phone_code: "6-stelliger Code vom SMS"
     resendSMS: "SMS erneut senden"
+    login_SOWL: "Einloggen mit SOWL"
+    sowl_login_wait: "bitte warte bis du eingeloggt bist..."
   dialog:
     closeBtn: "Schließen"
     saveBtn: "Speichern"

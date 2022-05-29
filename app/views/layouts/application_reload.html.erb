@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<title><%= full_title(yield(:title)) %></title>
+    <%= csrf_meta_tags %>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= favicon_link_tag 'favicon.ico' %>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="10" />
+  </head>
+
+  <body>
+    <%= render 'layouts/header' %>
+    <div class="container" style="margin-top: 15px;">
+      <%= yield.dup.force_encoding(Encoding::UTF_8) %>
+      <%= debug(params) if Rails.env.development? %>
+    </div>
+    <%= render 'layouts/footer' %>
+  </body>
+</html>

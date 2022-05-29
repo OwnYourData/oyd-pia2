@@ -44,6 +44,7 @@ en:
     paging_previous: "&laquo; Previous"
     paging_next: "Next &raquo;"
     not_anymore: "hide this hint in the future"
+    log_out_sowl: "Logout from SOWL session"
   kg:
     title: My personal knowledge graph
     location: Location
@@ -86,6 +87,8 @@ en:
     phone_number: "your phone number (0043...)"
     phone_code: "enter 6-digit code from SMS"
     resendSMS: "resend SMS"
+    login_SOWL: "Login with SOWL"
+    sowl_login_wait: "please wailt while you are logged in..."
   dialog:
     closeBtn: "Close"
     saveBtn: "Save"

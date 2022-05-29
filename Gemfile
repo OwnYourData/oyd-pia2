@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.5.7'
+ruby '2.5.9'
 
 gem 'rails', '~> 5.2.3'
 gem 'bootstrap-sass'
@@ -39,6 +39,8 @@ gem 'base58'
 gem 'pagy', '~> 3.5'
 gem 'hashlink'
 gem 'listen', '>= 3.0.5', '< 3.2'
+gem 'jwt'
+gem 'oydid'
 
 # update for security fixes
 gem 'loofah', '~> 2.3', '>= 2.3.1'
